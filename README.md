@@ -143,7 +143,6 @@ adaptive-command-hub/
 │   ├── main.py                  # entry point uvicorn
 │   ├── pyproject.toml           # Poetry (Python 3.12)
 │   └── tests/                   # unit test pytest (test_metrics.py)
-├── stitch_adaptive_command_hub_dashboard/   # referensi UI statis
 ├── run.sh                       # menjalankan backend + frontend dalam satu perintah
 ├── PLANNING.md
 ├── REVIEW.md                    # laporan hasil kerja, temuan bug, dan hasil verifikasi untuk review

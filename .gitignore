@@ -26,3 +26,6 @@ nohup.out
 coverage/
 htmlcov/
 .coverage
+
+# Design reference (aset pihak ketiga, tidak dilacak)
+stitch_adaptive_command_hub_dashboard/
