@@ -1,16 +1,6 @@
-import type { LucideIcon } from 'lucide-react';
-import { MemoryStick, Sun, Thermometer, Zap } from 'lucide-react';
+import { MemoryStick, Sun } from 'lucide-react';
 import type { SystemMetricsState } from '../../hooks/useSystemMetrics';
-import { formatCelsius, formatPercent } from '../../lib/format';
-
-interface StatPill {
-  label: string;
-  value: string;
-  valueSuffix?: string;
-  suffixClass?: string;
-  icon: LucideIcon;
-  iconClass: string;
-}
+import { formatPercent } from '../../lib/format';
 
 interface CasualTopBarProps {
   metrics: SystemMetricsState;
@@ -33,29 +23,6 @@ export default function CasualTopBar({ metrics }: CasualTopBarProps) {
   const ramPercent = data.ram?.percent_used ?? null;
   const ramStatus = getRamStatus(ramPercent);
 
-  const pills: StatPill[] = [
-    {
-      label: 'RAM Usage',
-      value: formatPercent(ramPercent),
-      valueSuffix: ramStatus.text || undefined,
-      suffixClass: ramStatus.className || undefined,
-      icon: MemoryStick,
-      iconClass: 'text-emerald-600',
-    },
-    {
-      label: 'CPU Temp',
-      value: formatCelsius(data.cpu?.temperature_c ?? null),
-      icon: Thermometer,
-      iconClass: 'text-blue-500',
-    },
-    {
-      label: 'Power Mode',
-      value: 'AC High Perf',
-      icon: Zap,
-      iconClass: 'text-amber-500',
-    },
-  ];
-
   return (
     <div className="bg-white border border-slate-200/80 rounded-casual-card p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-3">
@@ -65,46 +32,32 @@ export default function CasualTopBar({ metrics }: CasualTopBarProps) {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-bold text-slate-900 tracking-tight">Casual Workspace</h1>
-            {error ? (
+            {error && (
               <span
                 className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200"
                 title={error}
               >
                 API OFFLINE
               </span>
-            ) : (
-              <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100/70 text-emerald-800">
-                ALL SYSTEMS OPTIMAL
-              </span>
             )}
           </div>
           <p className="text-xs text-slate-500">
-            Ergonomic storage hygiene, instant RAM flush &amp; device airbridge
+            Storage cleanup, live system metrics &amp; a local drop zone
           </p>
         </div>
       </div>
 
       <div className="flex items-center gap-3 flex-wrap">
-        {pills.map((pill) => {
-          const Icon = pill.icon;
-          return (
-            <div
-              key={pill.label}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200"
-            >
-              <Icon className={`w-[18px] h-[18px] ${pill.iconClass}`} aria-hidden="true" />
-              <div className="flex flex-col text-left">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold">
-                  {pill.label}
-                </span>
-                <span className="text-xs font-bold text-slate-800">
-                  {pill.value}{' '}
-                  {pill.valueSuffix && <span className={pill.suffixClass}>{pill.valueSuffix}</span>}
-                </span>
-              </div>
-            </div>
-          );
-        })}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200">
+          <MemoryStick className="w-[18px] h-[18px] text-emerald-600" aria-hidden="true" />
+          <div className="flex flex-col text-left">
+            <span className="text-[10px] text-slate-400 uppercase font-semibold">RAM Usage</span>
+            <span className="text-xs font-bold text-slate-800">
+              {formatPercent(ramPercent)}{' '}
+              {ramStatus.text && <span className={ramStatus.className}>{ramStatus.text}</span>}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

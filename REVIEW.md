@@ -278,6 +278,14 @@ menghasilkan **6 screenshot di [`screenshots/`](screenshots/)`** plus
 | Toggle Casual ↔ Pro | berpindah mulus, kedua mode ter-render |
 | Kesehatan JS | `pageerror: 0`; request API ≥ 400: **0**; console error: **1** (favicon 404 — kini diperbaiki, `public/favicon.svg` + `<link rel="icon">`) |
 
+**Putaran pembersihan UI (lanjutan).** Setelah elemen dekoratif dihapus (§6.10),
+verifikasi visual dijalankan ulang: 6 screenshot di `screenshots/` dirender dari
+versi baru; DOM Playwright kedua mode tak lagi memuat elemen lama (`THREAD POOL`,
+`REDIS LATENCY`, chip `99.98% OPS`, nav mati, log hardcoded) — hanya branding
+`SYS.CORE` yang tersisa secara disengaja; console/page error & API ≥ 400 tetap **0**;
+baris log terminal memuat latensi terukur sungguhan dari API (mis.
+`GET /api/metrics/cpu 200 OK (132.4ms)`).
+
 Batasan verifikasi visual ini: **headless, satu viewport (desktop)** — pengujian di
 viewport kecil/mobile, keyboard-only, dan screen reader belum dilakukan; aksi
 `restart-*` tidak diklik (dampak ke sesi desktop), dan screenshot tidak diverifikasi
@@ -316,17 +324,29 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
    dan `PLANNING.md` semula menulis "Node 24 LTS" (aktual 20.20.0) — keduanya sudah
    dikoreksi, dan tabel API `README.md` kini mencantumkan ketiga endpoint Fast Ops /
    Process Manager beserta `run.sh` dan struktur folder terkini.
-10. **Elemen dekoratif Pro mode dipertahankan (keputusan sadar).** Temuan dari uji
-    visual: kartu `THREAD POOL`, `REDIS LATENCY`, `DOCKER DAEMON`, `INGRESS/EGRESS`
-    menampilkan angka **statis identik di setiap render** (bukti: `0.42 ms`, `1.18 ms`,
-    `14.2 GB`, `842 Mb/s` sama persis antar screenshot, sedangkan metrik real berubah),
-    *terminal log* berisi log hardcoded bertanggal `2025-05-18`, input terminal membalas
-    respons hardcoded (`ping` → `PONG 127.0.0.1 time=0.18ms`), dan nav sidebar (Live
-    Telemetry, Node Clusters, Audit Logs, dll.) tidak menampilkan konten — proyek ini
-    memang tidak memakai Redis/Docker. Diputuskan (bersama pemilik proyek) untuk
-    **membiarkannya sebagai gaya visual** pada putaran ini; `README.md` sudah diberi
-    pernyataan eksplisit agar tidak menyesatkan. Bila review menilai ini harus
-    dihapus/diganti data real, itu pekerjaan lanjutan yang jelas.
+10. **Elemen dekoratif Pro mode — sudah dihapus (pekerjaan lanjutan tuntas).** Temuan
+    asli dari uji visual: kartu `THREAD POOL`, `REDIS LATENCY`, `DOCKER DAEMON`,
+    `INGRESS/EGRESS` menampilkan angka **statis identik di setiap render**; *terminal
+    log* berisi log hardcoded bertanggal `2025-05-18` dan input terminal membalas
+    respons hardcoded (`ping` → `PONG 127.0.0.1 time=0.18ms`); nav sidebar (Live
+    Telemetry, Node Clusters, Audit Logs, dll.) tidak menampilkan konten apa pun.
+    Pada putaran berikutnya (bersama pemilik proyek) diputuskan untuk **membersihkannya**:
+    - **Kartu telemetri** → 6 kartu semuanya menampilkan data live dari
+      `/api/metrics/*`, `/api/actions/apps`, dan `/api/system/processes` (CPU, memory,
+      disk, jumlah app, jumlah proses, jumlah aksi Fast Ops).
+    - **Terminal** → kini CLI nyata (`help`, `ping`, `status`, `ps`, `apps`, `clear`)
+      yang dieksekusi lewat API; setiap baris log mencatat latensi terukur. Perintah di
+      luar whitelist membalas pesan error yang jujur, bukan respons karangan.
+    - **Nav sidebar** → tautan *anchor* ke section yang benar-benar ada
+      (`#overview`, `#process-manager`, `#fast-ops`, `#terminal`).
+    - **Dihapus total:** chip `99.98% OPS // 12ms`, `Cluster State ACTIVE`, `kbd P
+      toggle` (tidak ada handler keydown), indikator `BACKEND API` statis (kini menunjuk
+      API sungguhan), serta nav/search/notif/avatar mati di `Header` dan chip statistik
+      statis di `CasualTopBar`.
+    Verifikasi: grep seluruh `src/` bersih dari angka karangan, DOM Playwright kedua
+    mode tak lagi memuat elemen lama, dan screenshot terbaru di `screenshots/`
+    dirender dari versi baru (lihat §5.5). Sisa yang lokal by-design dan disebut
+    jujur di UI: **Universal Drop** (pemrosesan file di browser, tanpa upload).
 
 ---
 

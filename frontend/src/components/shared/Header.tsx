@@ -1,12 +1,10 @@
-import { Bell, Cloud, Gauge, Gamepad2, LayoutGrid, Network, Search, Terminal } from 'lucide-react';
+import { LayoutGrid, Network } from 'lucide-react';
 import ToggleSwitch from './ToggleSwitch';
 
 export interface HeaderProps {
   isProMode: boolean;
   onToggle: () => void;
 }
-
-const PRO_NAV = ['Console', 'Telemetry Stream', 'Topology'];
 
 export default function Header({ isProMode, onToggle }: HeaderProps) {
   if (isProMode) {
@@ -19,49 +17,10 @@ export default function Header({ isProMode, onToggle }: HeaderProps) {
               Command Hub
             </span>
           </div>
-          <div className="h-4 w-[1px] bg-surface-container-highest" aria-hidden="true" />
-          <nav className="hidden xl:flex items-center gap-space-md" aria-label="Pro navigation">
-            {PRO_NAV.map((item, index) => (
-              <button
-                key={item}
-                type="button"
-                className={
-                  index === 0
-                    ? 'transition-colors text-primary font-semibold font-body-sm text-body-sm'
-                    : 'font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors'
-                }
-              >
-                {item}
-              </button>
-            ))}
-          </nav>
         </div>
 
         <div className="flex items-center gap-space-md">
           <ToggleSwitch isProMode={isProMode} onToggle={onToggle} />
-          <div className="h-4 w-[1px] bg-surface-container-highest" aria-hidden="true" />
-          <div className="flex items-center gap-space-sm">
-            <button
-              type="button"
-              title="Global Search"
-              aria-label="Global search"
-              className="w-9 h-9 flex items-center justify-center rounded bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"
-            >
-              <Search className="w-[18px] h-[18px]" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              title="Alert Feeds"
-              aria-label="Alert feeds"
-              className="w-9 h-9 flex items-center justify-center rounded bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface relative transition-colors"
-            >
-              <Bell className="w-[18px] h-[18px]" aria-hidden="true" />
-              <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-secondary-container" />
-            </button>
-          </div>
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-            <Terminal className="w-[18px] h-[18px] text-on-primary" aria-hidden="true" />
-          </div>
         </div>
       </header>
     );
@@ -86,60 +45,10 @@ export default function Header({ isProMode, onToggle }: HeaderProps) {
             <span className="text-[11px] text-slate-400 font-medium">Workspace Optimizer</span>
           </div>
         </div>
-        <div className="h-5 w-[1px] bg-slate-200" aria-hidden="true" />
-        <nav
-          className="hidden md:flex items-center gap-5 text-[13px] font-medium"
-          aria-label="Casual navigation"
-        >
-          <button
-            type="button"
-            className="text-emerald-600 font-semibold flex items-center gap-1.5"
-          >
-            <Gauge className="w-4 h-4" aria-hidden="true" />
-            Dashboard
-          </button>
-          <button
-            type="button"
-            className="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1.5"
-          >
-            <Gamepad2 className="w-4 h-4" aria-hidden="true" />
-            Games
-          </button>
-          <button
-            type="button"
-            className="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1.5"
-          >
-            <Cloud className="w-4 h-4" aria-hidden="true" />
-            AirDrop
-          </button>
-        </nav>
       </div>
 
       <div className="flex items-center gap-4">
         <ToggleSwitch isProMode={isProMode} onToggle={onToggle} />
-        <div className="h-4 w-[1px] bg-slate-200" aria-hidden="true" />
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            title="Search"
-            aria-label="Search"
-            className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
-          >
-            <Search className="w-[18px] h-[18px]" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            title="Notifications"
-            aria-label="Notifications"
-            className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 relative transition-colors"
-          >
-            <Bell className="w-[18px] h-[18px]" aria-hidden="true" />
-            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-white" />
-          </button>
-        </div>
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-sm ring-2 ring-slate-100">
-          JD
-        </div>
       </div>
     </header>
   );

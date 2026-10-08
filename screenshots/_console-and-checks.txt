@@ -9,73 +9,65 @@
 
 == NOTES ==
 browser: Google Chrome (channel=chrome)
-casual body chars=2011
+casual body chars=1920
 calculator card icon <img> present: True
 Calculator running sebelum klik: False
 Calculator running setelah klik: True
-pro body chars=1660
-panel 'Fast Ops' terlihat: False
+pro body chars=998
+panel 'Fast Ops' terlihat: True
 FastOps Flush DNS -> EXIT 0 terlihat di UI
-backend pids ['32731', '46465'] muncul di tabel UI: True
+backend pids ['1140', '32731'] muncul di tabel UI: True
 
 == TEKS PRO MODE ==
 Command Hub
-Console
-Telemetry Stream
-Topology
 Casual
 PRO HUD
 SYS.CORE
-v2.4
 NAVIGATION
 Overview
-Live Telemetry
-Task Orchestration
-Node Clusters
-Audit Logs
-System Settings
-HUB LINK
-SECURE
-CPU MEM
-83.7%
+Process Manager
+Fast Ops
+Terminal
+BACKEND API
+API ONLINE
+RAM
+84.3%
 Adaptive Command Hub
 [ PRO HUD ]
-High-throughput dev telemetry, process daemons, and live stream monitors
-TELEMETRY
-99.98% OPS // 12ms
-CLUSTER STATE
-ACTIVE
+Local system metrics, app launcher, and whitelisted OS actions
 Casual
 PRO HUD
-P
-toggle
 CPU LOAD
 8 CORE
-0.0%
+43.5%
 TEMP — // FREQ 3.50 GHz
 MEMORY
-6.0 / 16.0 GB
-83.7%
-6.0 GB of 16.0 GB in use
-THREAD POOL
-64 / 64
-0.42 ms
-REDIS LATENCY
-OPTIMAL
-1.18 ms
-DOCKER DAEMON
-18 PODS
-14.2 GB
-INGRESS / EGRESS
-TX/RX
-842 Mb/s
+5.8 / 16.0 GB
+84.3%
+5.8 GB of 16.0 GB in use
+DISK
+142.6 / 460.4 GB
+33.5%
+283.3 GB free of 460.4 GB
+APP INVENTORY
+4 SOURCES
+84
+INSTALLED
+ACTIVE PROCESSES
+UP 21h 20m
+1
+backend 1
+FAST OPS
+darwin
+4
+macOS
 ENV // PROCESS MANAGER
 [ 1 ACTIVE ]
 python3.12
 PID 32731
-UP 0H 14M
+UP 21H 20M
 ROLE: backend
-CPU 3.9% // MEM 27.0 MB
+CPU 1.5% // MEM 21.9 MB
 FAST OPS // MACOS
 [ 4 ACTIONS ]
 Flush DNS Cache
@@ -90,55 +82,41 @@ killall Dock
 Restart SystemUIServer
 killall SystemUIServer
 [ READY ]
-sys.core://pty/stream/stdout
+terminal // http://localhost:8000
 CLEAR
-LIVE TAIL
+● LIVE
 ALL
-ORM
+SYS
 HTTP
-WARN
-BUFF: 120/5000
-[SYS] Kernel rendezvous initialized. Listening on unix:///run/sys.sock
-[HTTP] 2025-05-18T10:14:02.102Z - GET /v1/cluster/health 200 OK (0.84ms)
-[ORM] SELECT "p".id, "p".name, "p".status FROM "Process" "p" WHERE "p".is_active = 1 [0.42ms - 4 rows]
-[HTTP] 2025-05-18T10:14:03.220Z - POST /v1/telemetry/ingest 202 Accepted (1.10ms)
-WARNMemory pressure throttler threshold: L1 cache pruned (freed 42MB)
-[ORM] UPDATE "ClusterNode" SET "last_heartbeat" = NOW() WHERE "id" = 'node-west-04' [1.12ms]
-[HTTP] 2025-05-18T10:14:04.590Z - GET /v1/auth/verify_token 200 OK (0.39ms)
-[ORM] SELECT "m".metric_key, AVG("m".val) FROM "Telemetry" "m" GROUP BY "m".metric_key [2.18ms]
+CMD
+ERR
+LINES: 2
+13:37:24terminal siap — target backend http://localhost:8000
+13:37:24[HTTP] GET /api/metrics/cpu 200 OK (103.5ms)
 >
 
 == TEKS CASUAL ==
 Command Hub
 CASUAL
 Workspace Optimizer
-Dashboard
-Games
-AirDrop
 Casual
 PRO HUD
-JD
 Casual Workspace
-ALL SYSTEMS OPTIMAL
 
-Ergonomic storage hygiene, instant RAM flush & device airbridge
+Storage cleanup, live system metrics & a local drop zone
 
 RAM USAGE
-83.2% (Moderate)
-CPU TEMP
-—
-POWER MODE
-AC High Perf
+84.1% (Moderate)
 STORAGE HEALTH & OPTIMIZER
-140 GB / 460 GB Used
+143 GB / 460 GB Used
 
-Your drive is running at 33.1% capacity. Roughly 14.0 GB of temporary cached installers, build logs, and stale cache can be safely removed.
+Your drive is running at 33.5% capacity. Roughly 14.3 GB of temporary cached installers, build logs, and stale cache can be safely removed.
 
-System (98.2 GB)
-Apps (28.1 GB)
-Junk (14.0 GB)
-Free (283.7 GB)
-14.0 GB Cleanable
+System (99.8 GB)
+Apps (28.5 GB)
+Junk (14.3 GB)
+Free (283.3 GB)
+14.3 GB Cleanable
 Safe 1-click system tuneup
 1-Click Clean Drive
 Zero personal data touched
@@ -225,11 +203,10 @@ Launch
 Muat lagi (72 tersisa)
 Universal Drop
 
-Drop files or text here to sync across devices
+Local drop zone — everything stays on this device
 
-3 paired devices active
 Drop files, photos, or text snippet here
-Syncs instantly via end-to-end local airbridge
+Preview only — files are never uploaded, synced, or sent anywhere
 Clipboard Text
 Screenshots
 Recent Downloads

@@ -37,7 +37,7 @@ interface ApiErrorPayload {
   stderr?: unknown;
 }
 
-const API_BASE_URL: string =
+export const API_BASE_URL: string =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:8000';
 
 const ACTION_ENDPOINT = '/api/actions/launch-game';
@@ -574,4 +574,65 @@ export async function fetchSystemProcesses(signal?: AbortSignal): Promise<Proces
   }
 
   return contractFailure(response, payload, 'Daftar proses');
+}
+
+// --- Probe kesehatan (GET ringan + latensi terukur) ------------------------
+
+/** Endpoint ringan dipakai sebagai health check (latensi rendah). */
+export const HEALTH_ENDPOINT = '/api/metrics/cpu';
+
+export interface ProbeResult {
+  ok: boolean;
+  /** Status HTTP asli; null bila permintaan tidak sampai ke server. */
+  httpStatus: number | null;
+  /** Latensi terukur dengan performance.now() di sekitar request. */
+  latencyMs: number;
+  /** Pesan kegagalan dari envelope; string kosong bila sukses. */
+  message: string;
+}
+
+function isSuccessEnvelope(payload: unknown): boolean {
+  if (typeof payload !== 'object' || payload === null) return false;
+  return (payload as { status?: unknown }).status === 'success';
+}
+
+/**
+ * Ukur latensi nyata ke `path` (default: health endpoint) dan kembalikan
+ * hasil probe apa adanya — tidak pernah mengarang status atau angka.
+ */
+export async function probeEndpoint(
+  path: string = HEALTH_ENDPOINT,
+  signal?: AbortSignal,
+): Promise<ProbeResult> {
+  const startedAt = performance.now();
+
+  let envelope: Envelope;
+
+  try {
+    envelope = await requestEnvelope(path, { signal });
+  } catch (reason) {
+    if (signal?.aborted) {
+      return { ok: false, httpStatus: null, latencyMs: 0, message: 'Permintaan dibatalkan' };
+    }
+    return {
+      ok: false,
+      httpStatus: null,
+      latencyMs: performance.now() - startedAt,
+      message: toFailureMessage(reason),
+    };
+  }
+
+  const latencyMs = performance.now() - startedAt;
+  const { response, payload } = envelope;
+
+  if (response.ok && isSuccessEnvelope(payload)) {
+    return { ok: true, httpStatus: response.status, latencyMs, message: '' };
+  }
+
+  return {
+    ok: false,
+    httpStatus: response.status,
+    latencyMs,
+    message: contractFailure(response, payload, 'Probe backend').message,
+  };
 }

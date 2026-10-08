@@ -40,11 +40,11 @@ export default function UniversalDrop() {
     event.preventDefault();
     setIsDragging(false);
     const count = event.dataTransfer?.files ? event.dataTransfer.files.length : 1;
-    setZoneText(`Dispatched: ${count} dropped item(s)`);
+    setZoneText(`Received ${count} dropped item(s) — nothing is uploaded`);
   };
 
   const handlePreset = (label: string): void => {
-    setZoneText(`Dispatched: ${label}`);
+    setZoneText(`Selected: ${label} — local feedback only`);
   };
 
   return (
@@ -56,12 +56,10 @@ export default function UniversalDrop() {
           </div>
           <div>
             <h3 className="text-lg font-bold text-slate-900">Universal Drop</h3>
-            <p className="text-xs text-slate-500">Drop files or text here to sync across devices</p>
+            <p className="text-xs text-slate-500">
+              Local drop zone — everything stays on this device
+            </p>
           </div>
-        </div>
-        <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>3 paired devices active</span>
         </div>
       </div>
 
@@ -81,7 +79,7 @@ export default function UniversalDrop() {
         <div>
           <span className="text-sm font-bold text-slate-800 block">{zoneText}</span>
           <span className="text-xs text-slate-500">
-            Syncs instantly via end-to-end local airbridge
+            Preview only — files are never uploaded, synced, or sent anywhere
           </span>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
