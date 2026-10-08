@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"secondary-fixed-dim":"#ffba4b","inverse-surface":"#e1e3e4","surface-container-high":"#272a2b","primary":"#edffe8","on-tertiary-container":"#4c4ed9","tertiary-fixed-dim":"#c0c1ff","on-primary-container":"#007128","secondary":"#ffbd58","on-surface-variant":"#b9ccb5","on-error":"#690005","surface-tint":"#00e55b","tertiary-fixed":"#e1e0ff","outline":"#849581","surface-container-low":"#191c1d","on-tertiary-fixed":"#07006c","background":"#111415","surface":"#111415","on-surface":"#e1e3e4","primary-container":"#00ff66","error":"#ffb4ab","on-secondary-container":"#5b3b00","on-primary-fixed":"#002107","outline-variant":"#3b4b3a","on-secondary":"#442b00","secondary-container":"#ea9f00","tertiary":"#fcf8ff","on-secondary-fixed":"#291800","on-background":"#e1e3e4","surface-container":"#1d2021","on-primary":"#003911","surface-bright":"#373a3b","inverse-on-surface":"#2e3132","primary-fixed-dim":"#00e55b","surface-container-lowest":"#0c0f10","secondary-fixed":"#ffddb1","primary-fixed":"#6bff83","on-error-container":"#ffdad6","surface-dim":"#111415","surface-variant":"#323536","on-tertiary-fixed-variant":"#2f2ebe","on-tertiary":"#1000a9","inverse-primary":"#006e27","on-primary-fixed-variant":"#00531b","error-container":"#93000a","tertiary-container":"#dbdaff","on-secondary-fixed-variant":"#624000","surface-container-highest":"#323536"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"margin":"1rem","gutter-lg":"1.5rem","space-xl":"2.5rem","space-sm":"0.5rem","space-lg":"1.5rem","margin-lg":"2.5rem","space-md":"1rem","margin-md":"1.5rem","space-xs":"0.25rem","gutter":"1rem"},"fontFamily":{"headline-lg-mobile":["Space Grotesk"],"body-md":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"label-md":["JetBrains Mono"],"display-lg":["Space Grotesk"],"headline-lg":["Space Grotesk"],"headline-sm":["Space Grotesk"],"code-md":["JetBrains Mono"],"body-lg":["Plus Jakarta Sans"],"label-sm":["JetBrains Mono"],"headline-md":["Space Grotesk"]},"fontSize":{"headline-lg-mobile":["26px",{"lineHeight":"34px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","letterSpacing":"0","fontWeight":"400"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.01em","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"500"}],"display-lg":["48px",{"lineHeight":"56px","letterSpacing":"-0.03em","fontWeight":"700"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-sm":["18px",{"lineHeight":"24px","letterSpacing":"0","fontWeight":"600"}],"code-md":["14px",{"lineHeight":"20px","letterSpacing":"-0.02em","fontWeight":"500"}],"body-lg":["16px",{"lineHeight":"24px","letterSpacing":"0","fontWeight":"400"}],"label-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"600"}],"headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"600"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center justify-between bg-surface-container-low"><div class="flex items-center gap-space-sm"><div class="w-2.5 h-2.5 bg-primary-container"></div><span class="font-headline-sm text-headline-sm tracking-tight text-primary font-bold">SYS.CORE</span></div><span class="font-label-sm text-label-sm px-space-xs py-0.5 bg-surface-container-high text-primary-fixed">v2.4</span></div><div class="px-space-md py-space-sm"><span class="font-label-sm text-label-sm tracking-wider text-outline uppercase">Navigation</span></div><nav class="flex flex-col px-space-sm gap-space-xs" data-active-classes="bg-surface-container text-primary-container font-semibold"><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm rounded transition-colors bg-surface-container text-primary-container font-semibold" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px]">grid_view</span><span class="font-body-md text-body-md">Overview</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="live-telemetry" href="#"><span class="material-symbols-outlined text-[18px]">monitoring</span><span class="font-body-md text-body-md">Live Telemetry</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="task-orchestration" href="#"><span class="material-symbols-outlined text-[18px]">terminal</span><span class="font-body-md text-body-md">Task Orchestration</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="node-clusters" href="#"><span class="material-symbols-outlined text-[18px]">hub</span><span class="font-body-md text-body-md">Node Clusters</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audit-logs" href="#"><span class="material-symbols-outlined text-[18px]">receipt_long</span><span class="font-body-md text-body-md">Audit Logs</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="system-settings" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-md text-body-md">System Settings</span></a></nav></div><div class="p-space-md bg-surface-container-low flex flex-col gap-space-sm"><div class="flex items-center justify-between text-on-surface-variant"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Hub Link</span><span class="flex items-center gap-1.5 font-label-sm text-label-sm text-primary-fixed-dim"><span class="inline-block w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>SECURE</span></div><div class="bg-surface-container-lowest p-space-sm rounded flex flex-col gap-space-xs"><div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant"><span>CPU MEM</span><span class="text-on-surface font-code-md text-code-md">28.4%</span></div><div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden"><div class="bg-primary-container h-full w-[28.4%]"></div></div></div></div></aside><div class="pl-64 flex flex-col min-h-screen"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)] px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-primary-container text-[20px]">dataset</span><span class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight">Command Hub</span></div><div class="h-4 w-[1px] bg-surface-container-highest"></div><nav class="hidden xl:flex items-center gap-space-md" data-active-classes="text-primary font-semibold"><a aria-current="page" class="transition-colors text-primary font-semibold" data-path="overview" href="#">Console</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="live-telemetry" href="#">Telemetry Stream</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="node-clusters" href="#">Topology</a></nav></div><div class="flex items-center gap-space-md"><div class="bg-surface-container-low p-1 rounded-full flex items-center shadow-[0_1px_8px_rgba(0,0,0,0.04)]" id="command-mode-hud"><button class="flex items-center gap-1.5 px-space-sm py-1 rounded-full text-on-surface-variant hover:text-on-surface transition-all" title="Casual Workspace Mode" type="button"><span class="material-symbols-outlined text-[16px]">wb_sunny</span><span class="font-body-sm text-body-sm font-medium">Casual</span></button><button class="flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-high text-primary-container shadow-sm font-semibold transition-all" title="Pro High-Density Terminal Mode" type="button"><span class="material-symbols-outlined text-[16px]">terminal</span><span class="font-label-sm text-label-sm tracking-wider uppercase">Pro HUD</span></button></div><div class="h-4 w-[1px] bg-surface-container-highest"></div><div class="flex items-center gap-space-sm"><button class="w-9 h-9 flex items-center justify-center rounded bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Global Search" type="button"><span class="material-symbols-outlined text-[18px]">search</span></button><button class="w-9 h-9 flex items-center justify-center rounded bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface relative transition-colors" title="Alert Feeds" type="button"><span class="material-symbols-outlined text-[18px]">notifications</span><span class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-secondary-container"></span></button></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="w-full pt-16 bg-surface flex-1"><div class="flex flex-col w-full">
+<div class="w-full transition-all duration-300 ease-out px-gutter-lg py-space-lg flex flex-col gap-space-lg text-on-surface" id="hub-container">
+<!-- SUB-NAV / MODE CONTROLLER RIBBON -->
+<div class="w-full bg-surface-container-low rounded-xl p-space-md shadow-sm flex flex-col md:flex-row items-center justify-between gap-space-md transition-all duration-300" id="mode-controller-panel">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center transition-all duration-300" id="brand-badge-icon">
+<span class="material-symbols-outlined text-primary-container text-[22px] transition-all" id="badge-glyph">terminal</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold tracking-tight">Adaptive Command Hub</span>
+<span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-surface-container-high text-primary-fixed uppercase tracking-wider" id="mode-tag-pill">[ PRO HUD ]</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate" id="sub-mode-desc">High-throughput dev telemetry, process daemons, and live stream monitors</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md flex-shrink-0">
+<!-- Live System Metric Ticker -->
+<div class="hidden lg:flex items-center gap-space-md px-space-md py-1.5 rounded-lg bg-surface-container-lowest">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Telemetry</span>
+<span class="font-code-md text-code-md text-primary-fixed-dim" id="status-ticker-val">99.98% OPS // 12ms</span>
+</div>
+<div class="w-[1px] h-6 bg-surface-container-highest"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Cluster State</span>
+<span class="font-code-md text-code-md text-primary-container flex items-center gap-1" id="status-ticker-state">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>ACTIVE
+            </span>
+</div>
+</div>
+<!-- Master Interactive State Toggle Switch -->
+<div class="flex items-center gap-space-sm bg-surface-container-lowest p-1 rounded-full shadow-inner">
+<button class="px-space-md py-1.5 rounded-full font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5" id="toggle-casual-btn" onclick="setHubMode('casual')" type="button">
+<span class="material-symbols-outlined text-[16px]">wb_sunny</span>
+<span class="font-medium">Casual</span>
+</button>
+<button class="px-space-md py-1.5 rounded-full font-label-sm text-label-sm uppercase tracking-wider bg-surface-container-high text-primary-container shadow-sm font-semibold transition-all flex items-center gap-1.5" id="toggle-pro-btn" onclick="setHubMode('pro')" type="button">
+<span class="material-symbols-outlined text-[16px]">terminal</span>
+<span>Pro HUD</span>
+</button>
+</div>
+<div class="hidden sm:flex items-center text-outline font-label-sm text-label-sm tracking-wider">
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface font-code-md text-code-md">P</kbd>
+<span class="ml-1 opacity-70">toggle</span>
+</div>
+</div>
+</div>
+<!-- ==================== VIEW 1: PRO MODE VIEW ==================== -->
+<div class="w-full flex flex-col gap-space-lg transition-opacity duration-300" id="pro-view-wrapper">
+<!-- TOP STATUS GRID -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-space-md">
+<div class="bg-surface-container-low p-space-md rounded-md flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between text-outline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">THREAD POOL</span>
+<span class="font-code-md text-code-md text-primary-container">64 / 64</span>
+</div>
+<div class="my-space-sm">
+<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">0.42 ms</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[84%]"></div>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-md flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between text-outline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">REDIS LATENCY</span>
+<span class="font-code-md text-code-md text-secondary-fixed-dim">OPTIMAL</span>
+</div>
+<div class="my-space-sm">
+<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">1.18 ms</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[24%]"></div>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-md flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between text-outline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">DOCKER DAEMON</span>
+<span class="font-code-md text-code-md text-primary-container">18 PODS</span>
+</div>
+<div class="my-space-sm">
+<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">14.2 GB</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[62%]"></div>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-md flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between text-outline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">INGRESS / EGRESS</span>
+<span class="font-code-md text-code-md text-primary-container">TX/RX</span>
+</div>
+<div class="my-space-sm">
+<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">842 Mb/s</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-primary-fixed-dim h-full w-[49%]"></div>
+</div>
+</div>
+</div>
+<!-- MAIN 12-COL PRO DASHBOARD GRID -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg">
+<!-- SECTION A: ENVIRONMENT MANAGER (xl:col-span-5) -->
+<div class="xl:col-span-5 flex flex-col gap-space-md">
+<div class="bg-surface-container-low p-space-md rounded-md flex flex-col gap-space-md shadow-sm">
+<div class="flex items-center justify-between pb-space-xs bg-surface-container-low">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px]">developer_board</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight uppercase">ENV // PROCESS MANAGER</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">[ 4 DEPLOYED ]</span>
+</div>
+<!-- Daemons Stack -->
+<div class="flex flex-col gap-space-sm">
+<!-- Service 1: Falcon API -->
+<div class="p-space-sm rounded bg-surface-container-lowest flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse" id="daemon-indicator-falcon"></span>
+<span class="font-code-md text-code-md font-bold text-primary">Falcon REST Engine</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-high text-primary-fixed">:8000</span>
+</div>
+<button class="px-space-sm py-0.5 rounded font-label-sm text-label-sm bg-surface-container-high hover:bg-surface-container-highest text-primary-container uppercase transition-all" id="btn-toggle-falcon" onclick="toggleProcess('falcon')" type="button">
+                    Restart
+                  </button>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant pt-1">
+<span>PID 44921 // Py 3.12</span>
+<span class="font-code-md text-code-md text-outline">MEM: 184MB • CPU: 1.4%</span>
+</div>
+</div>
+<!-- Service 2: Poetry Env -->
+<div class="p-space-sm rounded bg-surface-container-lowest flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container" id="daemon-indicator-poetry"></span>
+<span class="font-code-md text-code-md font-bold text-primary">Poetry Virtualenv</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant">.venv</span>
+</div>
+<button class="px-space-sm py-0.5 rounded font-label-sm text-label-sm bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant uppercase transition-all" id="btn-toggle-poetry" onclick="toggleProcess('poetry')" type="button">
+                    Active
+                  </button>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant pt-1">
+<span>Locks synced (pyproject.toml)</span>
+<span class="font-code-md text-code-md text-outline">UP: 48h 12m</span>
+</div>
+</div>
+<!-- Service 3: Gunicorn Master -->
+<div class="p-space-sm rounded bg-surface-container-lowest flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse" id="daemon-indicator-gunicorn"></span>
+<span class="font-code-md text-code-md font-bold text-primary">Gunicorn Sync Workers</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-high text-primary-fixed">x8 WKR</span>
+</div>
+<button class="px-space-sm py-0.5 rounded font-label-sm text-label-sm bg-surface-container-high hover:bg-surface-container-highest text-primary-container uppercase transition-all" id="btn-toggle-gunicorn" onclick="toggleProcess('gunicorn')" type="button">
+                    Reload
+                  </button>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant pt-1">
+<span>PID 45001 - 45008</span>
+<span class="font-code-md text-code-md text-outline">REQ/s: 4,120</span>
+</div>
+</div>
+<!-- Service 4: Redis Worker Pool -->
+<div class="p-space-sm rounded bg-surface-container-lowest flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-2 h-2 rounded-full bg-secondary-container" id="daemon-indicator-redis"></span>
+<span class="font-code-md text-code-md font-bold text-primary">Redis Async Broker</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-high text-secondary-fixed">:6379</span>
+</div>
+<button class="px-space-sm py-0.5 rounded font-label-sm text-label-sm bg-surface-container-high hover:bg-surface-container-highest text-secondary uppercase transition-all" id="btn-toggle-redis" onclick="toggleProcess('redis')" type="button">
+                    Drain Queue
+                  </button>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant pt-1">
+<span>Queued tasks: 14</span>
+<span class="font-code-md text-code-md text-outline">MEM: 54MB</span>
+</div>
+</div>
+</div>
+<!-- SECTION C: CROSS-OS DEV WORKFLOW TRIGGER PANEL -->
+<div class="pt-space-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between text-outline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">FAST OPS // MULTI-OS</span>
+<div class="flex items-center gap-1">
+<span class="px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">WIN</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">OSX</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container text-primary-container font-label-sm text-label-sm">LINUX</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-xs font-label-sm text-label-sm">
+<button class="p-space-sm rounded bg-surface-container-lowest hover:bg-surface-container-high text-left transition-all flex flex-col gap-0.5" onclick="executeDevTool('DNS flush requested', 'All system resolver caches dumped.')" type="button">
+<span class="font-code-md text-code-md text-primary font-semibold">Flush DNS Cache</span>
+<span class="text-outline">resolvectl flush-caches</span>
+</button>
+<button class="p-space-sm rounded bg-surface-container-lowest hover:bg-surface-container-high text-left transition-all flex flex-col gap-0.5" onclick="executeDevTool('SIGKILL 8080', 'PID on port 8080 terminated.')" type="button">
+<span class="font-code-md text-code-md text-error font-semibold">Kill Port 8080</span>
+<span class="text-outline">fuser -k 8080/tcp</span>
+</button>
+<button class="p-space-sm rounded bg-surface-container-lowest hover:bg-surface-container-high text-left transition-all flex flex-col gap-0.5" onclick="executeDevTool('Docker Prune', 'Dangling images &amp; layers removed.')" type="button">
+<span class="font-code-md text-code-md text-primary font-semibold">Prune Docker</span>
+<span class="text-outline">docker system prune -f</span>
+</button>
+<button class="p-space-sm rounded bg-surface-container-lowest hover:bg-surface-container-high text-left transition-all flex flex-col gap-0.5" onclick="executeDevTool('Cert Rehash', 'Local SSL chains re-hashed.')" type="button">
+<span class="font-code-md text-code-md text-secondary font-semibold">Rehash SSL</span>
+<span class="text-outline">c_rehash /etc/ssl/certs</span>
+</button>
+</div>
+<!-- Toast notice for Ops -->
+<div class="hidden p-space-sm rounded bg-surface-container-highest text-primary-container font-code-md text-code-md flex items-center justify-between" id="ops-toast">
+<span id="ops-toast-text">Executing command...</span>
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION B: LIVE LOG STREAMER & ORM MONITOR (xl:col-span-7) -->
+<div class="xl:col-span-7 flex flex-col">
+<div class="bg-surface-container-lowest rounded-md p-space-md shadow-md flex flex-col h-full gap-space-sm">
+<!-- Terminal Title Bar -->
+<div class="flex items-center justify-between pb-space-xs bg-surface-container-lowest">
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-full bg-error inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-secondary inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-primary-container inline-block"></span>
+</div>
+<span class="font-code-md text-code-md text-on-surface font-semibold ml-2">sys.core://pty/stream/stdout</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-2 py-0.5 rounded bg-surface-container-low hover:bg-surface-container-high text-outline hover:text-on-surface font-label-sm text-label-sm uppercase transition-all" onclick="clearLiveLog()" type="button">Clear</button>
+<button class="px-2 py-0.5 rounded bg-surface-container-high text-primary-container font-label-sm text-label-sm uppercase transition-all" id="btn-autoscroll" onclick="toggleAutoScroll()" type="button">Live Tail</button>
+</div>
+</div>
+<!-- Terminal Filter Bar -->
+<div class="flex items-center gap-space-xs bg-surface-container-low p-1.5 rounded">
+<span class="material-symbols-outlined text-outline text-[16px] ml-1">filter_alt</span>
+<button class="px-2 py-0.5 rounded bg-surface-container-high text-primary-fixed font-label-sm text-label-sm" onclick="filterLogs('ALL')" type="button">ALL</button>
+<button class="px-2 py-0.5 rounded text-outline hover:text-on-surface font-label-sm text-label-sm" onclick="filterLogs('ORM')" type="button">ORM</button>
+<button class="px-2 py-0.5 rounded text-outline hover:text-on-surface font-label-sm text-label-sm" onclick="filterLogs('HTTP')" type="button">HTTP</button>
+<button class="px-2 py-0.5 rounded text-outline hover:text-on-surface font-label-sm text-label-sm" onclick="filterLogs('WARN')" type="button">WARN</button>
+<div class="ml-auto font-label-sm text-label-sm text-outline pr-1">BUFF: 120/5000</div>
+</div>
+<!-- Live Scrolling Terminal Console -->
+<div class="flex-1 bg-surface-container-lowest p-space-sm rounded font-code-md text-code-md overflow-y-auto max-h-[460px] min-h-[380px] flex flex-col gap-1 select-text" id="terminal-stream-console">
+<div class="text-outline text-label-sm">[SYS] Kernel rendezvous initialized. Listening on unix:///run/sys.sock</div>
+<div class="text-on-surface-variant"><span class="text-primary-container font-bold">[HTTP]</span> 2025-05-18T10:14:02.102Z - GET /v1/cluster/health 200 OK (0.84ms)</div>
+<div class="text-on-surface"><span class="text-secondary-fixed-dim font-bold">[ORM]</span> SELECT "p".id, "p".name, "p".status FROM "Process" "p" WHERE "p".is_active = 1 <span class="text-primary-container">[0.42ms - 4 rows]</span></div>
+<div class="text-on-surface-variant"><span class="text-primary-container font-bold">[HTTP]</span> 2025-05-18T10:14:03.220Z - POST /v1/telemetry/ingest 202 Accepted (1.10ms)</div>
+<div class="text-error font-medium"><span class="bg-error text-on-error px-1 py-0.2 rounded text-label-sm mr-1">WARN</span> Memory pressure throttler threshold: L1 cache pruned (freed 42MB)</div>
+<div class="text-on-surface"><span class="text-secondary-fixed-dim font-bold">[ORM]</span> UPDATE "ClusterNode" SET "last_heartbeat" = NOW() WHERE "id" = 'node-west-04' <span class="text-primary-container">[1.12ms]</span></div>
+<div class="text-on-surface-variant"><span class="text-primary-container font-bold">[HTTP]</span> 2025-05-18T10:14:04.590Z - GET /v1/auth/verify_token 200 OK (0.39ms)</div>
+<div class="text-on-surface"><span class="text-secondary-fixed-dim font-bold">[ORM]</span> SELECT "m".metric_key, AVG("m".val) FROM "Telemetry" "m" GROUP BY "m".metric_key <span class="text-primary-container">[2.18ms]</span></div>
+</div>
+<!-- Terminal Prompt Bar -->
+<div class="flex items-center gap-space-sm bg-surface-container-low px-space-sm py-1.5 rounded">
+<span class="text-primary-container font-code-md text-code-md font-bold">&gt;</span>
+<input class="bg-transparent border-none outline-none font-code-md text-code-md text-primary flex-1 placeholder:text-outline" id="pro-cmd-input" onkeydown="handleTerminalCommand(event)" placeholder="Type prompt command (e.g. 'status', 'ping', 'inspect')" type="text"/>
+<span class="inline-block w-2 h-4 bg-primary-container animate-pulse"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ==================== VIEW 2: CASUAL MODE VIEW ==================== -->
+<div class="hidden w-full flex flex-col gap-space-lg transition-opacity duration-300" id="casual-view-wrapper">
+<!-- HERO SECTION A: SMART STORAGE CLEANER -->
+<div class="w-full bg-surface-container-low rounded-xl p-space-lg shadow-md flex flex-col lg:flex-row items-center justify-between gap-space-lg relative overflow-hidden">
+<!-- Ambient decorative backdrop circle -->
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-primary/5 rounded-full pointer-events-none blur-3xl"></div>
+<div class="flex flex-col gap-space-sm max-w-xl z-10">
+<div class="flex items-center gap-space-sm">
+<span class="p-2 rounded-lg bg-surface-container text-primary-container">
+<span class="material-symbols-outlined text-[24px]">hard_drive</span>
+</span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Storage Health &amp; Optimizer</span>
+</div>
+<span class="font-headline-lg text-headline-lg font-bold text-primary tracking-tight">412 GB / 512 GB Used</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Your system is running at 80% capacity. You have roughly 38.4 GB of safe-to-clean junk files, obsolete cached installers, and temporary app logs ready for removal.</span>
+<!-- Category Multi-Progress Bar -->
+<div class="w-full flex flex-col gap-1.5 mt-space-xs">
+<div class="w-full h-3 rounded-full bg-surface-container-highest overflow-hidden flex">
+<div class="bg-primary-container h-full w-[54%]" title="System &amp; OS Files (276 GB)"></div>
+<div class="bg-secondary h-full w-[26%]" title="Applications &amp; Games (136 GB)"></div>
+<div class="bg-primary-fixed h-full w-[8%]" title="Cleanable Cache &amp; Temp (38.4 GB)"></div>
+</div>
+<div class="flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span><span>System: 276 GB</span></div>
+<div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-secondary"></span><span>Apps: 136 GB</span></div>
+<div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-primary-fixed"></span><span>Junk: 38.4 GB</span></div>
+<div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-surface-container-highest"></span><span>Free: 100 GB</span></div>
+</div>
+</div>
+</div>
+<!-- 1-Click Clean Trigger & Stats -->
+<div class="flex flex-col items-center justify-center bg-surface-container p-space-lg rounded-xl z-10 w-full sm:w-80 shadow-sm text-center gap-space-md">
+<div class="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center transition-all duration-500" id="clean-status-visual">
+<span class="material-symbols-outlined text-[36px] text-primary-container" id="clean-icon">auto_fix_high</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface" id="clean-feedback-title">38.4 GB Cleanable</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant" id="clean-feedback-sub">Safe 1-click system tuneup</span>
+</div>
+<button class="w-full py-3 px-space-md bg-primary-container text-on-primary-container rounded-lg font-headline-sm text-headline-sm font-bold hover:opacity-95 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-space-xs" id="btn-run-clean" onclick="runStorageClean()" type="button">
+<span>1-Click Clean Drive</span>
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+</button>
+</div>
+</div>
+<!-- SECTION B: GAME LAUNCHER & RAM OPTIMIZER -->
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-container text-[22px]">sports_esports</span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Game Library &amp; RAM Booster</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Purges inactive background RAM right before launch</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Game Card 1: Bloodstrike -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-space-md group">
+<div class="flex flex-col gap-space-sm">
+<div class="h-32 w-full rounded-lg bg-surface-container-high flex items-center justify-center relative overflow-hidden">
+<div class="w-full h-full bg-gradient-to-tr from-surface-container-lowest to-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[48px] group-hover:scale-110 transition-transform">swords</span>
+</div>
+<span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-surface-container-lowest font-label-sm text-label-sm text-primary-container">Ready</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Bloodstrike</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">FPS Target: 165+ FPS</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-outline">
+<span>VRAM: 4.2 GB</span>
+<span>Shader Cache: Clean</span>
+</div>
+</div>
+<button class="w-full py-2 px-space-sm rounded bg-surface-container hover:bg-surface-container-high text-primary font-body-sm text-body-sm font-semibold transition-all flex items-center justify-center gap-1.5" onclick="launchGameBoost('Bloodstrike')" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary-container">rocket_launch</span>
+<span>Launch &amp; Optimize</span>
+</button>
+</div>
+<!-- Game Card 2: Cyber Horizon -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-space-md group">
+<div class="flex flex-col gap-space-sm">
+<div class="h-32 w-full rounded-lg bg-surface-container-high flex items-center justify-center relative overflow-hidden">
+<div class="w-full h-full bg-gradient-to-tr from-surface-container-lowest to-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[48px] group-hover:scale-110 transition-transform">smart_toy</span>
+</div>
+<span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-surface-container-lowest font-label-sm text-label-sm text-secondary-fixed-dim">Patched</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Cyber Horizon</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Ray Tracing Ultra Preset</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-outline">
+<span>VRAM: 8.8 GB</span>
+<span>DLSS 3.5: ON</span>
+</div>
+</div>
+<button class="w-full py-2 px-space-sm rounded bg-surface-container hover:bg-surface-container-high text-primary font-body-sm text-body-sm font-semibold transition-all flex items-center justify-center gap-1.5" onclick="launchGameBoost('Cyber Horizon')" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary-container">rocket_launch</span>
+<span>Launch &amp; Optimize</span>
+</button>
+</div>
+<!-- Game Card 3: Apex Surge -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-space-md group">
+<div class="flex flex-col gap-space-sm">
+<div class="h-32 w-full rounded-lg bg-surface-container-high flex items-center justify-center relative overflow-hidden">
+<div class="w-full h-full bg-gradient-to-tr from-surface-container-lowest to-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[48px] group-hover:scale-110 transition-transform">flash_on</span>
+</div>
+<span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-surface-container-lowest font-label-sm text-label-sm text-primary-container">Ready</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Apex Surge</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Competitive Low Latency</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-outline">
+<span>RAM Freeing: ~3.4GB</span>
+<span>Reflex: Ultra</span>
+</div>
+</div>
+<button class="w-full py-2 px-space-sm rounded bg-surface-container hover:bg-surface-container-high text-primary font-body-sm text-body-sm font-semibold transition-all flex items-center justify-center gap-1.5" onclick="launchGameBoost('Apex Surge')" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary-container">rocket_launch</span>
+<span>Launch &amp; Optimize</span>
+</button>
+</div>
+<!-- Game Card 4: Steam Backlog -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-space-md group">
+<div class="flex flex-col gap-space-sm">
+<div class="h-32 w-full rounded-lg bg-surface-container-high flex items-center justify-center relative overflow-hidden">
+<div class="w-full h-full bg-gradient-to-tr from-surface-container-lowest to-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[48px] group-hover:scale-110 transition-transform">videogame_asset</span>
+</div>
+<span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-surface-container-lowest font-label-sm text-label-sm text-primary-container">Sync</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Steam Backlog</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">32 Titles Ready to Play</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-outline">
+<span>Cloud Saves: Fresh</span>
+<span>Controllers: 2</span>
+</div>
+</div>
+<button class="w-full py-2 px-space-sm rounded bg-surface-container hover:bg-surface-container-high text-primary font-body-sm text-body-sm font-semibold transition-all flex items-center justify-center gap-1.5" onclick="launchGameBoost('Steam Backlog')" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary-container">rocket_launch</span>
+<span>Launch &amp; Optimize</span>
+</button>
+</div>
+</div>
+</div>
+<!-- SECTION C: UNIVERSAL DROP & CROSS-DEVICE SYNC -->
+<div class="w-full bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-container text-[22px]">cloud_sync</span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Universal Drop Zone</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Instant P2P airbridge to paired phone, tablet &amp; laptop</span>
+</div>
+<!-- Drag & Drop Interactive Canvas -->
+<div class="w-full bg-surface-container border-2 border-dashed border-outline-variant hover:border-primary-container rounded-xl p-space-xl flex flex-col items-center justify-center text-center gap-space-sm cursor-pointer transition-all" id="drop-target-zone" ondragleave="handleDragLeave(event)" ondragover="handleDragOver(event)" ondrop="handleFileDrop(event)">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[32px]">upload_file</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface" id="drop-zone-primary-text">Drop files or text snippet here</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant" id="drop-zone-sub-text">Syncs instantly with encrypted end-to-end local bridge</span>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-space-xs mt-space-sm">
+<button class="px-space-md py-1 rounded-full bg-surface-container-high text-primary font-body-sm text-body-sm hover:bg-surface-container-highest transition-all flex items-center gap-1" onclick="triggerPresetDrop('Images')" type="button">
+<span class="material-symbols-outlined text-[16px]">photo</span>
+<span>Images</span>
+</button>
+<button class="px-space-md py-1 rounded-full bg-surface-container-high text-primary font-body-sm text-body-sm hover:bg-surface-container-highest transition-all flex items-center gap-1" onclick="triggerPresetDrop('Clipboard')" type="button">
+<span class="material-symbols-outlined text-[16px]">content_paste</span>
+<span>Paste Clipboard</span>
+</button>
+<button class="px-space-md py-1 rounded-full bg-surface-container-high text-primary font-body-sm text-body-sm hover:bg-surface-container-highest transition-all flex items-center gap-1" onclick="triggerPresetDrop('Code Snippet')" type="button">
+<span class="material-symbols-outlined text-[16px]">code</span>
+<span>Code Snippet</span>
+</button>
+</div>
+</div>
+<!-- Recent Dispatched Files -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm pt-space-xs" id="recent-drop-list">
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-[18px]">description</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate">Quarterly_Report.pdf</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Synced</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">image</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate">Wireframe_Mock.png</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Synced</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed-dim text-[18px]">terminal</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate">auth_token.pem</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Synced</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  let currentMode = 'pro';
+  let isAutoScroll = true;
+  let logInterval = null;
+
+  function setHubMode(mode) {
+    currentMode = mode;
+    const proView = document.getElementById('pro-view-wrapper');
+    const casualView = document.getElementById('casual-view-wrapper');
+    const btnPro = document.getElementById('toggle-pro-btn');
+    const btnCasual = document.getElementById('toggle-casual-btn');
+    const badgeGlyph = document.getElementById('badge-glyph');
+    const modeTagPill = document.getElementById('mode-tag-pill');
+    const subModeDesc = document.getElementById('sub-mode-desc');
+    const tickerVal = document.getElementById('status-ticker-val');
+
+    // Also synchronize top navigation shell button if rendered
+    const shellHudCasual = document.querySelector('#command-mode-hud button:first-child');
+    const shellHudPro = document.querySelector('#command-mode-hud button:last-child');
+
+    if (mode === 'casual') {
+      proView.classList.add('hidden');
+      casualView.classList.remove('hidden');
+
+      btnCasual.className = 'px-space-md py-1.5 rounded-full font-body-sm text-body-sm bg-surface-container-high text-primary-container shadow-sm font-semibold transition-all flex items-center gap-1.5';
+      btnPro.className = 'px-space-md py-1.5 rounded-full font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5';
+
+      badgeGlyph.textContent = 'wb_sunny';
+      badgeGlyph.className = 'material-symbols-outlined text-secondary text-[22px] transition-all';
+      modeTagPill.textContent = '[ CASUAL WORKSPACE ]';
+      modeTagPill.className = 'font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-surface-container-high text-secondary-fixed uppercase tracking-wider';
+      subModeDesc.textContent = 'Ergonomic file hygiene, one-click game latency booster & universal cross-drop';
+      tickerVal.textContent = 'STORAGE: 80% // RAM: 32% FREE';
+
+      if (shellHudCasual && shellHudPro) {
+        shellHudCasual.className = 'flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-high text-secondary shadow-sm font-semibold transition-all';
+        shellHudPro.className = 'flex items-center gap-1.5 px-space-sm py-1 rounded-full text-on-surface-variant hover:text-on-surface transition-all';
+      }
+    } else {
+      casualView.classList.add('hidden');
+      proView.classList.remove('hidden');
+
+      btnPro.className = 'px-space-md py-1.5 rounded-full font-label-sm text-label-sm uppercase tracking-wider bg-surface-container-high text-primary-container shadow-sm font-semibold transition-all flex items-center gap-1.5';
+      btnCasual.className = 'px-space-md py-1.5 rounded-full font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5';
+
+      badgeGlyph.textContent = 'terminal';
+      badgeGlyph.className = 'material-symbols-outlined text-primary-container text-[22px] transition-all';
+      modeTagPill.textContent = '[ PRO HUD ]';
+      modeTagPill.className = 'font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-surface-container-high text-primary-fixed uppercase tracking-wider';
+      subModeDesc.textContent = 'High-throughput dev telemetry, process daemons, and live stream monitors';
+      tickerVal.textContent = '99.98% OPS // 12ms';
+
+      if (shellHudCasual && shellHudPro) {
+        shellHudPro.className = 'flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-high text-primary-container shadow-sm font-semibold transition-all';
+        shellHudCasual.className = 'flex items-center gap-1.5 px-space-sm py-1 rounded-full text-on-surface-variant hover:text-on-surface transition-all';
+      }
+    }
+  }
+
+  // Keyboard shortcut listener: 'P' or 'p'
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'p' || e.key === 'P') {
+      setHubMode(currentMode === 'pro' ? 'casual' : 'pro');
+    }
+  });
+
+  // Connect App Shell HUD Buttons if present
+  document.addEventListener('DOMContentLoaded', () => {
+    const shellHudCasual = document.querySelector('#command-mode-hud button:first-child');
+    const shellHudPro = document.querySelector('#command-mode-hud button:last-child');
+    if (shellHudCasual) {
+      shellHudCasual.addEventListener('click', () => setHubMode('casual'));
+    }
+    if (shellHudPro) {
+      shellHudPro.addEventListener('click', () => setHubMode('pro'));
+    }
+    startMockLogStream();
+  });
+
+  // PRO MODE: Mock Realtime Log Streamer
+  function startMockLogStream() {
+    const consoleEl = document.getElementById('terminal-stream-console');
+    const mockLogs = [
+      '<span class="text-primary-container font-bold">[HTTP]</span> GET /v1/telemetry/health 200 OK (0.72ms)',
+      '<span class="text-secondary-fixed-dim font-bold">[ORM]</span> SELECT "p".name, "p".uptime FROM "Daemons" "p" WHERE "p".status = 1 <span class="text-primary-container">[0.88ms]</span>',
+      '<span class="text-on-surface-variant"><span class="text-primary-container font-bold">[HTTP]</span> POST /v1/stream/sync 201 Created (1.04ms)</span>',
+      '<span class="text-on-surface"><span class="text-secondary-fixed-dim font-bold">[ORM]</span> UPDATE "Session" SET "last_seen" = NOW() WHERE "token_hash" = ? <span class="text-primary-container">[0.31ms]</span></span>',
+      '<span class="text-outline text-label-sm">[KRNL] epoll event loop dispatched 128 socket events</span>',
+      '<span class="text-secondary font-bold">[REDIS]</span> Worker queue length: 0 &bull; throughput: 284 tasks/sec'
+    ];
+
+    logInterval = setInterval(() => {
+      if (!consoleEl) return;
+      const randomLine = mockLogs[Math.floor(Math.random() * mockLogs.length)];
+      const lineDiv = document.createElement('div');
+      lineDiv.className = 'text-on-surface-variant font-code-md text-code-md';
+      lineDiv.innerHTML = `<span class="text-outline font-label-sm mr-2">[${new Date().toISOString().substring(11, 19)}]</span> ${randomLine}`;
+      consoleEl.appendChild(lineDiv);
+
+      if (consoleEl.children.length > 80) {
+        consoleEl.removeChild(consoleEl.children[0]);
+      }
+
+      if (isAutoScroll) {
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+      }
+    }, 2800);
+  }
+
+  function clearLiveLog() {
+    const consoleEl = document.getElementById('terminal-stream-console');
+    if (consoleEl) {
+      consoleEl.innerHTML = '<div class="text-outline text-label-sm">[SYSTEM LOGS CLEARED BY USER]</div>';
+    }
+  }
+
+  function toggleAutoScroll() {
+    isAutoScroll = !isAutoScroll;
+    const btn = document.getElementById('btn-autoscroll');
+    if (btn) {
+      btn.className = isAutoScroll 
+        ? 'px-2 py-0.5 rounded bg-surface-container-high text-primary-container font-label-sm text-label-sm uppercase transition-all'
+        : 'px-2 py-0.5 rounded bg-surface-container text-outline font-label-sm text-label-sm uppercase transition-all';
+    }
+  }
+
+  function filterLogs(type) {
+    const consoleEl = document.getElementById('terminal-stream-console');
+    if (!consoleEl) return;
+    const note = document.createElement('div');
+    note.className = 'text-secondary-fixed font-code-md text-code-md py-1';
+    note.innerHTML = `&gt;&gt; Filter rule activated: [${type}]`;
+    consoleEl.appendChild(note);
+    if (isAutoScroll) consoleEl.scrollTop = consoleEl.scrollHeight;
+  }
+
+  function handleTerminalCommand(e) {
+    if (e.key === 'Enter') {
+      const input = document.getElementById('pro-cmd-input');
+      const val = input.value.trim();
+      if (!val) return;
+      
+      const consoleEl = document.getElementById('terminal-stream-console');
+      const echoDiv = document.createElement('div');
+      echoDiv.className = 'text-primary font-bold font-code-md text-code-md';
+      echoDiv.textContent = `$ ${val}`;
+      consoleEl.appendChild(echoDiv);
+
+      const respDiv = document.createElement('div');
+      respDiv.className = 'text-primary-container font-code-md text-code-md';
+      if (val.toLowerCase() === 'help') {
+        respDiv.textContent = 'AVAILABLE COMMANDS: ping, status, clear, orm, exit';
+      } else if (val.toLowerCase() === 'ping') {
+        respDiv.textContent = 'PONG 127.0.0.1: time=0.18ms';
+      } else if (val.toLowerCase() === 'status') {
+        respDiv.textContent = 'SYSTEM STATUS: 4 daemons alive, 0 failed, 12ms avg latency.';
+      } else {
+        respDiv.textContent = `sys.core: command '${val}' queued for background dispatch`;
+      }
+      consoleEl.appendChild(respDiv);
+      input.value = '';
+      if (isAutoScroll) consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+  }
+
+  // PRO MODE: Daemon process toggle
+  function toggleProcess(name) {
+    const btn = document.getElementById(`btn-toggle-${name}`);
+    const indicator = document.getElementById(`daemon-indicator-${name}`);
+    if (!btn || !indicator) return;
+
+    if (btn.textContent.trim().toUpperCase() === 'RESTART' || btn.textContent.trim().toUpperCase() === 'ACTIVE') {
+      btn.textContent = 'Restarting...';
+      btn.classList.add('text-secondary');
+      setTimeout(() => {
+        btn.textContent = 'Active';
+        btn.className = 'px-space-sm py-0.5 rounded font-label-sm text-label-sm bg-surface-container-high hover:bg-surface-container-highest text-primary-container uppercase transition-all';
+        showOpsToast(`Process '${name}' cycled successfully.`);
+      }, 700);
+    } else {
+      showOpsToast(`Signal dispatched to '${name}'`);
+    }
+  }
+
+  function executeDevTool(title, desc) {
+    showOpsToast(`${title}: ${desc}`);
+  }
+
+  function showOpsToast(msg) {
+    const toast = document.getElementById('ops-toast');
+    const toastText = document.getElementById('ops-toast-text');
+    if (!toast || !toastText) return;
+    toastText.textContent = msg;
+    toast.classList.remove('hidden');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 2400);
+  }
+
+  // CASUAL MODE: Storage Clean Trigger
+  function runStorageClean() {
+    const btn = document.getElementById('btn-run-clean');
+    const visual = document.getElementById('clean-status-visual');
+    const icon = document.getElementById('clean-icon');
+    const title = document.getElementById('clean-feedback-title');
+    const sub = document.getElementById('clean-feedback-sub');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">refresh</span><span>Purging 38.4 GB...</span>';
+    visual.classList.add('bg-primary-container', 'scale-110');
+    icon.classList.remove('text-primary-container');
+    icon.classList.add('text-on-primary-container');
+
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = '<span>System Clean & Optimal</span><span class="material-symbols-outlined text-[20px]">check</span>';
+      btn.className = 'w-full py-3 px-space-md bg-surface-container-highest text-primary-container rounded-lg font-headline-sm text-headline-sm font-bold shadow-sm flex items-center justify-center gap-space-xs';
+      visual.classList.remove('scale-110');
+      title.textContent = '0 B Cleanable';
+      sub.textContent = 'Drive purged. 38.4 GB returned to free pool!';
+    }, 1200);
+  }
+
+  // CASUAL MODE: Game Booster Launch
+  function launchGameBoost(gameName) {
+    alert(`[RAM Purged] 4.2 GB of background standby memory freed. Launching ${gameName} with high priority scheduling!`);
+  }
+
+  // CASUAL MODE: Universal Drop Zone
+  function handleDragOver(e) {
+    e.preventDefault();
+    const zone = document.getElementById('drop-target-zone');
+    if (zone) zone.classList.add('bg-surface-container-high', 'border-primary-container');
+  }
+
+  function handleDragLeave(e) {
+    e.preventDefault();
+    const zone = document.getElementById('drop-target-zone');
+    if (zone) zone.classList.remove('bg-surface-container-high', 'border-primary-container');
+  }
+
+  function handleFileDrop(e) {
+    e.preventDefault();
+    const zone = document.getElementById('drop-target-zone');
+    if (zone) zone.classList.remove('bg-surface-container-high', 'border-primary-container');
+    
+    const count = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files.length : 1;
+    triggerPresetDrop(`${count} Dropped Item(s)`);
+  }
+
+  function triggerPresetDrop(itemName) {
+    const list = document.getElementById('recent-drop-list');
+    const pText = document.getElementById('drop-zone-primary-text');
+    if (pText) {
+      pText.textContent = `Dispatched: ${itemName}`;
+      setTimeout(() => {
+        pText.textContent = 'Drop files or text snippet here';
+      }, 2000);
+    }
+
+    if (list) {
+      const card = document.createElement('div');
+      card.className = 'p-space-sm rounded-lg bg-surface-container flex items-center justify-between animate-pulse';
+      card.innerHTML = `
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary-container text-[18px]">verified</span>
+          <span class="font-body-sm text-body-sm text-on-surface truncate">${itemName}</span>
+        </div>
+        <span class="font-label-sm text-label-sm text-primary-container">Just now</span>
+      `;
+      list.prepend(card);
+      if (list.children.length > 3) {
+        list.removeChild(list.lastElementChild);
+      }
+    }
+  }
+</script></main></div></body></html>

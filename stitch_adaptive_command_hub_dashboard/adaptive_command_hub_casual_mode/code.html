@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html class="" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"secondary-fixed-dim":"#ffba4b","inverse-surface":"#e1e3e4","surface-container-high":"#272a2b","primary":"#edffe8","on-tertiary-container":"#4c4ed9","tertiary-fixed-dim":"#c0c1ff","on-primary-container":"#007128","secondary":"#ffbd58","on-surface-variant":"#b9ccb5","on-error":"#690005","surface-tint":"#00e55b","tertiary-fixed":"#e1e0ff","outline":"#849581","surface-container-low":"#191c1d","on-tertiary-fixed":"#07006c","background":"#111415","surface":"#111415","on-surface":"#e1e3e4","primary-container":"#00ff66","error":"#ffb4ab","on-secondary-container":"#5b3b00","on-primary-fixed":"#002107","outline-variant":"#3b4b3a","on-secondary":"#442b00","secondary-container":"#ea9f00","tertiary":"#fcf8ff","on-secondary-fixed":"#291800","on-background":"#e1e3e4","surface-container":"#1d2021","on-primary":"#003911","surface-bright":"#373a3b","inverse-on-surface":"#2e3132","primary-fixed-dim":"#00e55b","surface-container-lowest":"#0c0f10","secondary-fixed":"#ffddb1","primary-fixed":"#6bff83","on-error-container":"#ffdad6","surface-dim":"#111415","surface-variant":"#323536","on-tertiary-fixed-variant":"#2f2ebe","on-tertiary":"#1000a9","inverse-primary":"#006e27","on-primary-fixed-variant":"#00531b","error-container":"#93000a","tertiary-container":"#dbdaff","on-secondary-fixed-variant":"#624000","surface-container-highest":"#323536"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"margin":"1rem","gutter-lg":"1.5rem","space-xl":"2.5rem","space-sm":"0.5rem","space-lg":"1.5rem","margin-lg":"2.5rem","space-md":"1rem","margin-md":"1.5rem","space-xs":"0.25rem","gutter":"1rem"},"fontFamily":{"headline-lg-mobile":["Space Grotesk"],"body-md":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"label-md":["JetBrains Mono"],"display-lg":["Space Grotesk"],"headline-lg":["Space Grotesk"],"headline-sm":["Space Grotesk"],"code-md":["JetBrains Mono"],"body-lg":["Plus Jakarta Sans"],"label-sm":["JetBrains Mono"],"headline-md":["Space Grotesk"]},"fontSize":{"headline-lg-mobile":["26px",{"lineHeight":"34px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","letterSpacing":"0","fontWeight":"400"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.01em","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"500"}],"display-lg":["48px",{"lineHeight":"56px","letterSpacing":"-0.03em","fontWeight":"700"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-sm":["18px",{"lineHeight":"24px","letterSpacing":"0","fontWeight":"600"}],"code-md":["14px",{"lineHeight":"20px","letterSpacing":"-0.02em","fontWeight":"500"}],"body-lg":["16px",{"lineHeight":"24px","letterSpacing":"0","fontWeight":"400"}],"label-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"600"}],"headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"600"}]}}}};</script></head><body class="bg-slate-50 font-body-md text-slate-800 antialiased min-h-screen"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)] hidden"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center justify-between bg-surface-container-low"><div class="flex items-center gap-space-sm"><div class="w-2.5 h-2.5 bg-primary-container"></div><span class="font-headline-sm text-headline-sm tracking-tight text-primary font-bold">SYS.CORE</span></div><span class="font-label-sm text-label-sm px-space-xs py-0.5 bg-surface-container-high text-primary-fixed">v2.4</span></div><div class="px-space-md py-space-sm"><span class="font-label-sm text-label-sm tracking-wider text-outline uppercase">Navigation</span></div><nav class="flex flex-col px-space-sm gap-space-xs" data-active-classes="bg-surface-container text-primary-container font-semibold"><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm rounded transition-colors bg-surface-container text-primary-container font-semibold" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px]">grid_view</span><span class="font-body-md text-body-md">Overview</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="live-telemetry" href="#"><span class="material-symbols-outlined text-[18px]">monitoring</span><span class="font-body-md text-body-md">Live Telemetry</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="task-orchestration" href="#"><span class="material-symbols-outlined text-[18px]">terminal</span><span class="font-body-md text-body-md">Task Orchestration</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="node-clusters" href="#"><span class="material-symbols-outlined text-[18px]">hub</span><span class="font-body-md text-body-md">Node Clusters</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audit-logs" href="#"><span class="material-symbols-outlined text-[18px]">receipt_long</span><span class="font-body-md text-body-md">Audit Logs</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="system-settings" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-md text-body-md">System Settings</span></a></nav></div><div class="p-space-md bg-surface-container-low flex flex-col gap-space-sm"><div class="flex items-center justify-between text-on-surface-variant"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Hub Link</span><span class="flex items-center gap-1.5 font-label-sm text-label-sm text-primary-fixed-dim"><span class="inline-block w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>SECURE</span></div><div class="bg-surface-container-lowest p-space-sm rounded flex flex-col gap-space-xs"><div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant"><span>CPU MEM</span><span class="text-on-surface font-code-md text-code-md">28.4%</span></div><div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden"><div class="bg-primary-container h-full w-[28.4%]"></div></div></div></div></aside><div class="w-full flex flex-col min-h-screen bg-slate-50"><header class="fixed top-0 left-0 right-0 h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 z-40 px-6 flex items-center justify-between shadow-xs"><div class="flex items-center gap-6"><div class="flex items-center gap-2.5"><div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-sm"><span class="material-symbols-outlined text-[20px]">hub</span></div><div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-[17px] font-bold text-slate-900 tracking-tight">Command Hub</span><span class="px-1.5 py-0.2 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">CASUAL</span></div><span class="text-[11px] text-slate-400 font-medium">Workspace Optimizer</span></div></div><div class="h-5 w-[1px] bg-slate-200"></div><nav class="hidden md:flex items-center gap-5 text-[13px] font-medium"><a class="text-emerald-600 font-semibold flex items-center gap-1.5" href="#"><span class="material-symbols-outlined text-[16px]">speed</span>Dashboard</a><a class="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1.5" href="#"><span class="material-symbols-outlined text-[16px]">sports_esports</span>Games</a><a class="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1.5" href="#"><span class="material-symbols-outlined text-[16px]">cloud_sync</span>AirDrop</a></nav></div><div class="flex items-center gap-4"><div class="bg-slate-100 p-1 rounded-full flex items-center border border-slate-200 shadow-inner" id="command-mode-hud"><button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-emerald-700 shadow-sm font-semibold text-xs transition-all" type="button"><span class="material-symbols-outlined text-[15px] text-emerald-600">wb_sunny</span><span>Casual</span></button><button class="flex items-center gap-1.5 px-3 py-1 rounded-full text-slate-500 hover:text-slate-800 text-xs font-medium transition-all" onclick="window.location.reload()" type="button"><span class="material-symbols-outlined text-[15px]">terminal</span><span>PRO HUD</span></button></div><div class="h-4 w-[1px] bg-slate-200"></div><div class="flex items-center gap-2"><button class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">search</span></button><button class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 relative transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-white"></span></button></div><div class="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-sm ring-2 ring-slate-100">JD</div></div></header><main class="w-full pt-16 bg-slate-50 flex-1 min-h-[calc(100vh-64px)] pb-12"><div class="flex flex-col w-full">
+<div class="w-full transition-all duration-300 ease-out px-gutter-lg py-space-lg flex flex-col gap-space-lg text-on-surface" id="hub-container"><div class="max-w-7xl mx-auto w-full flex flex-col gap-6"><div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-wrap items-center justify-between gap-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200/60"><span class="material-symbols-outlined text-[22px]">wb_sunny</span></div><div><div class="flex items-center gap-2"><h1 class="text-lg font-bold text-slate-900 tracking-tight">Casual Workspace</h1><span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100/70 text-emerald-800">ALL SYSTEMS OPTIMAL</span></div><p class="text-xs text-slate-500">Ergonomic storage hygiene, instant RAM flush &amp; device airbridge</p></div></div><div class="flex items-center gap-3 flex-wrap"><div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200"><span class="material-symbols-outlined text-emerald-600 text-[18px]">memory</span><div class="flex flex-col text-left"><span class="text-[10px] text-slate-400 uppercase font-semibold">RAM Usage</span><span class="text-xs font-bold text-slate-800">32% <span class="text-emerald-600 font-medium">(Optimal)</span></span></div></div><div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200"><span class="material-symbols-outlined text-blue-500 text-[18px]">device_thermostat</span><div class="flex flex-col text-left"><span class="text-[10px] text-slate-400 uppercase font-semibold">CPU Temp</span><span class="text-xs font-bold text-slate-800">44°C</span></div></div><div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200"><span class="material-symbols-outlined text-amber-500 text-[18px]">bolt</span><div class="flex flex-col text-left"><span class="text-[10px] text-slate-400 uppercase font-semibold">Power Mode</span><span class="text-xs font-bold text-slate-800">AC High Perf</span></div></div></div></div><div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200/80 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden"><div class="absolute -top-12 -right-12 w-80 h-80 bg-gradient-to-br from-emerald-100/40 to-teal-50/20 rounded-full pointer-events-none blur-2xl"></div><div class="flex flex-col gap-4 max-w-2xl z-10"><div class="flex items-center gap-2.5"><div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100"><span class="material-symbols-outlined text-[24px]">hard_drive</span></div><span class="text-sm font-semibold tracking-wide uppercase text-slate-500">Storage Health &amp; Optimizer</span></div><div><h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">382 GB <span class="text-slate-400 text-2xl font-medium">/ 512 GB Used</span></h2><p class="text-sm text-slate-600 mt-1">Your drive is running at 74% capacity. Roughly <strong class="text-emerald-700 font-semibold">18.4 GB</strong> of temporary cached installers, build logs, and stale cache can be safely removed.</p></div><div class="w-full flex flex-col gap-2.5 pt-2"><div class="w-full h-3.5 rounded-full bg-slate-100 overflow-hidden flex shadow-inner"><div class="bg-slate-800 h-full w-[54%]" title="System: 276 GB"></div><div class="bg-blue-500 h-full w-[14%]" title="Apps &amp; Games: 72 GB"></div><div class="bg-emerald-400 h-full w-[6%]" title="Cleanable Junk: 18.4 GB"></div></div><div class="flex flex-wrap items-center justify-between text-xs text-slate-600 font-medium"><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-800"></span><span>System (276 GB)</span></div><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span><span>Apps (72 GB)</span></div><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span><span>Junk (18.4 GB)</span></div><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-200"></span><span>Free (130 GB)</span></div></div></div></div><div class="flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-emerald-50/30 p-6 rounded-2xl z-10 w-full lg:w-80 border border-slate-200 text-center gap-4 shrink-0 shadow-xs"><div class="w-20 h-20 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-inner"><span class="material-symbols-outlined text-[38px]">cleaning_services</span></div><div><span class="text-xl font-bold text-slate-900 block">18.4 GB Cleanable</span><span class="text-xs text-slate-500">Safe 1-click system tuneup</span></div><button class="w-full py-3.5 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm active:scale-95" onclick="this.innerHTML='&lt;span class=\'material-symbols-outlined text-[18px]\'&gt;check_circle&lt;/span&gt; Cleaned 18.4 GB!'; this.className='w-full py-3.5 px-4 bg-emerald-600 text-white rounded-xl font-semibold shadow-md flex items-center justify-center gap-2 text-sm';" type="button"><span class="material-symbols-outlined text-[18px] text-emerald-400">auto_fix_high</span><span>1-Click Clean Drive</span></button><span class="text-[11px] text-slate-400">Zero personal data touched</span></div></div><div class="flex flex-col gap-4"><div class="flex items-center justify-between"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100"><span class="material-symbols-outlined text-[20px]">sports_esports</span></div><div><h3 class="text-lg font-bold text-slate-900">Game Optimizer</h3><p class="text-xs text-slate-500">One-tap RAM flush &amp; latency boost before launch</p></div></div><span class="text-xs font-semibold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-lg">4 Profiles Configured</span></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"><div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group"><div class="flex flex-col gap-3"><div class="h-28 w-full rounded-xl bg-gradient-to-tr from-rose-500 via-orange-500 to-amber-400 flex items-center justify-center relative overflow-hidden text-white shadow-inner"><span class="material-symbols-outlined text-[44px] group-hover:scale-110 transition-transform drop-shadow">swords</span><span class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-sm text-[10px] font-bold text-emerald-300">Ready to Boost</span></div><div><h4 class="text-base font-bold text-slate-900">Bloodstrike</h4><span class="text-xs text-slate-500">FPS Target: 165+ Hz</span></div><div class="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-100"><span>DirectX 12</span><span>16 GB Allocated</span></div></div><button class="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95" onclick="alert('RAM Flushed! Freed 3.8GB memory for Bloodstrike');" type="button"><span class="material-symbols-outlined text-[16px] text-emerald-400">rocket_launch</span><span>Launch &amp; Optimize</span></button></div><div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group"><div class="flex flex-col gap-3"><div class="h-28 w-full rounded-xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-700 flex items-center justify-center relative overflow-hidden text-white shadow-inner"><span class="material-symbols-outlined text-[44px] group-hover:scale-110 transition-transform drop-shadow">smart_toy</span><span class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-sm text-[10px] font-bold text-amber-300">Patched</span></div><div><h4 class="text-base font-bold text-slate-900">Cyberpunk 2077</h4><span class="text-xs text-slate-500">Ray Tracing Ultra</span></div><div class="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-100"><span>VRAM: 8.8 GB</span><span>DLSS 3.5: ON</span></div></div><button class="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95" onclick="alert('RAM Flushed! Standby cache cleared for Cyberpunk 2077');" type="button"><span class="material-symbols-outlined text-[16px] text-emerald-400">rocket_launch</span><span>Launch &amp; Optimize</span></button></div><div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group"><div class="flex flex-col gap-3"><div class="h-28 w-full rounded-xl bg-gradient-to-tr from-amber-500 via-orange-600 to-red-600 flex items-center justify-center relative overflow-hidden text-white shadow-inner"><span class="material-symbols-outlined text-[44px] group-hover:scale-110 transition-transform drop-shadow">flash_on</span><span class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-sm text-[10px] font-bold text-emerald-300">Ready to Boost</span></div><div><h4 class="text-base font-bold text-slate-900">Apex Legends</h4><span class="text-xs text-slate-500">Competitive Low Latency</span></div><div class="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-100"><span>Reflex: Ultra</span><span>RAM Free: ~4.1GB</span></div></div><button class="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95" onclick="alert('RAM Flushed! High priority set for Apex Legends');" type="button"><span class="material-symbols-outlined text-[16px] text-emerald-400">rocket_launch</span><span>Launch &amp; Optimize</span></button></div><div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group"><div class="flex flex-col gap-3"><div class="h-28 w-full rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-700 flex items-center justify-center relative overflow-hidden text-white shadow-inner"><span class="material-symbols-outlined text-[44px] group-hover:scale-110 transition-transform drop-shadow">videogame_asset</span><span class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-sm text-[10px] font-bold text-cyan-200">32 Games</span></div><div><h4 class="text-base font-bold text-slate-900">Steam Backlog</h4><span class="text-xs text-slate-500">Cloud Sync Current</span></div><div class="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-100"><span>Controllers: 2</span><span>DirectPlay: Ready</span></div></div><button class="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95" onclick="alert('Launching Steam Launcher in optimized performance mode');" type="button"><span class="material-symbols-outlined text-[16px] text-emerald-400">rocket_launch</span><span>Launch &amp; Optimize</span></button></div></div></div><div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm flex flex-col gap-4"><div class="flex items-center justify-between"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100"><span class="material-symbols-outlined text-[20px]">cloud_sync</span></div><div><h3 class="text-lg font-bold text-slate-900">Universal Drop</h3><p class="text-xs text-slate-500">Drop files or text here to sync across devices</p></div></div><div class="flex items-center gap-1.5 text-xs text-slate-400 font-medium"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>3 paired devices active</span></div></div><div class="w-full bg-slate-50/70 border-2 border-dashed border-slate-300 hover:border-indigo-400 hover:bg-white transition-all rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group"><div class="w-14 h-14 rounded-2xl bg-white text-indigo-600 group-hover:scale-105 shadow-sm border border-slate-200 flex items-center justify-center transition-all"><span class="material-symbols-outlined text-[28px]">cloud_upload</span></div><div><span class="text-sm font-bold text-slate-800 block">Drop files, photos, or text snippet here</span><span class="text-xs text-slate-500">Syncs instantly via end-to-end local airbridge</span></div><div class="flex flex-wrap items-center justify-center gap-2 pt-1"><button class="px-3 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-medium hover:border-slate-300 shadow-2xs flex items-center gap-1.5" onclick="alert('Clipboard contents synced to paired devices!');" type="button"><span class="material-symbols-outlined text-[15px] text-indigo-500">content_paste</span><span>Clipboard Text</span></button><button class="px-3 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-medium hover:border-slate-300 shadow-2xs flex items-center gap-1.5" onclick="alert('Last screenshot broadcasted!');" type="button"><span class="material-symbols-outlined text-[15px] text-emerald-500">screenshot</span><span>Screenshots</span></button><button class="px-3 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-medium hover:border-slate-300 shadow-2xs flex items-center gap-1.5" onclick="alert('Recent download synced!');" type="button"><span class="material-symbols-outlined text-[15px] text-amber-500">download</span><span>Recent Downloads</span></button></div></div></div></div></div>
+</div>
+<script>
+  let currentMode = 'pro';
+  let isAutoScroll = true;
+  let logInterval = null;
+
+  function setHubMode(mode) {
+    currentMode = mode;
+    const proView = document.getElementById('pro-view-wrapper');
+    const casualView = document.getElementById('casual-view-wrapper');
+    const btnPro = document.getElementById('toggle-pro-btn');
+    const btnCasual = document.getElementById('toggle-casual-btn');
+    const badgeGlyph = document.getElementById('badge-glyph');
+    const modeTagPill = document.getElementById('mode-tag-pill');
+    const subModeDesc = document.getElementById('sub-mode-desc');
+    const tickerVal = document.getElementById('status-ticker-val');
+
+    // Also synchronize top navigation shell button if rendered
+    const shellHudCasual = document.querySelector('#command-mode-hud button:first-child');
+    const shellHudPro = document.querySelector('#command-mode-hud button:last-child');
+
+    if (mode === 'casual') {
+      proView.classList.add('hidden');
+      casualView.classList.remove('hidden');
+
+      btnCasual.className = 'px-space-md py-1.5 rounded-full font-body-sm text-body-sm bg-surface-container-high text-primary-container shadow-sm font-semibold transition-all flex items-center gap-1.5';
+      btnPro.className = 'px-space-md py-1.5 rounded-full font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5';
+
+      badgeGlyph.textContent = 'wb_sunny';
+      badgeGlyph.className = 'material-symbols-outlined text-secondary text-[22px] transition-all';
+      modeTagPill.textContent = '[ CASUAL WORKSPACE ]';
+      modeTagPill.className = 'font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-surface-container-high text-secondary-fixed uppercase tracking-wider';
+      subModeDesc.textContent = 'Ergonomic file hygiene, one-click game latency booster & universal cross-drop';
+      tickerVal.textContent = 'STORAGE: 80% // RAM: 32% FREE';
+
+      if (shellHudCasual && shellHudPro) {
+        shellHudCasual.className = 'flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-high text-secondary shadow-sm font-semibold transition-all';
+        shellHudPro.className = 'flex items-center gap-1.5 px-space-sm py-1 rounded-full text-on-surface-variant hover:text-on-surface transition-all';
+      }
+    } else {
+      casualView.classList.add('hidden');
+      proView.classList.remove('hidden');
+
+      btnPro.className = 'px-space-md py-1.5 rounded-full font-label-sm text-label-sm uppercase tracking-wider bg-surface-container-high text-primary-container shadow-sm font-semibold transition-all flex items-center gap-1.5';
+      btnCasual.className = 'px-space-md py-1.5 rounded-full font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5';
+
+      badgeGlyph.textContent = 'terminal';
+      badgeGlyph.className = 'material-symbols-outlined text-primary-container text-[22px] transition-all';
+      modeTagPill.textContent = '[ PRO HUD ]';
+      modeTagPill.className = 'font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-surface-container-high text-primary-fixed uppercase tracking-wider';
+      subModeDesc.textContent = 'High-throughput dev telemetry, process daemons, and live stream monitors';
+      tickerVal.textContent = '99.98% OPS // 12ms';
+
+      if (shellHudCasual && shellHudPro) {
+        shellHudPro.className = 'flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-high text-primary-container shadow-sm font-semibold transition-all';
+        shellHudCasual.className = 'flex items-center gap-1.5 px-space-sm py-1 rounded-full text-on-surface-variant hover:text-on-surface transition-all';
+      }
+    }
+  }
+
+  // Keyboard shortcut listener: 'P' or 'p'
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'p' || e.key === 'P') {
+      setHubMode(currentMode === 'pro' ? 'casual' : 'pro');
+    }
+  });
+
+  // Connect App Shell HUD Buttons if present
+  document.addEventListener('DOMContentLoaded', () => {
+    const shellHudCasual = document.querySelector('#command-mode-hud button:first-child');
+    const shellHudPro = document.querySelector('#command-mode-hud button:last-child');
+    if (shellHudCasual) {
+      shellHudCasual.addEventListener('click', () => setHubMode('casual'));
+    }
+    if (shellHudPro) {
+      shellHudPro.addEventListener('click', () => setHubMode('pro'));
+    }
+    startMockLogStream();
+  });
+
+  // PRO MODE: Mock Realtime Log Streamer
+  function startMockLogStream() {
+    const consoleEl = document.getElementById('terminal-stream-console');
+    const mockLogs = [
+      '<span class="text-primary-container font-bold">[HTTP]</span> GET /v1/telemetry/health 200 OK (0.72ms)',
+      '<span class="text-secondary-fixed-dim font-bold">[ORM]</span> SELECT "p".name, "p".uptime FROM "Daemons" "p" WHERE "p".status = 1 <span class="text-primary-container">[0.88ms]</span>',
+      '<span class="text-on-surface-variant"><span class="text-primary-container font-bold">[HTTP]</span> POST /v1/stream/sync 201 Created (1.04ms)</span>',
+      '<span class="text-on-surface"><span class="text-secondary-fixed-dim font-bold">[ORM]</span> UPDATE "Session" SET "last_seen" = NOW() WHERE "token_hash" = ? <span class="text-primary-container">[0.31ms]</span></span>',
+      '<span class="text-outline text-label-sm">[KRNL] epoll event loop dispatched 128 socket events</span>',
+      '<span class="text-secondary font-bold">[REDIS]</span> Worker queue length: 0 &bull; throughput: 284 tasks/sec'
+    ];
+
+    logInterval = setInterval(() => {
+      if (!consoleEl) return;
+      const randomLine = mockLogs[Math.floor(Math.random() * mockLogs.length)];
+      const lineDiv = document.createElement('div');
+      lineDiv.className = 'text-on-surface-variant font-code-md text-code-md';
+      lineDiv.innerHTML = `<span class="text-outline font-label-sm mr-2">[${new Date().toISOString().substring(11, 19)}]</span> ${randomLine}`;
+      consoleEl.appendChild(lineDiv);
+
+      if (consoleEl.children.length > 80) {
+        consoleEl.removeChild(consoleEl.children[0]);
+      }
+
+      if (isAutoScroll) {
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+      }
+    }, 2800);
+  }
+
+  function clearLiveLog() {
+    const consoleEl = document.getElementById('terminal-stream-console');
+    if (consoleEl) {
+      consoleEl.innerHTML = '<div class="text-outline text-label-sm">[SYSTEM LOGS CLEARED BY USER]</div>';
+    }
+  }
+
+  function toggleAutoScroll() {
+    isAutoScroll = !isAutoScroll;
+    const btn = document.getElementById('btn-autoscroll');
+    if (btn) {
+      btn.className = isAutoScroll 
+        ? 'px-2 py-0.5 rounded bg-surface-container-high text-primary-container font-label-sm text-label-sm uppercase transition-all'
+        : 'px-2 py-0.5 rounded bg-surface-container text-outline font-label-sm text-label-sm uppercase transition-all';
+    }
+  }
+
+  function filterLogs(type) {
+    const consoleEl = document.getElementById('terminal-stream-console');
+    if (!consoleEl) return;
+    const note = document.createElement('div');
+    note.className = 'text-secondary-fixed font-code-md text-code-md py-1';
+    note.innerHTML = `&gt;&gt; Filter rule activated: [${type}]`;
+    consoleEl.appendChild(note);
+    if (isAutoScroll) consoleEl.scrollTop = consoleEl.scrollHeight;
+  }
+
+  function handleTerminalCommand(e) {
+    if (e.key === 'Enter') {
+      const input = document.getElementById('pro-cmd-input');
+      const val = input.value.trim();
+      if (!val) return;
+      
+      const consoleEl = document.getElementById('terminal-stream-console');
+      const echoDiv = document.createElement('div');
+      echoDiv.className = 'text-primary font-bold font-code-md text-code-md';
+      echoDiv.textContent = `$ ${val}`;
+      consoleEl.appendChild(echoDiv);
+
+      const respDiv = document.createElement('div');
+      respDiv.className = 'text-primary-container font-code-md text-code-md';
+      if (val.toLowerCase() === 'help') {
+        respDiv.textContent = 'AVAILABLE COMMANDS: ping, status, clear, orm, exit';
+      } else if (val.toLowerCase() === 'ping') {
+        respDiv.textContent = 'PONG 127.0.0.1: time=0.18ms';
+      } else if (val.toLowerCase() === 'status') {
+        respDiv.textContent = 'SYSTEM STATUS: 4 daemons alive, 0 failed, 12ms avg latency.';
+      } else {
+        respDiv.textContent = `sys.core: command '${val}' queued for background dispatch`;
+      }
+      consoleEl.appendChild(respDiv);
+      input.value = '';
+      if (isAutoScroll) consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+  }
+
+  // PRO MODE: Daemon process toggle
+  function toggleProcess(name) {
+    const btn = document.getElementById(`btn-toggle-${name}`);
+    const indicator = document.getElementById(`daemon-indicator-${name}`);
+    if (!btn || !indicator) return;
+
+    if (btn.textContent.trim().toUpperCase() === 'RESTART' || btn.textContent.trim().toUpperCase() === 'ACTIVE') {
+      btn.textContent = 'Restarting...';
+      btn.classList.add('text-secondary');
+      setTimeout(() => {
+        btn.textContent = 'Active';
+        btn.className = 'px-space-sm py-0.5 rounded font-label-sm text-label-sm bg-surface-container-high hover:bg-surface-container-highest text-primary-container uppercase transition-all';
+        showOpsToast(`Process '${name}' cycled successfully.`);
+      }, 700);
+    } else {
+      showOpsToast(`Signal dispatched to '${name}'`);
+    }
+  }
+
+  function executeDevTool(title, desc) {
+    showOpsToast(`${title}: ${desc}`);
+  }
+
+  function showOpsToast(msg) {
+    const toast = document.getElementById('ops-toast');
+    const toastText = document.getElementById('ops-toast-text');
+    if (!toast || !toastText) return;
+    toastText.textContent = msg;
+    toast.classList.remove('hidden');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 2400);
+  }
+
+  // CASUAL MODE: Storage Clean Trigger
+  function runStorageClean() {
+    const btn = document.getElementById('btn-run-clean');
+    const visual = document.getElementById('clean-status-visual');
+    const icon = document.getElementById('clean-icon');
+    const title = document.getElementById('clean-feedback-title');
+    const sub = document.getElementById('clean-feedback-sub');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">refresh</span><span>Purging 38.4 GB...</span>';
+    visual.classList.add('bg-primary-container', 'scale-110');
+    icon.classList.remove('text-primary-container');
+    icon.classList.add('text-on-primary-container');
+
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = '<span>System Clean & Optimal</span><span class="material-symbols-outlined text-[20px]">check</span>';
+      btn.className = 'w-full py-3 px-space-md bg-surface-container-highest text-primary-container rounded-lg font-headline-sm text-headline-sm font-bold shadow-sm flex items-center justify-center gap-space-xs';
+      visual.classList.remove('scale-110');
+      title.textContent = '0 B Cleanable';
+      sub.textContent = 'Drive purged. 38.4 GB returned to free pool!';
+    }, 1200);
+  }
+
+  // CASUAL MODE: Game Booster Launch
+  function launchGameBoost(gameName) {
+    alert(`[RAM Purged] 4.2 GB of background standby memory freed. Launching ${gameName} with high priority scheduling!`);
+  }
+
+  // CASUAL MODE: Universal Drop Zone
+  function handleDragOver(e) {
+    e.preventDefault();
+    const zone = document.getElementById('drop-target-zone');
+    if (zone) zone.classList.add('bg-surface-container-high', 'border-primary-container');
+  }
+
+  function handleDragLeave(e) {
+    e.preventDefault();
+    const zone = document.getElementById('drop-target-zone');
+    if (zone) zone.classList.remove('bg-surface-container-high', 'border-primary-container');
+  }
+
+  function handleFileDrop(e) {
+    e.preventDefault();
+    const zone = document.getElementById('drop-target-zone');
+    if (zone) zone.classList.remove('bg-surface-container-high', 'border-primary-container');
+    
+    const count = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files.length : 1;
+    triggerPresetDrop(`${count} Dropped Item(s)`);
+  }
+
+  function triggerPresetDrop(itemName) {
+    const list = document.getElementById('recent-drop-list');
+    const pText = document.getElementById('drop-zone-primary-text');
+    if (pText) {
+      pText.textContent = `Dispatched: ${itemName}`;
+      setTimeout(() => {
+        pText.textContent = 'Drop files or text snippet here';
+      }, 2000);
+    }
+
+    if (list) {
+      const card = document.createElement('div');
+      card.className = 'p-space-sm rounded-lg bg-surface-container flex items-center justify-between animate-pulse';
+      card.innerHTML = `
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary-container text-[18px]">verified</span>
+          <span class="font-body-sm text-body-sm text-on-surface truncate">${itemName}</span>
+        </div>
+        <span class="font-label-sm text-label-sm text-primary-container">Just now</span>
+      `;
+      list.prepend(card);
+      if (list.children.length > 3) {
+        list.removeChild(list.lastElementChild);
+      }
+    }
+  }
+</script></main></div></body></html>

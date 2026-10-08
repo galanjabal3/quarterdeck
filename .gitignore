@@ -1,0 +1,28 @@
+# Node / Frontend
+node_modules/
+dist/
+*.local
+
+# Python / Backend
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Environment & log
+.env
+.env.*
+*.log
+nohup.out
+
+# Editor & OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Coverage
+coverage/
+htmlcov/
+.coverage

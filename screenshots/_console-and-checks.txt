@@ -1,0 +1,235 @@
+== CONSOLE ERRORS ==
+(none)
+
+== PAGE ERRORS ==
+(none)
+
+== HTTP >= 400 (API) ==
+(none)
+
+== NOTES ==
+browser: Google Chrome (channel=chrome)
+casual body chars=2011
+calculator card icon <img> present: True
+Calculator running sebelum klik: False
+Calculator running setelah klik: True
+pro body chars=1660
+panel 'Fast Ops' terlihat: False
+FastOps Flush DNS -> EXIT 0 terlihat di UI
+backend pids ['32731', '46465'] muncul di tabel UI: True
+
+== TEKS PRO MODE ==
+Command Hub
+Console
+Telemetry Stream
+Topology
+Casual
+PRO HUD
+SYS.CORE
+v2.4
+NAVIGATION
+Overview
+Live Telemetry
+Task Orchestration
+Node Clusters
+Audit Logs
+System Settings
+HUB LINK
+SECURE
+CPU MEM
+83.7%
+Adaptive Command Hub
+[ PRO HUD ]
+High-throughput dev telemetry, process daemons, and live stream monitors
+TELEMETRY
+99.98% OPS // 12ms
+CLUSTER STATE
+ACTIVE
+Casual
+PRO HUD
+P
+toggle
+CPU LOAD
+8 CORE
+0.0%
+TEMP — // FREQ 3.50 GHz
+MEMORY
+6.0 / 16.0 GB
+83.7%
+6.0 GB of 16.0 GB in use
+THREAD POOL
+64 / 64
+0.42 ms
+REDIS LATENCY
+OPTIMAL
+1.18 ms
+DOCKER DAEMON
+18 PODS
+14.2 GB
+INGRESS / EGRESS
+TX/RX
+842 Mb/s
+ENV // PROCESS MANAGER
+[ 1 ACTIVE ]
+python3.12
+PID 32731
+UP 0H 14M
+ROLE: backend
+CPU 3.9% // MEM 27.0 MB
+FAST OPS // MACOS
+[ 4 ACTIONS ]
+Flush DNS Cache
+dscacheutil -flushcache
+EXIT 0 // PERINTAH DIEKSEKUSI
+Restart Finder
+killall Finder
+[ READY ]
+Restart Dock
+killall Dock
+[ READY ]
+Restart SystemUIServer
+killall SystemUIServer
+[ READY ]
+sys.core://pty/stream/stdout
+CLEAR
+LIVE TAIL
+ALL
+ORM
+HTTP
+WARN
+BUFF: 120/5000
+[SYS] Kernel rendezvous initialized. Listening on unix:///run/sys.sock
+[HTTP] 2025-05-18T10:14:02.102Z - GET /v1/cluster/health 200 OK (0.84ms)
+[ORM] SELECT "p".id, "p".name, "p".status FROM "Process" "p" WHERE "p".is_active = 1 [0.42ms - 4 rows]
+[HTTP] 2025-05-18T10:14:03.220Z - POST /v1/telemetry/ingest 202 Accepted (1.10ms)
+WARNMemory pressure throttler threshold: L1 cache pruned (freed 42MB)
+[ORM] UPDATE "ClusterNode" SET "last_heartbeat" = NOW() WHERE "id" = 'node-west-04' [1.12ms]
+[HTTP] 2025-05-18T10:14:04.590Z - GET /v1/auth/verify_token 200 OK (0.39ms)
+[ORM] SELECT "m".metric_key, AVG("m".val) FROM "Telemetry" "m" GROUP BY "m".metric_key [2.18ms]
+>
+
+== TEKS CASUAL ==
+Command Hub
+CASUAL
+Workspace Optimizer
+Dashboard
+Games
+AirDrop
+Casual
+PRO HUD
+JD
+Casual Workspace
+ALL SYSTEMS OPTIMAL
+
+Ergonomic storage hygiene, instant RAM flush & device airbridge
+
+RAM USAGE
+83.2% (Moderate)
+CPU TEMP
+—
+POWER MODE
+AC High Perf
+STORAGE HEALTH & OPTIMIZER
+140 GB / 460 GB Used
+
+Your drive is running at 33.1% capacity. Roughly 14.0 GB of temporary cached installers, build logs, and stale cache can be safely removed.
+
+System (98.2 GB)
+Apps (28.1 GB)
+Junk (14.0 GB)
+Free (283.7 GB)
+14.0 GB Cleanable
+Safe 1-click system tuneup
+1-Click Clean Drive
+Zero personal data touched
+App Launcher
+
+One-tap launch for every app installed on this machine
+
+84 Apps Installed
+
+Menampilkan 12 dari 84 aplikasi.
+
+System
+Activity Monitor
+Aplikasi di Utilities
+/System/Applications/Utilities
+launch-game
+Launch
+System
+AirPort Utility
+Aplikasi di Utilities
+/System/Applications/Utilities
+launch-game
+Launch
+Installed
+Antigravity
+Aplikasi di Applications
+/Applications
+launch-game
+Launch
+Installed
+Antigravity IDE
+Aplikasi di Applications
+/Applications
+launch-game
+Launch
+System
+App Store
+Aplikasi di Applications
+/System/Applications
+launch-game
+Launch
+System
+Apps
+Aplikasi di Applications
+/System/Applications
+launch-game
+Launch
+System
+Audio MIDI Setup
+Aplikasi di Utilities
+/System/Applications/Utilities
+launch-game
+Launch
+System
+Automator
+Aplikasi di Applications
+/System/Applications
+launch-game
+Launch
+System
+Bluetooth File Exchange
+Aplikasi di Utilities
+/System/Applications/Utilities
+launch-game
+Launch
+System
+Books
+Aplikasi di Applications
+/System/Applications
+launch-game
+Launch
+System
+Boot Camp Assistant
+Aplikasi di Utilities
+/System/Applications/Utilities
+launch-game
+Launch
+System
+Calculator
+Aplikasi di Applications
+/System/Applications
+launch-game
+Launch
+Muat lagi (72 tersisa)
+Universal Drop
+
+Drop files or text here to sync across devices
+
+3 paired devices active
+Drop files, photos, or text snippet here
+Syncs instantly via end-to-end local airbridge
+Clipboard Text
+Screenshots
+Recent Downloads
