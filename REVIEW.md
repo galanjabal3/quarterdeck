@@ -292,8 +292,10 @@ versi baru; DOM Playwright kedua mode tak lagi memuat elemen lama (`THREAD POOL`
 baris log terminal memuat latensi terukur sungguhan dari API (mis.
 `GET /api/metrics/cpu 200 OK (132.4ms)`).
 
-Batasan verifikasi visual ini: **headless, satu viewport (desktop)** — pengujian di
-viewport kecil/mobile, keyboard-only, dan screen reader belum dilakukan; aksi
+Batasan verifikasi visual ini: **headless, satu viewport desktop (1440×900)** —
+sesuai lingkup proyek yang memang **desktop-only** (keputusan pemilik: dukungan
+mobile sengaja di luar cakupan, sehingga bukan celah yang tertunda). Yang belum
+diuji: keyboard-only, screen reader, aksi
 `restart-*` tidak diklik (dampak ke sesi desktop), dan screenshot tidak diverifikasi
 otomatis (dinilai manual oleh penulis).
 
@@ -305,8 +307,10 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
 
 1. **Verifikasi visual kini tersedia, tapi terbatas.** Sesi pengembangan awal tanpa tool
    browser; verifikasi visual baru dilakukan di akhir via **Playwright headless,
-   viewport 1440×900** (6 screenshot di `screenshots/`, lihat bagian 5.5). Yang belum
-   diuji: tampilan **mobile/viewport kecil**, interaksi keyboard-only, screen reader,
+   viewport 1440×900** (6 screenshot di `screenshots/`, lihat bagian 5.5). Lingkup
+   proyek **desktop-only** (keputusan pemilik: dukungan mobile sengaja di luar
+   cakupan — bukan keterbatasan yang tertunda). Yang belum
+   diuji: interaksi keyboard-only, screen reader,
    serta lintas browser (hanya Chrome). Klaim "UI berjalan" harus dibaca sebatas itu.
 2. **Linux & Windows belum teruji.** `platform_ops/linux.py` dan `windows.py` bersifat
    struktural (daftar aksi dikomentari, dilabeli belum teruji); hanya macOS yang diuji.
