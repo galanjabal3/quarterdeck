@@ -1,5 +1,7 @@
 # Quarterdeck
 
+![tests](https://img.shields.io/badge/tests-54%20passed-brightgreen) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) ![React 19](https://img.shields.io/badge/React-19-61DAFB) ![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB) ![Falcon 4](https://img.shields.io/badge/Falcon-4-E01E37) ![Vite 8](https://img.shields.io/badge/Vite-8-646CFF) ![Tailwind v4](https://img.shields.io/badge/Tailwind-v4-06B6D4)
+
 Dashboard *Command Center* lokal: metrik sistem real-time dan *App Launcher* untuk macOS — dengan dua mode tampilan, **Casual** dan **Pro**.
 
 ## Deskripsi
