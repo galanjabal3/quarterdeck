@@ -16,6 +16,10 @@ dependencies = [
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.poetry]
+# Aplikasi, bukan library: hanya dependensi yang dipasang (bukan root package).
+package-mode = false
+
 [tool.poetry.group.dev.dependencies]
 pytest = "^7"
 
