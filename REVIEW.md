@@ -21,7 +21,7 @@ menscan aplikasi terinstal dan membukanya, dengan dua mode UI — **Casual** dan
 | Orkestrasi | `./run.sh`: satu perintah untuk FE+BE, log prefix `[BE]`/`[FE]`, cek prasyarat (`poetry`, `node`, `npm`, `curl`, `lsof`), deteksi port, graceful shutdown Ctrl+C | `./run.sh --help` |
 
 Status akhir: **Phase 1–5 sesuai `PLANNING.md` dinyatakan selesai** (seluruh milestone
-bertanda `[x]`), 37 test backend lolos, type-check/lint/format/build frontend bersih, audit
+bertanda `[x]`), 54 test backend lolos, type-check/lint/format/build frontend bersih, audit
 input 60 kasus tanpa satu pun HTTP 500. Yang belum diverifikasi (mis. tampilan UI, Linux/
 Windows) tercatat jujur di bagian 6.
 
@@ -120,9 +120,10 @@ PNG, Fast Ops per-OS (`platform_ops/`), `GET /api/system/processes`, dan `run.sh
 4. **README berisi fakta salah** — *Gejala:* "Node 24 LTS" dan "Testing: httpx".
    *Akar:* dokumen ditulis dari asumsi awal, tidak dicek ke lingkungan aktual.
    *Perbaikan:* dikoreksi — README kini menyebut Node 20+ (aktual 20.20.0) dan pytest.
-   *Status:* selesai. **Catatan sisa:** `README.md` baris 23 dan 138 masih menyebut
-   "18 unit test/18 test lolos" (aktual 37) dan `PLANNING.md` baris 13 masih "Node 24 LTS";
-   keduanya di luar ruang lingkup file yang boleh diubah sesi ini.
+   *Status:* selesai. **Catatan sisa:** `README.md` baris 23 dan 138 pernah menyebut
+   "18 unit test/18 test lolos" (aktual kini **54 test**) dan `PLANNING.md` baris 13 pernah
+   "Node 24 LTS" (kini "Node 20 LTS"); keduanya pada sesi itu di luar ruang lingkup file
+   yang boleh diubah, tetapi kini sudah ikut dikoreksi.
 
 5. **Dependensi mati `httpx`** — *Gejala:* terpasang di `pyproject.toml` tapi tidak
    di-import di mana pun. *Akar:* sisa penyusunan awal; test memakai client internal.
@@ -196,10 +197,12 @@ laporan, kecuali yang ditandai lain.
 ### 5.1 Backend
 | Perintah | Hasil |
 |---|---|
-| `cd backend && poetry run pytest -q` | **39 passed** in 0.21s (0 gagal, 0 skip) |
+| `cd backend && poetry run pytest -q` | **54 passed** in 0.24s (0 gagal, 0 skip, 0 warning) |
 
 Rincian class: `TestMetrics`, `TestActions`, `TestAppIcon`, `TestFastOps`,
-`TestActionTypeValidation`, `TestSystemProcesses`, `TestEndpointIntegrity`.
+`TestActionTypeValidation`, `TestSystemProcesses`, `TestEndpointIntegrity`, serta
+`TestAuthIntegration` dan `TestStartupGuardrail` di `tests/test_auth.py` (15 test
+integrasi auth token & guardrail startup; 39 lainnya di `tests/test_metrics.py`).
 
 **Perbaikan storage (temuan dari uji visual).** Endpoint `/api/metrics/storage` semula
 memanggil `psutil.disk_usage("/")`; di macOS (APFS) path itu adalah volume sistem, jadi
@@ -228,7 +231,10 @@ bagian 6).
 
 ### 5.3 Audit keamanan (input & konfigurasi)
 `python3 /tmp/audit_keamanan.py` (skrip masih ada, 60 kasus uji) dijalankan terhadap server
-yang hidup — **keluaran: nol respons 500**.
+yang hidup — **keluaran: nol respons 500**. Audit berjalan dengan auth dalam kondisi
+default (mati); sejak audit ditulis ada tambahan perilaku `401 UNAUTHORIZED` bila
+`ACH_AUTH_TOKEN` diset, sehingga kasus-kasus di bawah kini berlaku saat auth mati
+(jumlah dan hasil 60 kasus tidak berubah saat audit dilakukan).
 
 | Kelompok | Kasus | Hasil |
 |---|---|---|
@@ -304,9 +310,19 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
    serta lintas browser (hanya Chrome). Klaim "UI berjalan" harus dibaca sebatas itu.
 2. **Linux & Windows belum teruji.** `platform_ops/linux.py` dan `windows.py` bersifat
    struktural (daftar aksi dikomentari, dilabeli belum teruji); hanya macOS yang diuji.
-3. **Tidak ada autentikasi dan tidak ada rate limit.** API hanya aman karena bind
-   `127.0.0.1`. **CORS melindungi browser, bukan `curl`** — proses lokal mana pun dapat
-   memanggil API, termasuk `POST /api/actions/fast-op`.
+3. **Autentikasi kini tersedia tapi opsional; tetap tidak ada rate limit.** Bila env
+   `ACH_AUTH_TOKEN` diset, semua request wajib token via `Authorization: Bearer <t>`,
+   `X-Auth-Token: <t>`, atau `?token=<t>` (untuk `<img>` ikon); perbandingan
+   `hmac.compare_digest`, gagal → `401` envelope
+   `{"status":"error","error":{"code":"UNAUTHORIZED",...}}` (header CORS tetap ada,
+   OPTIONS preflight dikecualikan), plus
+   guardrail: `API_HOST` non-loopback tanpa `ACH_AUTH_TOKEN` → proses gagal start
+   (`RuntimeError` saat import `app.py`, kena `uvicorn app:app`/`run.sh`/`python main.py`).
+   **Tapi default tetap mati** — tanpa env itu, API menerima semua request; selama auth
+   mati, proses lokal mana pun dapat memanggil API, termasuk `POST /api/actions/fast-op`.
+   **Belum ada rate limit.** API juga aman karena bind `127.0.0.1`, dan **CORS melindungi
+   browser, bukan `curl`** — CORS tetap mengizinkan origin hardcoded
+   `http://localhost:5173` saja (dev server di port lain ditolak CORS).
 4. **Fast Ops berdampak nyata** ke sistem (restart Dock/Finder/SystemUIServer). Aman,
    auto-restart, tanpa `sudo` dan tanpa penghapusan data — tetap aksi tulis.
 5. **`/api/system/processes` membocorkan** pid dan nama proses lokal ke setiap client
@@ -314,16 +330,21 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
 6. **Ini bukan penetration test.** Audit berupa baca kode + pengujian input terhadap
    endpoint hidup; tanpa fuzzing berat, tanpa review dependensi eksternal, tanpa pihak
    ketiga.
-7. **Belum ada git repository** — folder belum di-init, belum ada commit (terverifikasi:
-   `git status` → *not a git repository*), sehingga riwayat perubahan tidak dapat
-   ditelusuri per commit.
+7. **Riwayat git baru dimulai dari baseline.** Repository diinisialisasi di akhir
+   pengembangan; commit pertama (`3bc9d6e`) sudah memuat seluruh baseline sekaligus,
+   sehingga riwayat perubahan halus sebelumnya (Phase 1–5) tidak dapat ditelusuri per
+   commit. Perubahan sesudah baseline di-commit terpisah mengikuti konvensi satu
+   commit = satu perubahan logis (mis. `fff9639` pembersihan UI, `4116d6d` auth
+   backend, `61748e1` pengiriman token frontend).
 8. **`cpu_percent` bisa `0.0` pada request pertama** untuk PID baru (first call psutil) —
    diizinkan dan jujur, bukan angka karangan; angka representatif muncul pada request
    kedua dan seterusnya.
-9. **Dokumen yang sudah disinkronkan:** `README.md` semula menulis "18 test" (aktual 39)
-   dan `PLANNING.md` semula menulis "Node 24 LTS" (aktual 20.20.0) — keduanya sudah
-   dikoreksi, dan tabel API `README.md` kini mencantumkan ketiga endpoint Fast Ops /
-   Process Manager beserta `run.sh` dan struktur folder terkini.
+9. **Dokumen yang sudah disinkronkan:** `README.md` semula menulis "18 test" (waktu itu
+   39, kini 54) dan `PLANNING.md` semula menulis "Node 24 LTS" (aktual 20.20.0) — keduanya
+   sudah dikoreksi, dan tabel API `README.md` kini mencantumkan ketiga endpoint Fast Ops /
+   Process Manager beserta `run.sh` dan struktur folder terkini. Kini `README.md` juga
+   sudah mencerminkan fitur auth token opsional (`ACH_AUTH_TOKEN`/`VITE_AUTH_TOKEN`,
+   guardrail, limitasi) beserta angka test terbaru (**54 test**).
 10. **Elemen dekoratif Pro mode — sudah dihapus (pekerjaan lanjutan tuntas).** Temuan
     asli dari uji visual: kartu `THREAD POOL`, `REDIS LATENCY`, `DOCKER DAEMON`,
     `INGRESS/EGRESS` menampilkan angka **statis identik di setiap render**; *terminal
@@ -347,6 +368,11 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
     mode tak lagi memuat elemen lama, dan screenshot terbaru di `screenshots/`
     dirender dari versi baru (lihat §5.5). Sisa yang lokal by-design dan disebut
     jujur di UI: **Universal Drop** (pemrosesan file di browser, tanpa upload).
+ 11. **Auth bersifat opt-in; cakupan verifikasinya terbatas.** Auth diuji di origin
+    `localhost:5173` saja — lintas port/origin lain ditolak CORS; `uvicorn --host`
+    **manual** tanpa env `API_HOST` tidak dicegah guardrail; verifikasi integrasi
+    frontend ↔ backend-auth dilakukan via Playwright (**26 request API, 0 gagal,
+    12/12 ikon bertoken**).
 
 ---
 
@@ -355,7 +381,7 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
 ```bash
 cd /Users/galanjabal/Documents/Portfolios/adaptive-command-hub
 
-# backend — harap 39 passed
+# backend — harap 54 passed
 cd backend && poetry run pytest -q
 
 # frontend — harap exit 0, tanpa output lint, build sukses
@@ -379,9 +405,25 @@ curl -i http://127.0.0.1:8000/api/nope                                # harap 40
 curl -i -X POST http://127.0.0.1:8000/api/metrics/ram                 # harap 405 JSON
 ```
 
+Contoh uji auth token — jalankan backend dengan `ACH_AUTH_TOKEN` (dari folder
+`backend/`: `ACH_AUTH_TOKEN=$(openssl rand -hex 32) poetry run uvicorn app:app --host 127.0.0.1 --port 8000`),
+pastikan `$ACH_AUTH_TOKEN` juga diekspor di shell tempat curl dijalankan, lalu:
+
+```bash
+# auth-off (default): 200
+curl -i http://127.0.0.1:8000/api/metrics/cpu
+
+# auth-on: jalankan backend dengan ACH_AUTH_TOKEN, lalu
+curl -i http://127.0.0.1:8000/api/metrics/cpu                    # harap 401 UNAUTHORIZED
+curl -i -H "Authorization: Bearer $ACH_AUTH_TOKEN" http://127.0.0.1:8000/api/metrics/cpu   # harap 200
+
+# guardrail (dari folder backend/; token dikosongkan agar kondisi "tanpa token" pasti)
+ACH_AUTH_TOKEN= API_HOST=0.0.0.0 poetry run python -c "import app"   # harap RuntimeError (guardrail)
+```
+
 Catatan saat review:
 - Server kemungkinan **sedang hidup** di port 8000 (PID 59044 saat penulisan dokumen ini).
   Bila port terpakai, `./run.sh` berhenti dengan pesan yang bisa ditindaklanjuti;
   `./run.sh --kill` memaksa mengambil alih.
-- Angka (37 test, 84 app, 83 ikon, 0 warning) diukur di mesin ini; angka ikon/proses bisa
+- Angka (54 test, 84 app, 83 ikon, 0 warning) diukur di mesin ini; angka ikon/proses bisa
   berbeda bila daftar aplikasi atau proses yang berjalan berubah.
