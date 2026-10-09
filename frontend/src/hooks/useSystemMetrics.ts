@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { authHeaders } from '../lib/actions';
+
 export interface ApiSuccessResponse<T> {
   status: 'success';
   data: T;
@@ -83,7 +85,7 @@ function isErrorPayload(payload: unknown): payload is ApiErrorResponse {
 async function fetchMetrics<T>(path: string, signal: AbortSignal): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     signal,
-    headers: { Accept: 'application/json' },
+    headers: { Accept: 'application/json', ...authHeaders() },
   });
 
   let payload: unknown;

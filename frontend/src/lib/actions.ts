@@ -40,6 +40,23 @@ interface ApiErrorPayload {
 export const API_BASE_URL: string =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:8000';
 
+/** Token auth opsional dari env frontend; kosong = auth mati (tanpa header tambahan). */
+const AUTH_TOKEN = (import.meta.env.VITE_AUTH_TOKEN as string | undefined) ?? '';
+
+/** Header auth untuk fetch — {} (tanpa Authorization) bila token tak diset. */
+export function authHeaders(): Record<string, string> {
+  return AUTH_TOKEN ? { Authorization: `Bearer ${AUTH_TOKEN}` } : {};
+}
+
+/**
+ * Sisipkan token sebagai query `?token=` untuk URL yang tak bisa kirim header
+ * (mis. <img src>). URL yang sudah punya query digabung dengan `&`.
+ */
+export function withToken(url: string): string {
+  if (!AUTH_TOKEN) return url;
+  return url + (url.includes('?') ? '&' : '?') + 'token=' + encodeURIComponent(AUTH_TOKEN);
+}
+
 const ACTION_ENDPOINT = '/api/actions/launch-game';
 
 const NETWORK_ERROR_MESSAGES: string[] = ['Failed to fetch', 'fetch failed', 'NetworkError'];
@@ -86,6 +103,7 @@ export async function postAction(action: ActionName, target: string): Promise<Ac
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        ...authHeaders(),
       },
       body: JSON.stringify({ action, target }),
     });
@@ -128,7 +146,8 @@ export async function postAction(action: ActionName, target: string): Promise<Ac
  * 200 image/png bila ikon ada, 404 bila tidak — penanganan error ada di sisi pemanggil.
  */
 export function appIconUrl(name: string): string {
-  return `${API_BASE_URL}/api/actions/app-icon?name=${encodeURIComponent(name)}`;
+  // <img src> tidak bisa menyertakan header → token dikirim via query.
+  return withToken(`${API_BASE_URL}/api/actions/app-icon?name=${encodeURIComponent(name)}`);
 }
 
 export interface InstalledApp {
@@ -199,7 +218,7 @@ export async function fetchInstalledApps(options?: { refresh?: boolean }): Promi
 
   try {
     response = await fetch(`${API_BASE_URL}${APPS_ENDPOINT}`, {
-      headers: { Accept: 'application/json' },
+      headers: { Accept: 'application/json', ...authHeaders() },
     });
   } catch (reason) {
     return { ok: false, code: 'BACKEND_UNREACHABLE', message: toFailureMessage(reason) };
@@ -273,7 +292,11 @@ const PROCESSES_ENDPOINT = '/api/system/processes';
 async function requestEnvelope(path: string, options?: RequestOptions): Promise<Envelope> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: options?.method ?? 'GET',
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+    },
     body: options?.body === undefined ? undefined : JSON.stringify(options.body),
     signal: options?.signal,
   });
