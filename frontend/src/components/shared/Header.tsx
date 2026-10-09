@@ -14,7 +14,7 @@ export default function Header({ isProMode, onToggle }: HeaderProps) {
           <div className="flex items-center gap-space-sm">
             <LayoutGrid className="w-5 h-5 text-primary-container" aria-hidden="true" />
             <span className="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight">
-              Command Hub
+              Quarterdeck
             </span>
           </div>
         </div>
@@ -36,7 +36,7 @@ export default function Header({ isProMode, onToggle }: HeaderProps) {
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
               <span className="font-headline-sm text-[17px] font-bold text-slate-900 tracking-tight">
-                Command Hub
+                Quarterdeck
               </span>
               <span className="px-1.5 py-[2px] rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 CASUAL
