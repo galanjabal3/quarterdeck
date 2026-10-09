@@ -20,6 +20,8 @@ import falcon
 
 from falcon import asgi
 
+from api.cors_origins import resolve_acao
+
 
 def _is_loopback_host(host: str) -> bool:
     """Cek apakah host adalah loopback (127.0.0.1, localhost, ::1)."""
@@ -74,9 +76,8 @@ def _get_query_param_from_url(url: str, param: str) -> str:
 class AuthMiddleware:
     """Middleware that enforces optional token-based authentication."""
 
-    def __init__(self, app, allowed_origin: str = "http://localhost:5173"):
+    def __init__(self, app):
         self._app = app
-        self._allowed_origin = allowed_origin
 
     async def process_request(self, req, res):
         """Short-circuit auth check before processing the request.
@@ -139,5 +140,11 @@ class AuthMiddleware:
         res.complete = True  # skip responder pipeline; process_response (CORS) tetap jalan
 
     async def process_response(self, req, res, resource, params):
-        """Pastikan header CORS access-control-allow-origin selalu ada di respons 401."""
-        res.set_header("Access-Control-Allow-Origin", self._allowed_origin)
+        """Pastikan header CORS access-control-allow-origin selalu ada di respons 401.
+
+        Nilai ACAO mengikuti allowlist (localhost & 127.0.0.1) — echo origin
+        pengguna bila diizinkan, tanpa header bila tidak (lihat cors_origins).
+        """
+        acao = resolve_acao(req)
+        if acao:
+            res.set_header("Access-Control-Allow-Origin", acao)

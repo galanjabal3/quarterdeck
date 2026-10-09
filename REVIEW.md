@@ -21,7 +21,7 @@ menscan aplikasi terinstal dan membukanya, dengan dua mode UI — **Casual** dan
 | Orkestrasi | `./run.sh`: satu perintah untuk FE+BE, log prefix `[BE]`/`[FE]`, cek prasyarat (`poetry`, `node`, `npm`, `curl`, `lsof`), deteksi port, graceful shutdown Ctrl+C | `./run.sh --help` |
 
 Status akhir: **Phase 1–5 sesuai `PLANNING.md` dinyatakan selesai** (seluruh milestone
-bertanda `[x]`), 61 test backend lolos, type-check/lint/format/build frontend bersih, audit
+bertanda `[x]`), 67 test backend lolos, type-check/lint/format/build frontend bersih, audit
 input 60 kasus tanpa satu pun HTTP 500. Yang belum diverifikasi (mis. tampilan UI, Linux/
 Windows) tercatat jujur di bagian 6.
 
@@ -121,7 +121,7 @@ PNG, Fast Ops per-OS (`platform_ops/`), `GET /api/system/processes`, dan `run.sh
    *Akar:* dokumen ditulis dari asumsi awal, tidak dicek ke lingkungan aktual.
    *Perbaikan:* dikoreksi — README kini menyebut Node 20+ (aktual 20.20.0) dan pytest.
    *Status:* selesai. **Catatan sisa:** `README.md` baris 23 dan 138 pernah menyebut
-   "18 unit test/18 test lolos" (aktual kini **61 test**) dan `PLANNING.md` baris 13 pernah
+   "18 unit test/18 test lolos" (aktual kini **67 test**) dan `PLANNING.md` baris 13 pernah
    "Node 24 LTS" (kini "Node 20 LTS"); keduanya pada sesi itu di luar ruang lingkup file
    yang boleh diubah, tetapi kini sudah ikut dikoreksi.
 
@@ -197,7 +197,7 @@ laporan, kecuali yang ditandai lain.
 ### 5.1 Backend
 | Perintah | Hasil |
 |---|---|
-| `cd backend && poetry run pytest -q` | **61 passed** in 1.12s (0 gagal, 0 skip, 0 warning) |
+| `cd backend && poetry run pytest -q` | **67 passed** in 1.21s (0 gagal, 0 skip, 0 warning) |
 
 Rincian class: `TestMetrics`, `TestActions`, `TestAppIcon`, `TestFastOps`,
 `TestActionTypeValidation`, `TestSystemProcesses`, `TestEndpointIntegrity`, serta
@@ -334,8 +334,11 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
    **Tapi default tetap mati** — tanpa env itu, API menerima semua request; selama auth
    mati, proses lokal mana pun dapat memanggil API, termasuk `POST /api/actions/fast-op`.
    **Rate limit kini terpasang** (`RateLimitMiddleware`, urutan cors → rate limit → auth): sliding window 60 detik per IP, default 300 request/menit (env `QD_RATE_LIMIT_PER_MIN`; `0` menonaktifkan; nilai tidak valid jatuh ke default), tolak `429` envelope `RATE_LIMITED` + header `Retry-After`, OPTIONS dikecualikan, store in-memory per proses dengan batas 4096 key (key tertua dibuang) — reset saat restart, **bukan limiter terdistribusi**; karena berjalan sebelum auth, percobaan brute-force token ikut terhitung. API juga aman karena bind `127.0.0.1`, dan **CORS melindungi
-   browser, bukan `curl`** — CORS tetap mengizinkan origin hardcoded
-   `http://localhost:5173` saja (dev server di port lain ditolak CORS).
+   browser, bukan `curl`** — CORS memakai allowlist: default `http://localhost:5173`
+   dan `http://127.0.0.1:5173` (kedua hostname yang dicetak Vite; awalnya hanya
+   `localhost` yang di-hardcode sehingga membuka via `127.0.0.1:5173` memblokir
+   semua respons), override via env `QD_ALLOWED_ORIGINS`; port/origin lain tetap
+   ditolak (respons tanpa header ACAO).
 4. **Fast Ops berdampak nyata** ke sistem (restart Dock/Finder/SystemUIServer). Aman,
    auto-restart, tanpa `sudo` dan tanpa penghapusan data — tetap aksi tulis.
 5. **`/api/system/processes` membocorkan** pid dan nama proses lokal ke setiap client
@@ -357,7 +360,7 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
    sudah dikoreksi, dan tabel API `README.md` kini mencantumkan ketiga endpoint Fast Ops /
    Process Manager beserta `run.sh` dan struktur folder terkini. Kini `README.md` juga
    sudah mencerminkan fitur auth token opsional (`QD_AUTH_TOKEN`/`VITE_AUTH_TOKEN`,
-   guardrail, limitasi, rate limit) beserta angka test terbaru (**61 test**).
+   guardrail, limitasi, rate limit, allowlist CORS) beserta angka test terbaru (**67 test**).
 10. **Elemen dekoratif Pro mode — sudah dihapus (pekerjaan lanjutan tuntas).** Temuan
     asli dari uji visual: kartu `THREAD POOL`, `REDIS LATENCY`, `DOCKER DAEMON`,
     `INGRESS/EGRESS` menampilkan angka **statis identik di setiap render**; *terminal
@@ -382,7 +385,8 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
     dirender dari versi baru (lihat §5.5). Sisa yang lokal by-design dan disebut
     jujur di UI: **Universal Drop** (pemrosesan file di browser, tanpa upload).
  11. **Auth bersifat opt-in; cakupan verifikasinya terbatas.** Auth diuji di origin
-    `localhost:5173` saja — lintas port/origin lain ditolak CORS; `uvicorn --host`
+    `localhost:5173` + `127.0.0.1:5173` (allowlist, env `QD_ALLOWED_ORIGINS`) —
+   lintas port/origin lain ditolak CORS; `uvicorn --host`
     **manual** tanpa env `API_HOST` tidak dicegah guardrail; verifikasi integrasi
     frontend ↔ backend-auth dilakukan via Playwright (**26 request API, 0 gagal,
     12/12 ikon bertoken**).
@@ -394,7 +398,7 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
 ```bash
 cd /Users/galanjabal/Documents/Portfolios/quarterdeck
 
-# backend — harap 61 passed
+# backend — harap 67 passed
 cd backend && poetry run pytest -q
 
 # frontend — harap exit 0, tanpa output lint, build sukses
@@ -438,5 +442,5 @@ Catatan saat review:
 - Server kemungkinan **sedang hidup** di port 8000 (PID 59044 saat penulisan dokumen ini).
   Bila port terpakai, `./run.sh` berhenti dengan pesan yang bisa ditindaklanjuti;
   `./run.sh --kill` memaksa mengambil alih.
-- Angka (61 test, 84 app, 83 ikon, 0 warning) diukur di mesin ini; angka ikon/proses bisa
+- Angka (67 test, 84 app, 83 ikon, 0 warning) diukur di mesin ini; angka ikon/proses bisa
   berbeda bila daftar aplikasi atau proses yang berjalan berubah.

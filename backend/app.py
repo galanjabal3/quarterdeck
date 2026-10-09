@@ -8,6 +8,7 @@ import falcon
 from falcon import asgi
 
 from api.auth_middleware import AuthMiddleware, validate_startup_host
+from api.cors_origins import resolve_acao
 from api.rate_limit import RateLimitMiddleware
 
 # Jalankan validasi guardrail saat import module.
@@ -38,13 +39,18 @@ logger = logging.getLogger(__name__)
 class CorsMiddleware:
     """Middleware that adds CORS headers to all responses."""
 
-    def __init__(self, app, allowed_origin: str = "http://localhost:5173"):
+    def __init__(self, app):
         self._app = app
-        self._allowed_origin = allowed_origin
+        # Origin diatur lewat api/cors_origins (allowlist localhost + 127.0.0.1,
+        # override env QD_ALLOWED_ORIGINS) — bukan lagi hardcode satu string.
 
     async def process_response(self, req, res, resource, params):
-        # Add CORS headers to ALL responses (including OPTIONS preflights)
-        res.set_header("Access-Control-Allow-Origin", self._allowed_origin)
+        # Add CORS headers to ALL responses (including OPTIONS preflights).
+        # ACAO di-echo dari origin pengguna bila di-allowlist (localhost ATAU
+        # 127.0.0.1 — lihat api/cors_origins.py); origin lain: tanpa header.
+        acao = resolve_acao(req)
+        if acao:
+            res.set_header("Access-Control-Allow-Origin", acao)
         res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         res.set_header(
             "Access-Control-Allow-Headers",

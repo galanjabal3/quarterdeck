@@ -1,6 +1,6 @@
 # Quarterdeck
 
-![tests](https://img.shields.io/badge/tests-61%20passed-brightgreen) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) ![React 19](https://img.shields.io/badge/React-19-61DAFB) ![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB) ![Falcon 4](https://img.shields.io/badge/Falcon-4-E01E37) ![Vite 8](https://img.shields.io/badge/Vite-8-646CFF) ![Tailwind v4](https://img.shields.io/badge/Tailwind-v4-06B6D4)
+![tests](https://img.shields.io/badge/tests-67%20passed-brightgreen) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) ![React 19](https://img.shields.io/badge/React-19-61DAFB) ![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB) ![Falcon 4](https://img.shields.io/badge/Falcon-4-E01E37) ![Vite 8](https://img.shields.io/badge/Vite-8-646CFF) ![Tailwind v4](https://img.shields.io/badge/Tailwind-v4-06B6D4)
 
 Dashboard *Command Center* lokal: metrik sistem real-time dan *App Launcher* untuk macOS — dengan dua mode tampilan, **Casual** dan **Pro**.
 
@@ -24,7 +24,7 @@ Yang membuat proyek ini menarik:
 - **Fast Ops** — aksi cepat sesuai OS yang sedang berjalan (di macOS: *flush DNS*, restart Finder, Dock, dan SystemUIServer). Daftar aksi dibaca dari modul `platform_ops/` yang sesuai platform, lalu dieksekusi lewat whitelist dengan `shell=False` (tanpa mengekspos argv mentah ke klien).
 - **Process Manager** — data proses *real* dari `psutil` (`pid`, `name`, `cpu_percent`, `memory_mb`, `uptime`, `role`), tanpa angka fiktif/hardcoded.
 - Seluruh eksekusi OS hanya dari backend; frontend tidak pernah menyentuh `subprocess`.
-- 61 test pytest pada endpoint metrik, aturan whitelist/validasi aksi, ikon aplikasi, Fast Ops, data proses real, dan konsistensi pembacaan storage — plus integrasi auth token opsional, guardrail startup, dan rate limit (lihat § Testing).
+- 67 test pytest pada endpoint metrik, aturan whitelist/validasi aksi, ikon aplikasi, Fast Ops, data proses real, dan konsistensi pembacaan storage — plus integrasi auth token opsional, guardrail startup, rate limit, dan allowlist CORS (lihat § Testing).
 
 Fast Ops dan Process Manager sudah terpasang di **Pro mode**: `FastOps.tsx` menampilkan daftar aksi dari `GET /api/actions/fast-ops` dan mengeksekusinya lewat `POST /api/actions/fast-op` (dengan konfirmasi untuk aksi berdampak); `ServerManager.tsx` menampilkan data proses real dari `GET /api/system/processes` dengan polling 2,5 detik. Keduanya sudah diverifikasi secara visual dengan **Playwright** (screenshot tersimpan di [`screenshots/`](screenshots/)): peluncuran aplikasi, hasil Fast Ops `EXIT 0`, dan pid backend yang cocok dengan `lsof` semuanya terkonfirmasi.
 
@@ -93,7 +93,7 @@ Opsi yang tersedia:
 ```
 
 - Port bisa di-override lewat environment variable `PORT_BACKEND` (default `8000`) dan `PORT_FRONTEND` (default `5173`); host bind backend lewat `API_HOST` (default `127.0.0.1`).
-- Auth token opsional lewat environment variable `QD_AUTH_TOKEN` (untuk backend) dan `VITE_AUTH_TOKEN` (untuk frontend); keduanya harus memuat token yang sama — bila tidak diset, auth mati (default, perilaku lama). Contoh satu sesi: `QD_AUTH_TOKEN=$(openssl rand -hex 32) VITE_AUTH_TOKEN=$QD_AUTH_TOKEN ./run.sh`. Laju request dibatasi oleh env `QD_RATE_LIMIT_PER_MIN` (default 300 request/menit per IP; `0` mematikan rate limit).
+- Auth token opsional lewat environment variable `QD_AUTH_TOKEN` (untuk backend) dan `VITE_AUTH_TOKEN` (untuk frontend); keduanya harus memuat token yang sama — bila tidak diset, auth mati (default, perilaku lama). Contoh satu sesi: `QD_AUTH_TOKEN=$(openssl rand -hex 32) VITE_AUTH_TOKEN=$QD_AUTH_TOKEN ./run.sh`. Laju request dibatasi oleh env `QD_RATE_LIMIT_PER_MIN` (default 300 request/menit per IP; `0` mematikan rate limit). Allowlist origin CORS diatur lewat `QD_ALLOWED_ORIGINS` (dipisah koma; default `http://localhost:5173,http://127.0.0.1:5173` — kedua hostname yang dipakai Vite).
 - Bila port sudah terpakai dan `--kill` tidak diberikan, script berhenti dengan pesan yang bisa ditindaklanjuti.
 - Tekan `Ctrl+C` untuk berhenti: kedua proses dimatikan (graceful shutdown), sehingga tidak ada proses yatim yang tertinggal.
 
@@ -178,7 +178,7 @@ Semua respons berbentuk `{ "status": "success", "data": {...} }` atau `{ "status
 cd backend && poetry run pytest
 ```
 
-61 test lolos tanpa warning (39 lama + 15 auth + 7 rate limit) — mencakup endpoint metrik, aturan whitelist/validasi aksi (termasuk penolakan target yang tidak dikenal dan upaya path traversal), endpoint ikon aplikasi, Fast Ops, data proses real, regresi validasi tipe input (respons `400`, bukan `500`), serta integrasi auth token (penolakan `401` tanpa token, penerimaan `200` via `Authorization`, `X-Auth-Token`, dan `?token=`, preflight OPTIONS bebas token) dan guardrail startup (`API_HOST` non-loopback tanpa `QD_AUTH_TOKEN` → `RuntimeError`), serta rate limit (tolak `429` `RATE_LIMITED` + `Retry-After`, di bawah limit tetap `200`, OPTIONS bebas limit, nonaktif via `QD_RATE_LIMIT_PER_MIN=0`, parsing konfigurasi, kedaluwarsa jendela tanpa sleep, dan pembuangan key tertua saat store penuh).
+67 test lolos tanpa warning (39 lama + 15 auth + 7 rate limit + 6 CORS) — mencakup endpoint metrik, aturan whitelist/validasi aksi (termasuk penolakan target yang tidak dikenal dan upaya path traversal), endpoint ikon aplikasi, Fast Ops, data proses real, regresi validasi tipe input (respons `400`, bukan `500`), serta integrasi auth token (penolakan `401` tanpa token, penerimaan `200` via `Authorization`, `X-Auth-Token`, dan `?token=`, preflight OPTIONS bebas token) dan guardrail startup (`API_HOST` non-loopback tanpa `QD_AUTH_TOKEN` → `RuntimeError`), serta rate limit (tolak `429` `RATE_LIMITED` + `Retry-After`, di bawah limit tetap `200`, OPTIONS bebas limit, nonaktif via `QD_RATE_LIMIT_PER_MIN=0`, parsing konfigurasi, kedaluwarsa jendela tanpa sleep, dan pembuangan key tertua saat store penuh), serta allowlist CORS (echo origin `localhost:5173` dan `127.0.0.1:5173`, penolakan origin asing tanpa header ACAO, preflight `OPTIONS`, fallback tanpa header `Origin`, dan override env `QD_ALLOWED_ORIGINS`).
 
 Perintah frontend yang tersedia: `npm run lint`, `npm run format`, dan `npm run build` (type-check TypeScript + build produksi).
 
@@ -191,7 +191,7 @@ Prinsip keamanan yang diterapkan di backend:
 - **Validasi regex nama** — target harus cocok dengan pola `^[a-zA-Z0-9 ._-]+$` (menolak `../`, `/`, dan karakter khusus lain).
 - **Exact-match terhadap hasil scan** — nama aplikasi wajib identik dengan entri hasil scan aplikasi sebelum dieksekusi.
 - **Timeout wajib** — setiap eksekusi dibatasi `timeout` (30 detik untuk aksi; 10 detik untuk konversi ikon).
-- **CORS dibatasi** — origin yang diizinkan hanya `http://localhost:5173`, bukan `*`.
+- **CORS dibatasi** — allowlist origin, bukan `*`: default `http://localhost:5173` **dan** `http://127.0.0.1:5173` (kedua hostname yang dicetak Vite; membuka lewat `127.0.0.1:5173` dulu sempat diblokir karena hanya `localhost` yang di-hardcode), dioverride lewat `QD_ALLOWED_ORIGINS`. Header `Access-Control-Allow-Origin` di-**echo** sesuai origin yang sah; origin di luar allowlist menerima respons **tanpa** header itu (diblokir browser).
 - **Konversi ikon terisolasi** — `sips` dijalankan dengan argv list pada path hasil validasi, hasilnya di-cache di `/tmp/qd-icon-cache`.
 - **Auth token opsional (backend)** — bila env `QD_AUTH_TOKEN` diset, semua request wajib menyertakan token lewat salah satu dari `Authorization: Bearer <token>`, header `X-Auth-Token: <token>`, atau query `?token=<token>` (untuk `<img>` ikon yang tidak bisa mengirim header). Perbandingan memakai `hmac.compare_digest` (constant-time); token salah/tidak ada → `401` dengan envelope `{"status": "error", "error": {"code": "UNAUTHORIZED", ...}}` dan header CORS tetap disertakan; OPTIONS preflight dikecualikan. Tanpa env tersebut auth mati (default) — semua request diterima seperti biasa, persis perilaku lama.
 - **Rate limit per IP** — sliding window 60 detik, default **300 request/menit per IP** (env `QD_RATE_LIMIT_PER_MIN`; `0` menonaktifkan; nilai tidak valid jatuh ke default). Berjalan **sebelum** auth sehingga percobaan brute-force token ikut terhitung; OPTIONS preflight dikecualikan. Respons `429` ber-envelope `{"status": "error", "error": {"code": "RATE_LIMITED", ...}}` plus header `Retry-After`. Store in-memory per proses (reset saat server restart — bukan limiter terdistribusi), memadai karena aplikasi memang hanya melayani satu mesin loopback.

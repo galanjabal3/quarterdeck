@@ -23,6 +23,8 @@ from collections import deque
 
 import falcon
 
+from api.cors_origins import resolve_acao
+
 # Batas jumlah key di store (mitigasi memori bila banyak IP berbeda).
 _MAX_STORE_KEYS = 4096
 
@@ -79,14 +81,12 @@ class RateLimitMiddleware:
     ----------
     app : falcon.asgi.App
         The Falcon ASGI application.
-    allowed_origin : str
-        Origin value for Access-Control-Allow-Origin header in process_response.
-        Default "http://localhost:5173".
+        Nilai ACAO mengikuti allowlist di api/cors_origins (localhost &
+        127.0.0.1; override env QD_ALLOWED_ORIGINS).
     """
 
-    def __init__(self, app, allowed_origin: str = "http://localhost:5173"):
+    def __init__(self, app):
         self._app = app
-        self._allowed_origin = allowed_origin
         # Gunakan store module-level untuk berbagi state antar instance
         self._store = _rate_limit_store
 
@@ -154,6 +154,9 @@ class RateLimitMiddleware:
     async def process_response(self, req, res, resource, params):
         """Pastikan header CORS access-control-allow-origin selalu ada.
 
-        Mirror AuthMiddleware process_response: set duplikat yang aman.
+        Nilai ACAO mengikuti allowlist (localhost & 127.0.0.1) — echo origin
+        pengguna bila diizinkan, tanpa header bila tidak (lihat cors_origins).
         """
-        res.set_header("Access-Control-Allow-Origin", self._allowed_origin)
+        acao = resolve_acao(req)
+        if acao:
+            res.set_header("Access-Control-Allow-Origin", acao)
