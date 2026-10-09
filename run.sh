@@ -232,8 +232,13 @@ fi
 wait_for() {
   local label="$1" url="$2" tries=40
   local i
+  # Build curl auth header if ACH_AUTH_TOKEN is set
+  local curl_opts=(-fs --max-time 2)
+  if [ -n "$ACH_AUTH_TOKEN" ]; then
+    curl_opts+=(-H "Authorization: Bearer $ACH_AUTH_TOKEN")
+  fi
   for ((i = 1; i <= tries; i++)); do
-    if curl -fs -o /dev/null --max-time 2 "$url" 2>/dev/null; then
+    if curl "${curl_opts[@]}" -o /dev/null "$url" 2>/dev/null; then
       echo "INFO: $label siap ($url) setelah ${i}x percobaan."
       return 0
     fi

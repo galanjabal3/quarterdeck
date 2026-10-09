@@ -7,6 +7,13 @@ import logging
 import falcon
 from falcon import asgi
 
+from api.auth_middleware import AuthMiddleware, validate_startup_host
+
+# Jalankan validasi guardrail saat import module.
+# Jika kondisinya gagal (non-loopback tanpa token), RuntimeError akan dilempar
+# sebelum app diciptakan, mencegah server berjalan dengan konfigurasi yang tidak aman.
+validate_startup_host()
+
 from api.actions import (
     launch_action,
     scan_installed_apps,
@@ -38,7 +45,10 @@ class CorsMiddleware:
         # Add CORS headers to ALL responses (including OPTIONS preflights)
         res.set_header("Access-Control-Allow-Origin", self._allowed_origin)
         res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        res.set_header("Access-Control-Allow-Headers", "Content-Type")
+        res.set_header(
+            "Access-Control-Allow-Headers",
+            "Content-Type, Authorization, X-Auth-Token",
+        )
 
 
 async def error_handler_json(req, resp, ex, params):
@@ -70,6 +80,13 @@ async def error_handler_json(req, resp, ex, params):
         status = falcon.HTTP_405
         code = "METHOD_NOT_ALLOWED"
         client_message = "Method tidak diizinkan untuk endpoint ini"
+
+    # Handle HTTPUnauthorized (401) dari auth middleware — pastikan envelope
+    # {"status":"error","error":{"code":"UNAUTHORIZED",...}} tidak bocor ke 500.
+    elif isinstance(ex, falcon.HTTPUnauthorized):
+        status = falcon.HTTP_401
+        code = "UNAUTHORIZED"
+        client_message = ex.description if hasattr(ex, "description") else "Token otorisasi tidak valid atau tidak diberikan"
 
     # Handle known exception types (fallback for other errors)
     else:
@@ -385,6 +402,10 @@ app = falcon.asgi.App()
 # Add CORS middleware (must be added before routes)
 cors = CorsMiddleware(app)
 app.add_middleware(cors)
+
+# Add auth token middleware (optional; inactive if ACH_AUTH_TOKEN not set)
+auth = AuthMiddleware(app)
+app.add_middleware(auth)
 
 # Add specific error handlers for 404/405 BEFORE the generic Exception handler
 # so they take precedence (Falcon checks handlers in registration order;
