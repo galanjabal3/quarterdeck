@@ -8,6 +8,7 @@ import falcon
 from falcon import asgi
 
 from api.auth_middleware import AuthMiddleware, validate_startup_host
+from api.rate_limit import RateLimitMiddleware
 
 # Jalankan validasi guardrail saat import module.
 # Jika kondisinya gagal (non-loopback tanpa token), RuntimeError akan dilempar
@@ -402,6 +403,12 @@ app = falcon.asgi.App()
 # Add CORS middleware (must be added before routes)
 cors = CorsMiddleware(app)
 app.add_middleware(cors)
+
+# Add rate limit middleware BEFORE auth so that brute-force token attempts
+# are also counted against the limit. This ensures that rate limiting applies
+# to all requests including those trying to authenticate via token guessing.
+rate = RateLimitMiddleware(app)
+app.add_middleware(rate)
 
 # Add auth token middleware (optional; inactive if QD_AUTH_TOKEN not set)
 auth = AuthMiddleware(app)
