@@ -233,8 +233,10 @@ wait_for() {
   local label="$1" url="$2" tries=40
   local i
   # Build curl auth header if QD_AUTH_TOKEN is set
+  # (${QD_AUTH_TOKEN:-} wajib: script ini jalan dengan `set -u`, tanpa default
+  # ini ./run.sh crash di mesin yang tidak menyetel QD_AUTH_TOKEN.)
   local curl_opts=(-fs --max-time 2)
-  if [ -n "$QD_AUTH_TOKEN" ]; then
+  if [ -n "${QD_AUTH_TOKEN:-}" ]; then
     curl_opts+=(-H "Authorization: Bearer $QD_AUTH_TOKEN")
   fi
   for ((i = 1; i <= tries; i++)); do

@@ -20,6 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Shell syntax check (run.sh)
+        # Menjaga regresi kelas bug `set -u` + variabel tanpa default.
+        run: bash -n run.sh
+        working-directory: ${{ github.workspace }}
+
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
