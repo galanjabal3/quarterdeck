@@ -294,8 +294,8 @@ baris log terminal memuat latensi terukur sungguhan dari API (mis.
 
 Batasan verifikasi visual ini: **headless, satu viewport desktop (1440×900)** —
 sesuai lingkup proyek yang memang **desktop-only** (keputusan pemilik: dukungan
-mobile sengaja di luar cakupan, sehingga bukan celah yang tertunda). Yang belum
-diuji: keyboard-only, screen reader, aksi
+mobile sengaja di luar cakupan, sehingga bukan celah yang tertunda). Keyboard-only
+kini teruji otomatis (lihat §6.1); yang belum: screen reader sungguhan, aksi
 `restart-*` tidak diklik (dampak ke sesi desktop), dan screenshot tidak diverifikasi
 otomatis (dinilai manual oleh penulis).
 
@@ -309,9 +309,18 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
    browser; verifikasi visual baru dilakukan di akhir via **Playwright headless,
    viewport 1440×900** (6 screenshot di `screenshots/`, lihat bagian 5.5). Lingkup
    proyek **desktop-only** (keputusan pemilik: dukungan mobile sengaja di luar
-   cakupan — bukan keterbatasan yang tertunda). Yang belum
-   diuji: interaksi keyboard-only, screen reader,
-   serta lintas browser (hanya Chrome). Klaim "UI berjalan" harus dibaca sebatas itu.
+   cakupan — bukan keterbatasan yang tertunda).
+
+   **Audit aksesibilitas otomatis (Playwright + axe-core, WCAG 2.0/2.1 A & AA)
+   kini berjalan di kedua mode: 0 pelanggaran** setelah perbaikan yang dipicu
+   audit — 5 node kontras warna di Casual (label "Workspace Optimizer", "Pro HUD",
+   "RAM Usage", "/ 460 GB Used", status RAM) dinaikkan kontrasnya, termasuk varian
+   status `(High)`/`(Optimal)` yang belum sempat ter-render saat audit. Urutan Tab
+   tercatat rapi (30 elemen teruji di kedua mode: semuanya punya focus ring dan
+   accessible name), landmark `<nav>` + `<aside>` tersedia di mode Pro (mode Casual
+   memang tanpa sidebar — bukan celah). Yang **masih** belum diuji: screen reader
+   sungguhan (VoiceOver) dan lintas browser (hanya Chrome). Klaim "UI berjalan"
+   harus dibaca sebatas itu.
 2. **Linux & Windows belum teruji.** `platform_ops/linux.py` dan `windows.py` bersifat
    struktural (daftar aksi dikomentari, dilabeli belum teruji); hanya macOS yang diuji.
 3. **Autentikasi kini tersedia tapi opsional; rate limit kini terpasang.** Bila env

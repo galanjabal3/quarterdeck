@@ -13,9 +13,9 @@ interface RamStatus {
 
 function getRamStatus(percentUsed: number | null): RamStatus {
   if (percentUsed == null) return { text: '', className: '' };
-  if (percentUsed >= 85) return { text: '(High)', className: 'text-red-600 font-medium' };
-  if (percentUsed >= 60) return { text: '(Moderate)', className: 'text-amber-600 font-medium' };
-  return { text: '(Optimal)', className: 'text-emerald-600 font-medium' };
+  if (percentUsed >= 85) return { text: '(High)', className: 'text-red-700 font-medium' };
+  if (percentUsed >= 60) return { text: '(Moderate)', className: 'text-amber-700 font-medium' };
+  return { text: '(Optimal)', className: 'text-emerald-700 font-medium' };
 }
 
 export default function CasualTopBar({ metrics }: CasualTopBarProps) {
@@ -51,7 +51,7 @@ export default function CasualTopBar({ metrics }: CasualTopBarProps) {
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200">
           <MemoryStick className="w-[18px] h-[18px] text-emerald-600" aria-hidden="true" />
           <div className="flex flex-col text-left">
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">RAM Usage</span>
+            <span className="text-[10px] text-slate-500 uppercase font-semibold">RAM Usage</span>
             <span className="text-xs font-bold text-slate-800">
               {formatPercent(ramPercent)}{' '}
               {ramStatus.text && <span className={ramStatus.className}>{ramStatus.text}</span>}

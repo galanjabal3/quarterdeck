@@ -19,7 +19,7 @@ export default function ToggleSwitch({ isProMode, onToggle, className = '' }: To
 
   const proLabelClass = isProMode
     ? 'text-primary-container font-semibold'
-    : 'text-slate-500 hover:text-slate-800 font-medium';
+    : 'text-slate-600 hover:text-slate-800 font-medium';
 
   return (
     <button

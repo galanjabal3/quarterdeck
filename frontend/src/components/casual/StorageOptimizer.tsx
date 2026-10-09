@@ -157,7 +157,7 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
         <div>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
             {formatGb(usedGb, 0)}{' '}
-            <span className="text-slate-400 text-2xl font-medium">
+            <span className="text-slate-500 text-2xl font-medium">
               / {formatGb(totalGb, 0)} Used
             </span>
           </h2>

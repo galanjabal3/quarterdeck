@@ -42,7 +42,7 @@ export default function Header({ isProMode, onToggle }: HeaderProps) {
                 CASUAL
               </span>
             </div>
-            <span className="text-[11px] text-slate-400 font-medium">Workspace Optimizer</span>
+            <span className="text-[11px] text-slate-500 font-medium">Workspace Optimizer</span>
           </div>
         </div>
       </div>
