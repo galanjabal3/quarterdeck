@@ -1,6 +1,6 @@
-"""Auth token middleware for Adaptive Command Hub Falcon ASGI app.
+"""Auth token middleware for Quarterdeck Falcon ASGI app.
 
-- Env ACH_AUTH_TOKEN: kosong/tidak diset → auth nonaktif (perilaku identik dengan sekarang).
+- Env QD_AUTH_TOKEN: kosong/tidak diset → auth nonaktif (perilaku identik dengan sekarang).
 - Terisi → semua request WALI (wajib) token kecuali OPTIONS (preflight), via:
   header "Authorization: Bearer <token>", ATAU header "X-Auth-Token: <token>",
   ATAU query "?token=<token>" (untuk endpoint ikon dipakai tag <img>).
@@ -28,14 +28,14 @@ def _is_loopback_host(host: str) -> bool:
 
 
 def validate_startup_host() -> None:
-    """Guardrail: non-loopback host tanpa ACH_AUTH_TOKEN → gagal import.
+    """Guardrail: non-loopback host tanpa QD_AUTH_TOKEN → gagal import.
 
     Dipanggil di module-level di app.py. Jika host bind bukan loopback (bukan
-    127.0.0.1/localhost/::1) AND ACH_AUTH_TOKEN kosong, raise RuntimeError
+    127.0.0.1/localhost/::1) AND QD_AUTH_TOKEN kosong, raise RuntimeError
     dengan pesan jelas. Loopback → bebas tanpa token.
     """
     api_host = os.environ.get("API_HOST", "127.0.0.1").strip()
-    ach_auth = os.environ.get("ACH_AUTH_TOKEN", "").strip()
+    ach_auth = os.environ.get("QD_AUTH_TOKEN", "").strip()
 
     # Jika host loopback → lewati (bisa tanpa token)
     if _is_loopback_host(api_host):
@@ -45,8 +45,8 @@ def validate_startup_host() -> None:
     if not ach_auth:
         msg = (
             f"Tidak dapat memulai server: API_HOST='{api_host}' adalah host non-loopback, "
-            "tapi ACH_AUTH_TOKEN tidak diset. "
-            "Set ACH_AUTH_TOKEN untuk mengaktifkan auth, atau gunakan host loopback."
+            "tapi QD_AUTH_TOKEN tidak diset. "
+            "Set QD_AUTH_TOKEN untuk mengaktifkan auth, atau gunakan host loopback."
         )
         raise RuntimeError(msg)
 
@@ -81,7 +81,7 @@ class AuthMiddleware:
     async def process_request(self, req, res):
         """Short-circuit auth check before processing the request.
 
-        If ACH_AUTH_TOKEN is not set, this is a no-op (auth inactive).
+        If QD_AUTH_TOKEN is not set, this is a no-op (auth inactive).
         If set, token must be provided via one of three sources;
         comparison uses hmac.compare_digest for constant-time safety.
         OPTIONS preflight requests are skipped (handled by CORS middleware).
@@ -90,7 +90,7 @@ class AuthMiddleware:
         if req.method == "OPTIONS":
             return
 
-        auth_token = os.environ.get("ACH_AUTH_TOKEN", "").strip()
+        auth_token = os.environ.get("QD_AUTH_TOKEN", "").strip()
         if not auth_token:
             # Tidak ada token yang dipakai → lewati (auth nonaktif)
             return

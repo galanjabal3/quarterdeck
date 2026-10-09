@@ -1,10 +1,10 @@
-# Adaptive Command Hub
+# Quarterdeck
 
 Dashboard *Command Center* lokal: metrik sistem real-time dan *App Launcher* untuk macOS — dengan dua mode tampilan, **Casual** dan **Pro**.
 
 ## Deskripsi
 
-Adaptive Command Hub adalah *local web app* yang berperilaku seperti aplikasi desktop native. Ia menampilkan metrik sistem (storage, RAM, CPU) secara *real-time* sekaligus menjadi *launcher* aplikasi: frontend menscan aplikasi yang terinstal di macOS, menampilkan ikon aslinya, dan membukanya lewat backend.
+Quarterdeck adalah *local web app* yang berperilaku seperti aplikasi desktop native. Ia menampilkan metrik sistem (storage, RAM, CPU) secara *real-time* sekaligus menjadi *launcher* aplikasi: frontend menscan aplikasi yang terinstal di macOS, menampilkan ikon aslinya, dan membukanya lewat backend.
 
 Yang membuat proyek ini menarik:
 
@@ -91,7 +91,7 @@ Opsi yang tersedia:
 ```
 
 - Port bisa di-override lewat environment variable `PORT_BACKEND` (default `8000`) dan `PORT_FRONTEND` (default `5173`); host bind backend lewat `API_HOST` (default `127.0.0.1`).
-- Auth token opsional lewat environment variable `ACH_AUTH_TOKEN` (untuk backend) dan `VITE_AUTH_TOKEN` (untuk frontend); keduanya harus memuat token yang sama — bila tidak diset, auth mati (default, perilaku lama). Contoh satu sesi: `ACH_AUTH_TOKEN=$(openssl rand -hex 32) VITE_AUTH_TOKEN=$ACH_AUTH_TOKEN ./run.sh`.
+- Auth token opsional lewat environment variable `QD_AUTH_TOKEN` (untuk backend) dan `VITE_AUTH_TOKEN` (untuk frontend); keduanya harus memuat token yang sama — bila tidak diset, auth mati (default, perilaku lama). Contoh satu sesi: `QD_AUTH_TOKEN=$(openssl rand -hex 32) VITE_AUTH_TOKEN=$QD_AUTH_TOKEN ./run.sh`.
 - Bila port sudah terpakai dan `--kill` tidak diberikan, script berhenti dengan pesan yang bisa ditindaklanjuti.
 - Tekan `Ctrl+C` untuk berhenti: kedua proses dimatikan (graceful shutdown), sehingga tidak ada proses yatim yang tertinggal.
 
@@ -116,7 +116,7 @@ Base URL backend defaultnya `http://localhost:8000` dan dapat diubah lewat envir
 ## Struktur Folder
 
 ```text
-adaptive-command-hub/
+quarterdeck/
 ├── frontend/                    # Vite React App
 │   ├── index.html
 │   ├── vite.config.ts           # plugin React & Tailwind v4, port 5173
@@ -133,7 +133,7 @@ adaptive-command-hub/
 │       └── lib/                 # actions.ts, format.ts
 ├── backend/                     # Python API
 │   ├── api/
-│   │   ├── auth_middleware.py   # auth token opsional (ACH_AUTH_TOKEN) + guardrail host
+│   │   ├── auth_middleware.py   # auth token opsional (QD_AUTH_TOKEN) + guardrail host
 │   │   ├── metrics.py           # endpoint CPU/RAM/storage (psutil)
 │   │   ├── actions.py           # scan app, ikon, eksekusi OS (whitelist), Fast Ops
 │   │   └── system_processes.py  # endpoint proses real (psutil)
@@ -167,7 +167,7 @@ adaptive-command-hub/
 | POST | `/api/actions/fast-op` | Eksekusi 1 aksi Fast Ops terdaftar (`{"action": "<id>"}`); field wajib bertipe `str`, selain itu `400` |
 | GET | `/api/system/processes` | Data proses **real** via psutil: `pid`, `name`, `cpu_percent`, `memory_mb`, `uptime`, `role` (tanpa data fiktif) |
 
-Semua respons berbentuk `{ "status": "success", "data": {...} }` atau `{ "status": "error", "error": {...} }`. Bila env `ACH_AUTH_TOKEN` diset, semua endpoint di tabel ini menolak request tanpa token (`401` `UNAUTHORIZED`); `?token=` didukung khusus untuk `GET /api/actions/app-icon` (dipakai `<img>` yang tidak bisa mengirim header). Detail payload ada di [`PLANNING.md`](PLANNING.md); Fast Ops, Process Manager, dan hasil verifikasinya dibahas di [`REVIEW.md`](REVIEW.md).
+Semua respons berbentuk `{ "status": "success", "data": {...} }` atau `{ "status": "error", "error": {...} }`. Bila env `QD_AUTH_TOKEN` diset, semua endpoint di tabel ini menolak request tanpa token (`401` `UNAUTHORIZED`); `?token=` didukung khusus untuk `GET /api/actions/app-icon` (dipakai `<img>` yang tidak bisa mengirim header). Detail payload ada di [`PLANNING.md`](PLANNING.md); Fast Ops, Process Manager, dan hasil verifikasinya dibahas di [`REVIEW.md`](REVIEW.md).
 
 ## Testing
 
@@ -175,7 +175,7 @@ Semua respons berbentuk `{ "status": "success", "data": {...} }` atau `{ "status
 cd backend && poetry run pytest
 ```
 
-54 test lolos tanpa warning (39 lama + 15 baru) — mencakup endpoint metrik, aturan whitelist/validasi aksi (termasuk penolakan target yang tidak dikenal dan upaya path traversal), endpoint ikon aplikasi, Fast Ops, data proses real, regresi validasi tipe input (respons `400`, bukan `500`), serta integrasi auth token (penolakan `401` tanpa token, penerimaan `200` via `Authorization`, `X-Auth-Token`, dan `?token=`, preflight OPTIONS bebas token) dan guardrail startup (`API_HOST` non-loopback tanpa `ACH_AUTH_TOKEN` → `RuntimeError`).
+54 test lolos tanpa warning (39 lama + 15 baru) — mencakup endpoint metrik, aturan whitelist/validasi aksi (termasuk penolakan target yang tidak dikenal dan upaya path traversal), endpoint ikon aplikasi, Fast Ops, data proses real, regresi validasi tipe input (respons `400`, bukan `500`), serta integrasi auth token (penolakan `401` tanpa token, penerimaan `200` via `Authorization`, `X-Auth-Token`, dan `?token=`, preflight OPTIONS bebas token) dan guardrail startup (`API_HOST` non-loopback tanpa `QD_AUTH_TOKEN` → `RuntimeError`).
 
 Perintah frontend yang tersedia: `npm run lint`, `npm run format`, dan `npm run build` (type-check TypeScript + build produksi).
 
@@ -189,18 +189,18 @@ Prinsip keamanan yang diterapkan di backend:
 - **Exact-match terhadap hasil scan** — nama aplikasi wajib identik dengan entri hasil scan aplikasi sebelum dieksekusi.
 - **Timeout wajib** — setiap eksekusi dibatasi `timeout` (30 detik untuk aksi; 10 detik untuk konversi ikon).
 - **CORS dibatasi** — origin yang diizinkan hanya `http://localhost:5173`, bukan `*`.
-- **Konversi ikon terisolasi** — `sips` dijalankan dengan argv list pada path hasil validasi, hasilnya di-cache di `/tmp/ach-icon-cache`.
-- **Auth token opsional (backend)** — bila env `ACH_AUTH_TOKEN` diset, semua request wajib menyertakan token lewat salah satu dari `Authorization: Bearer <token>`, header `X-Auth-Token: <token>`, atau query `?token=<token>` (untuk `<img>` ikon yang tidak bisa mengirim header). Perbandingan memakai `hmac.compare_digest` (constant-time); token salah/tidak ada → `401` dengan envelope `{"status": "error", "error": {"code": "UNAUTHORIZED", ...}}` dan header CORS tetap disertakan; OPTIONS preflight dikecualikan. Tanpa env tersebut auth mati (default) — semua request diterima seperti biasa, persis perilaku lama.
-- **Guardrail host non-loopback** — `API_HOST` di luar loopback (bukan `127.0.0.1`, `localhost`, maupun `::1`) tanpa `ACH_AUTH_TOKEN` membuat proses gagal start (`RuntimeError`). Pemeriksaan dijalankan saat `app.py` diimpor, sehingga kena semua jalur: `uvicorn app:app`, `./run.sh`, maupun `python main.py`. Catatan jujur: `uvicorn --host 0.0.0.0` yang dijalankan **manual** tanpa menyetel env `API_HOST` tidak terdeteksi guardrail, karena guardrail membaca env `API_HOST`.
+- **Konversi ikon terisolasi** — `sips` dijalankan dengan argv list pada path hasil validasi, hasilnya di-cache di `/tmp/qd-icon-cache`.
+- **Auth token opsional (backend)** — bila env `QD_AUTH_TOKEN` diset, semua request wajib menyertakan token lewat salah satu dari `Authorization: Bearer <token>`, header `X-Auth-Token: <token>`, atau query `?token=<token>` (untuk `<img>` ikon yang tidak bisa mengirim header). Perbandingan memakai `hmac.compare_digest` (constant-time); token salah/tidak ada → `401` dengan envelope `{"status": "error", "error": {"code": "UNAUTHORIZED", ...}}` dan header CORS tetap disertakan; OPTIONS preflight dikecualikan. Tanpa env tersebut auth mati (default) — semua request diterima seperti biasa, persis perilaku lama.
+- **Guardrail host non-loopback** — `API_HOST` di luar loopback (bukan `127.0.0.1`, `localhost`, maupun `::1`) tanpa `QD_AUTH_TOKEN` membuat proses gagal start (`RuntimeError`). Pemeriksaan dijalankan saat `app.py` diimpor, sehingga kena semua jalur: `uvicorn app:app`, `./run.sh`, maupun `python main.py`. Catatan jujur: `uvicorn --host 0.0.0.0` yang dijalankan **manual** tanpa menyetel env `API_HOST` tidak terdeteksi guardrail, karena guardrail membaca env `API_HOST`.
 - **Frontend ikut mengirim token** — env `VITE_AUTH_TOKEN` membuat semua `fetch` frontend menyertakan header `Authorization: Bearer <token>` dan setiap URL ikon `<img>` dibubuhi `?token=`. Tanpa env itu, frontend tidak mengirim header tambahan apa pun.
 
 Cara mengaktifkan auth untuk satu sesi — backend dan frontend memakai token yang sama (`run.sh` mewarisi env ke child process backend dan Vite; Vite hanya mengekspos env ber-prefix `VITE_` ke frontend):
 
 ```bash
-ACH_AUTH_TOKEN=$(openssl rand -hex 32) VITE_AUTH_TOKEN=$ACH_AUTH_TOKEN ./run.sh
+QD_AUTH_TOKEN=$(openssl rand -hex 32) VITE_AUTH_TOKEN=$QD_AUTH_TOKEN ./run.sh
 ```
 
-Limitasi yang diakui: auth **mati secara default** — selama `ACH_AUTH_TOKEN` tidak diset, proses lokal mana pun tetap dapat memanggil API (kondisi lama yang tercatat di bagian 6 butir 3 [`REVIEW.md`](REVIEW.md)); dan **belum ada rate limit**, sehingga token membatasi siapa yang boleh memanggil, bukan seberapa sering.
+Limitasi yang diakui: auth **mati secara default** — selama `QD_AUTH_TOKEN` tidak diset, proses lokal mana pun tetap dapat memanggil API (kondisi lama yang tercatat di bagian 6 butir 3 [`REVIEW.md`](REVIEW.md)); dan **belum ada rate limit**, sehingga token membatasi siapa yang boleh memanggil, bukan seberapa sering.
 
 ## Roadmap
 

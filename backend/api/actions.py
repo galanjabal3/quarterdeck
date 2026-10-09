@@ -10,7 +10,7 @@ import falcon
 logger = logging.getLogger(__name__)
 
 # Base directory for cleanup operations (demo cache folder)
-CLEANUP_BASE_DIR = "/tmp/ach-demo-cache"
+CLEANUP_BASE_DIR = "/tmp/qd-demo-cache"
 
 # Cached scanned apps
 _scanned_apps_cache = None
@@ -156,7 +156,7 @@ for action, targets in ACTION_WHITELIST.items():
 
 
 def _ensure_cleanup_dir():
-    """Buat folder /tmp/ach-demo-cache jika belum ada."""
+    """Buat folder /tmp/qd-demo-cache jika belum ada."""
     os.makedirs(CLEANUP_BASE_DIR, exist_ok=True)
 
 
@@ -174,7 +174,7 @@ def _generate_demo_files():
 
 
 def _validate_path_is_demo_cache(path: str) -> bool:
-    """Guard path: os.path.realpath hasil wajib berada di dalam /tmp/ach-demo-cache."""
+    """Guard path: os.path.realpath hasil wajib berada di dalam /tmp/qd-demo-cache."""
     real_path = os.path.realpath(path)
     real_base = os.path.realpath(CLEANUP_BASE_DIR)
     try:
@@ -329,7 +329,7 @@ def launch_action(action: str, target: str):
             }, 500
 
     elif action == "cleanup":
-        # ---- CLEANUP: operasi file AMAN di dalam /tmp/ach-demo-cache ----
+        # ---- CLEANUP: operasi file AMAN di dalam /tmp/qd-demo-cache ----
         _ensure_cleanup_dir()
         _generate_demo_files()
 
@@ -397,7 +397,7 @@ import logging as _logging
 
 logger = _logging.getLogger(__name__)
 
-ICON_CACHE_DIR = "/tmp/ach-icon-cache"
+ICON_CACHE_DIR = "/tmp/qd-icon-cache"
 
 
 def _sanitize_app_name(name: str) -> str:

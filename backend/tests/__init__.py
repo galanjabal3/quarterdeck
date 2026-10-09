@@ -1,1 +1,1 @@
-"""Tests package for Adaptive Command Hub backend."""
+"""Tests package for Quarterdeck backend."""

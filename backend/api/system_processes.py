@@ -48,7 +48,7 @@ def get_system_processes():
         # Identifikasi path proyek untuk filtering
         # Root direktori proyek (satu level atas dari file ini)
         project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        # Contoh: /Users/galanjabal/Documents/Portfolios/adaptive-command-hub
+        # Contoh: /Users/galanjabal/Documents/Portfolios/quarterdeck
         my_pid = os.getpid()
 
         # Helper: ambil cwd safely

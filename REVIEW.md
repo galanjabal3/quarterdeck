@@ -1,4 +1,4 @@
-# REVIEW.md — Laporan Hasil Kerja: Adaptive Command Hub
+# REVIEW.md — Laporan Hasil Kerja: Quarterdeck
 
 Dokumen ini ditulis untuk **reviewer**: apa yang dikerjakan, keputusan desain, bug yang
 ditemukan/diperbaiki, hasil verifikasi aktual, dan keterbatasan yang masih ada. Angka dibuat
@@ -9,7 +9,7 @@ mesin: macOS, Python 3.12, Node v20.20.0.
 
 ## 1. Ringkasan eksekutif
 
-**Adaptive Command Hub** adalah *local web app* di macOS yang berperilaku seperti aplikasi
+**Quarterdeck** adalah *local web app* di macOS yang berperilaku seperti aplikasi
 desktop: dashboard metrik sistem real-time (storage / RAM / CPU) plus *App Launcher* yang
 menscan aplikasi terinstal dan membukanya, dengan dua mode UI — **Casual** dan **Pro**
 (progresif lewat satu state global `isProMode`).
@@ -233,7 +233,7 @@ bagian 6).
 `python3 /tmp/audit_keamanan.py` (skrip masih ada, 60 kasus uji) dijalankan terhadap server
 yang hidup — **keluaran: nol respons 500**. Audit berjalan dengan auth dalam kondisi
 default (mati); sejak audit ditulis ada tambahan perilaku `401 UNAUTHORIZED` bila
-`ACH_AUTH_TOKEN` diset, sehingga kasus-kasus di bawah kini berlaku saat auth mati
+`QD_AUTH_TOKEN` diset, sehingga kasus-kasus di bawah kini berlaku saat auth mati
 (jumlah dan hasil 60 kasus tidak berubah saat audit dilakukan).
 
 | Kelompok | Kasus | Hasil |
@@ -259,7 +259,7 @@ nol `os.system`/`eval`, CORS dibatasi satu origin.
 ### 5.4 Fungsional
 - **Aplikasi:** `GET /api/actions/apps` → 200, **84** aplikasi.
 - **Ikon:** 84 request → **83 ber-200**; satu gagal: `Claude Code URL Handler` → 404
-  (memang tanpa ikon; 404 fallback yang sah). Cache `/tmp/ach-icon-cache` berisi 83 PNG.
+  (memang tanpa ikon; 404 fallback yang sah). Cache `/tmp/qd-icon-cache` berisi 83 PNG.
 - **Proses:** `GET /api/system/processes` → 200 dalam 0,043 detik; `pid` backend **59044**
   cocok `lsof -t -i:8000` pada saat pengukuran; tidak ada proses acak sistem.
 - **Fast Ops:** `GET /api/actions/fast-ops` → `platform: darwin`, 4 aksi;
@@ -315,12 +315,12 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
 2. **Linux & Windows belum teruji.** `platform_ops/linux.py` dan `windows.py` bersifat
    struktural (daftar aksi dikomentari, dilabeli belum teruji); hanya macOS yang diuji.
 3. **Autentikasi kini tersedia tapi opsional; tetap tidak ada rate limit.** Bila env
-   `ACH_AUTH_TOKEN` diset, semua request wajib token via `Authorization: Bearer <t>`,
+   `QD_AUTH_TOKEN` diset, semua request wajib token via `Authorization: Bearer <t>`,
    `X-Auth-Token: <t>`, atau `?token=<t>` (untuk `<img>` ikon); perbandingan
    `hmac.compare_digest`, gagal → `401` envelope
    `{"status":"error","error":{"code":"UNAUTHORIZED",...}}` (header CORS tetap ada,
    OPTIONS preflight dikecualikan), plus
-   guardrail: `API_HOST` non-loopback tanpa `ACH_AUTH_TOKEN` → proses gagal start
+   guardrail: `API_HOST` non-loopback tanpa `QD_AUTH_TOKEN` → proses gagal start
    (`RuntimeError` saat import `app.py`, kena `uvicorn app:app`/`run.sh`/`python main.py`).
    **Tapi default tetap mati** — tanpa env itu, API menerima semua request; selama auth
    mati, proses lokal mana pun dapat memanggil API, termasuk `POST /api/actions/fast-op`.
@@ -347,7 +347,7 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
    39, kini 54) dan `PLANNING.md` semula menulis "Node 24 LTS" (aktual 20.20.0) — keduanya
    sudah dikoreksi, dan tabel API `README.md` kini mencantumkan ketiga endpoint Fast Ops /
    Process Manager beserta `run.sh` dan struktur folder terkini. Kini `README.md` juga
-   sudah mencerminkan fitur auth token opsional (`ACH_AUTH_TOKEN`/`VITE_AUTH_TOKEN`,
+   sudah mencerminkan fitur auth token opsional (`QD_AUTH_TOKEN`/`VITE_AUTH_TOKEN`,
    guardrail, limitasi) beserta angka test terbaru (**54 test**).
 10. **Elemen dekoratif Pro mode — sudah dihapus (pekerjaan lanjutan tuntas).** Temuan
     asli dari uji visual: kartu `THREAD POOL`, `REDIS LATENCY`, `DOCKER DAEMON`,
@@ -383,7 +383,7 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
 ## 7. Cara reviewer memverifikasi ulang
 
 ```bash
-cd /Users/galanjabal/Documents/Portfolios/adaptive-command-hub
+cd /Users/galanjabal/Documents/Portfolios/quarterdeck
 
 # backend — harap 54 passed
 cd backend && poetry run pytest -q
@@ -409,20 +409,20 @@ curl -i http://127.0.0.1:8000/api/nope                                # harap 40
 curl -i -X POST http://127.0.0.1:8000/api/metrics/ram                 # harap 405 JSON
 ```
 
-Contoh uji auth token — jalankan backend dengan `ACH_AUTH_TOKEN` (dari folder
-`backend/`: `ACH_AUTH_TOKEN=$(openssl rand -hex 32) poetry run uvicorn app:app --host 127.0.0.1 --port 8000`),
-pastikan `$ACH_AUTH_TOKEN` juga diekspor di shell tempat curl dijalankan, lalu:
+Contoh uji auth token — jalankan backend dengan `QD_AUTH_TOKEN` (dari folder
+`backend/`: `QD_AUTH_TOKEN=$(openssl rand -hex 32) poetry run uvicorn app:app --host 127.0.0.1 --port 8000`),
+pastikan `$QD_AUTH_TOKEN` juga diekspor di shell tempat curl dijalankan, lalu:
 
 ```bash
 # auth-off (default): 200
 curl -i http://127.0.0.1:8000/api/metrics/cpu
 
-# auth-on: jalankan backend dengan ACH_AUTH_TOKEN, lalu
+# auth-on: jalankan backend dengan QD_AUTH_TOKEN, lalu
 curl -i http://127.0.0.1:8000/api/metrics/cpu                    # harap 401 UNAUTHORIZED
-curl -i -H "Authorization: Bearer $ACH_AUTH_TOKEN" http://127.0.0.1:8000/api/metrics/cpu   # harap 200
+curl -i -H "Authorization: Bearer $QD_AUTH_TOKEN" http://127.0.0.1:8000/api/metrics/cpu   # harap 200
 
 # guardrail (dari folder backend/; token dikosongkan agar kondisi "tanpa token" pasti)
-ACH_AUTH_TOKEN= API_HOST=0.0.0.0 poetry run python -c "import app"   # harap RuntimeError (guardrail)
+QD_AUTH_TOKEN= API_HOST=0.0.0.0 poetry run python -c "import app"   # harap RuntimeError (guardrail)
 ```
 
 Catatan saat review:

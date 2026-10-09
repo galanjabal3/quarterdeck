@@ -403,7 +403,7 @@ app = falcon.asgi.App()
 cors = CorsMiddleware(app)
 app.add_middleware(cors)
 
-# Add auth token middleware (optional; inactive if ACH_AUTH_TOKEN not set)
+# Add auth token middleware (optional; inactive if QD_AUTH_TOKEN not set)
 auth = AuthMiddleware(app)
 app.add_middleware(auth)
 

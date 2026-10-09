@@ -151,12 +151,13 @@ def execute_action(action_id: str, timeout: int = 15) -> dict:
 if is_darwin():
     # Import darwin module and merge its ACTIONS
     import importlib.util
+    import os as _os
     import sys as _sys
     if "platform_ops.darwin" not in _sys.modules:
-        spec = importlib.util.spec_from_file_location(
-            "platform_ops.darwin",
-            "/Users/galanjabal/Documents/Portfolios/adaptive-command-hub/backend/platform_ops/darwin.py",
-        )
+        # Path relatif terhadap file ini (jangan hardcode absolute path —
+        # harus tetap jalan setelah repo di-clone di mesin lain).
+        _darwin_py = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "darwin.py")
+        spec = importlib.util.spec_from_file_location("platform_ops.darwin", _darwin_py)
         darwin_mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(darwin_mod)
         for action_id, meta in darwin_mod.ACTIONS.items():

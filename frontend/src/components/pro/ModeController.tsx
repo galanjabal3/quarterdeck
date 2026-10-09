@@ -16,7 +16,7 @@ export default function ModeController({ isProMode, onToggle }: ModeControllerPr
         <div className="flex flex-col min-w-0">
           <div className="flex items-center gap-space-xs">
             <span className="font-headline-sm text-headline-sm text-primary font-bold tracking-tight">
-              Adaptive Command Hub
+              Quarterdeck
             </span>
             <span className="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-surface-container-high text-primary-fixed uppercase tracking-wider">
               [ PRO HUD ]

@@ -8,7 +8,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import auth middleware guardrail - this will raise RuntimeError at import
-# if API_HOST is non-loopback and ACH_AUTH_TOKEN is not set, preventing
+# if API_HOST is non-loopback and QD_AUTH_TOKEN is not set, preventing
 # accidental exposure of the server without authentication in production.
 from api.auth_middleware import validate_startup_host
 

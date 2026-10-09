@@ -51,7 +51,7 @@ def _raw_asgi_request(
     headers : list of (bytes, bytes) or None
         ASGI raw headers list. Setiap tuple adalah (name_bytes, value_bytes).
     env_token : str or None
-        Nilai ACH_AUTH_TOKEN untuk sesi test ini. Jika None, env dibersihkan setelah test.
+        Nilai QD_AUTH_TOKEN untuk sesi test ini. Jika None, env dibersihkan setelah test.
     """
     import json as _json
 
@@ -119,13 +119,13 @@ def _req(
     headers : list of (bytes, bytes) or None
         ASGI raw headers list. Setiap tuple adalah (name_bytes, value_bytes).
     env_token : str or None
-        Nilai ACH_AUTH_TOKEN untuk sesi test ini. Jika None, env dibersihkan setelah test.
+        Nilai QD_AUTH_TOKEN untuk sesi test ini. Jika None, env dibersihkan setelah test.
     """
     import os
 
     # Set env token jika diberikan (dibersihkan otomatis setelah test)
     if env_token is not None:
-        os.environ["ACH_AUTH_TOKEN"] = env_token
+        os.environ["QD_AUTH_TOKEN"] = env_token
 
     # Bangun header raw ASGI: list of (name, bytes)
     raw_headers = headers or []
@@ -145,24 +145,24 @@ def _req(
 
     # Bersihkan env setelah test
     if env_token is not None:
-        os.environ.pop("ACH_AUTH_TOKEN", None)
+        os.environ.pop("QD_AUTH_TOKEN", None)
     return status, body, resp_headers
 
 class TestAuthIntegration:
     """Real HTTP integration tests via raw ASGI scope (hindari httpx encoding).
 
     Setiap test mandiri: monkeypatch.setenv dipakai di dalam test, dan env
-    dibersihkan (_req terakhirnya pop ACH_AUTH_TOKEN). Tidak ada test yang
+    dibersihkan (_req terakhirnya pop QD_AUTH_TOKEN). Tidak ada test yang
     mempengaruhi test lain melalui os.environ yang bocor.
     """
 
     @pytest.fixture(autouse=True)
     def _clean_env(self, monkeypatch):
-        """Ensure ACH_AUTH_TOKEN and API_HOST are clean per test."""
-        monkeypatch.delenv("ACH_AUTH_TOKEN", raising=False)
+        """Ensure QD_AUTH_TOKEN and API_HOST are clean per test."""
+        monkeypatch.delenv("QD_AUTH_TOKEN", raising=False)
         monkeypatch.delenv("API_HOST", raising=False)
         yield
-        monkeypatch.delenv("ACH_AUTH_TOKEN", raising=False)
+        monkeypatch.delenv("QD_AUTH_TOKEN", raising=False)
         monkeypatch.delenv("API_HOST", raising=False)
 
     def test_auth_off_no_token_200(self):
@@ -179,7 +179,7 @@ class TestAuthIntegration:
         Menangkap BUG 3: pastikan body bukan {"title":...} melainkan
         {"status":"error","error":{"code":"UNAUTHORIZED",...}}."""
         import os
-        monkeypatch.setenv("ACH_AUTH_TOKEN", "test-token-xyz")
+        monkeypatch.setenv("QD_AUTH_TOKEN", "test-token-xyz")
 
         status, body, resp_headers = _req(env_token="test-token-xyz")
         assert status == 401, f"Expected 401 but got {status}"
@@ -197,7 +197,7 @@ class TestAuthIntegration:
     def test_bearer_valid_200(self, monkeypatch):
         """3. auth aktif + Authorization: Bearer <benar> → **200** (menangkap BUG 1)."""
         import os
-        monkeypatch.setenv("ACH_AUTH_TOKEN", "secret-bearer-token")
+        monkeypatch.setenv("QD_AUTH_TOKEN", "secret-bearer-token")
 
         status, body, resp_headers = _req(
             headers=[(b"authorization", b"Bearer secret-bearer-token")], env_token="secret-bearer-token"
@@ -209,7 +209,7 @@ class TestAuthIntegration:
     def test_x_auth_token_valid_200(self, monkeypatch):
         """4. auth aktif + header X-Auth-Token: <benar> → 200 (menangkap BUG 1 utk header ke-2)."""
         import os
-        monkeypatch.setenv("ACH_AUTH_TOKEN", "secret-x-token")
+        monkeypatch.setenv("QD_AUTH_TOKEN", "secret-x-token")
 
         status, body, resp_headers = _req(
             headers=[(b"x-auth-token", b"secret-x-token")], env_token="secret-x-token"
@@ -221,7 +221,7 @@ class TestAuthIntegration:
     def test_query_token_valid_200_no_header(self, monkeypatch):
         """5. auth aktif + ?token=<benar> TANPA header apa pun → **200** (menangkap BUG 2)."""
         import os
-        monkeypatch.setenv("ACH_AUTH_TOKEN", "secret-query-token")
+        monkeypatch.setenv("QD_AUTH_TOKEN", "secret-query-token")
 
         status, body, resp_headers = _req(
             path=b"/api/metrics/storage",
@@ -235,7 +235,7 @@ class TestAuthIntegration:
     def test_wrong_token_401(self, monkeypatch):
         """6. auth aktif + token salah → 401."""
         import os
-        monkeypatch.setenv("ACH_AUTH_TOKEN", "real-secret-token")
+        monkeypatch.setenv("QD_AUTH_TOKEN", "real-secret-token")
 
         status, body, resp_headers = _req(
             headers=[(b"authorization", b"Bearer wrong-token")], env_token="real-secret-token"
@@ -250,7 +250,7 @@ class TestAuthIntegration:
         tidak pernah muncul. Kirim header latin-1 non-ASCII dan pastikan
         middleware membalas 401, bukan 500."""
         import os
-        monkeypatch.setenv("ACH_AUTH_TOKEN", "secret-ascii-token")
+        monkeypatch.setenv("QD_AUTH_TOKEN", "secret-ascii-token")
 
         # Bangun header non-ASCII di runtime (bukan di source code literal)
         non_ascii_val = "tokén-with-éccents".encode("latin-1")
@@ -267,7 +267,7 @@ class TestAuthIntegration:
     def test_preflight_not_401(self, monkeypatch):
         """8. preflight OPTIONS dengan Origin: http://localhost:5173 + ACRM/ACRH authorization → 200, allow-headers memuat Authorization."""
         import os
-        monkeypatch.setenv("ACH_AUTH_TOKEN", "preflight-token")
+        monkeypatch.setenv("QD_AUTH_TOKEN", "preflight-token")
 
         status, body, resp_headers = _req(
             method="OPTIONS",
@@ -289,21 +289,21 @@ class TestAuthIntegration:
 
     
     def test_guardrail_non_loopback_without_token(self, monkeypatch):
-        """9. Guardrail: API_HOST=0.0.0.0 tanpa ACH_AUTH_TOKEN → RuntimeError."""
+        """9. Guardrail: API_HOST=0.0.0.0 tanpa QD_AUTH_TOKEN → RuntimeError."""
         import os
         monkeypatch.setenv("API_HOST", "0.0.0.0")
-        monkeypatch.delenv("ACH_AUTH_TOKEN", raising=False)
+        monkeypatch.delenv("QD_AUTH_TOKEN", raising=False)
 
         from api.auth_middleware import validate_startup_host
 
         with pytest.raises(RuntimeError) as excinfo:
             validate_startup_host()
         assert "non-loopback" in str(excinfo.value).lower()
-        assert "ACH_AUTH_TOKEN" in str(excinfo.value)
+        assert "QD_AUTH_TOKEN" in str(excinfo.value)
 
     def test_guardrail_loopback_without_token_ok(self):
-        """10. Guardrail: API_HOST=127.0.0.1 tanpa ACH_AUTH_TOKEN → OK (no error)."""
-        # fixture already cleaned ACH_AUTH_TOKEN
+        """10. Guardrail: API_HOST=127.0.0.1 tanpa QD_AUTH_TOKEN → OK (no error)."""
+        # fixture already cleaned QD_AUTH_TOKEN
 
         from api.auth_middleware import validate_startup_host
         validate_startup_host()  # should not raise
@@ -312,41 +312,41 @@ class TestStartupGuardrail:
     """Guardrail unit: 4-5 kasus kunci (pertahankan dari versi lama)."""
 
     def test_non_loopback_without_token_raises(self, monkeypatch):
-        """non-loopback API_HOST + no ACH_AUTH_TOKEN → RuntimeError."""
+        """non-loopback API_HOST + no QD_AUTH_TOKEN → RuntimeError."""
         from api.auth_middleware import validate_startup_host
 
         monkeypatch.setenv("API_HOST", "0.0.0.0")
-        monkeypatch.delenv("ACH_AUTH_TOKEN", raising=False)
+        monkeypatch.delenv("QD_AUTH_TOKEN", raising=False)
 
         with pytest.raises(RuntimeError) as excinfo:
             validate_startup_host()
         assert "non-loopback" in str(excinfo.value).lower()
-        assert "ACH_AUTH_TOKEN" in str(excinfo.value)
+        assert "QD_AUTH_TOKEN" in str(excinfo.value)
 
     def test_loopback_without_token_ok(self, monkeypatch):
-        """loopback API_HOST (127.0.0.1) + no ACH_AUTH_TOKEN → no error."""
+        """loopback API_HOST (127.0.0.1) + no QD_AUTH_TOKEN → no error."""
         from api.auth_middleware import validate_startup_host
 
         monkeypatch.setenv("API_HOST", "127.0.0.1")
-        monkeypatch.delenv("ACH_AUTH_TOKEN", raising=False)
+        monkeypatch.delenv("QD_AUTH_TOKEN", raising=False)
 
         validate_startup_host()  # should not raise
 
     def test_loopback_localhost_without_token_ok(self, monkeypatch):
-        """localhost API_HOST + no ACH_AUTH_TOKEN → no error."""
+        """localhost API_HOST + no QD_AUTH_TOKEN → no error."""
         from api.auth_middleware import validate_startup_host
 
         monkeypatch.setenv("API_HOST", "localhost")
-        monkeypatch.delenv("ACH_AUTH_TOKEN", raising=False)
+        monkeypatch.delenv("QD_AUTH_TOKEN", raising=False)
 
         validate_startup_host()  # should not raise
 
     def test_non_loopback_with_token_ok(self, monkeypatch):
-        """non-loopback API_HOST + ACH_AUTH_TOKEN set → no error."""
+        """non-loopback API_HOST + QD_AUTH_TOKEN set → no error."""
         from api.auth_middleware import validate_startup_host
 
         monkeypatch.setenv("API_HOST", "0.0.0.0")
-        monkeypatch.setenv("ACH_AUTH_TOKEN", "some-token")
+        monkeypatch.setenv("QD_AUTH_TOKEN", "some-token")
 
         validate_startup_host()  # should not raise
 
@@ -355,6 +355,6 @@ class TestStartupGuardrail:
         from api.auth_middleware import validate_startup_host
 
         monkeypatch.setenv("API_HOST", "::1")
-        monkeypatch.delenv("ACH_AUTH_TOKEN", raising=False)
+        monkeypatch.delenv("QD_AUTH_TOKEN", raising=False)
 
         validate_startup_host()  # should not raise

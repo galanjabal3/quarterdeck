@@ -1,5 +1,5 @@
 Markdown
-# 🚀 Adaptive Command Hub - Master Project Blueprint
+# 🚀 Quarterdeck - Master Project Blueprint
 
 ## 📖 Konsep Inti & Filosofi (Context for AI)
 Proyek ini adalah **Local Web App** yang bertindak layaknya aplikasi *desktop native* untuk manajemen sistem operasi dan alur kerja *developer*.
