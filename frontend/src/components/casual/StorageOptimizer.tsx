@@ -101,7 +101,8 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
   const isError = status === 'error';
 
   const handleClean = async (): Promise<void> => {
-    if (isCleaning || isCleaned) return;
+    // Boleh dijalankan ulang setelah success/error — hanya diblokir saat masih berjalan.
+    if (isCleaning) return;
     setStatus('loading');
     setActionError(null);
 
@@ -227,10 +228,11 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
         <button
           type="button"
           onClick={() => void handleClean()}
-          disabled={isCleaning || isCleaned}
+          disabled={isCleaning}
+          title={isCleaning ? 'Sedang membersihkan…' : undefined}
           className={`w-full py-3.5 px-4 rounded-xl font-semibold shadow-md transition-all flex items-center justify-center gap-2 text-sm active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100 ${
             isCleaned
-              ? 'bg-emerald-600 text-white'
+              ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
               : 'bg-slate-900 hover:bg-slate-800 text-white hover:shadow-lg disabled:opacity-70'
           }`}
         >
@@ -242,12 +244,12 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
           ) : isCleaned ? (
             <>
               <CheckCircle2 className="w-[18px] h-[18px]" aria-hidden="true" />
-              <span>System Clean &amp; Optimal</span>
+              <span>Clean Again</span>
             </>
           ) : isError ? (
             <>
               <RefreshCcw className="w-[18px] h-[18px]" aria-hidden="true" />
-              <span>Retry 1-Click Clean</span>
+              <span>Try Again</span>
             </>
           ) : (
             <>

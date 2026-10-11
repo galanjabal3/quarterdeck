@@ -26,8 +26,8 @@ export default function ToggleSwitch({ isProMode, onToggle, className = '' }: To
       type="button"
       role="switch"
       aria-checked={isProMode}
-      aria-label={isProMode ? 'Aktifkan Pro HUD mode' : 'Aktifkan Casual mode'}
-      title={isProMode ? 'Pro High-Density Terminal Mode' : 'Casual Workspace Mode'}
+      aria-label={isProMode ? 'Beralih ke Casual mode' : 'Beralih ke Pro HUD mode'}
+      title={isProMode ? 'Kembali ke Casual mode' : 'Aktifkan Pro HUD mode'}
       onClick={onToggle}
       className={`relative inline-flex items-center p-1 transition-all duration-200 ${containerClass} ${className}`}
     >

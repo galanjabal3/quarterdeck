@@ -1,5 +1,4 @@
 import { Terminal } from 'lucide-react';
-import ToggleSwitch from '../shared/ToggleSwitch';
 
 interface ModeControllerProps {
   isProMode: boolean;
@@ -7,6 +6,11 @@ interface ModeControllerProps {
 }
 
 export default function ModeController({ isProMode, onToggle }: ModeControllerProps) {
+  // ToggleSwitch dihapus dari sini — Header adalah satu-satunya lokasi toggle Pro/Casual.
+  // Props tetap dipertahankan di signature agar call site ProDashboard tidak berubah.
+  void isProMode;
+  void onToggle;
+
   return (
     <div className="w-full bg-surface-container-low rounded-xl p-space-md shadow-sm flex flex-col md:flex-row items-center justify-between gap-space-md transition-all duration-300">
       <div className="flex items-center gap-space-md min-w-0">
@@ -26,10 +30,6 @@ export default function ModeController({ isProMode, onToggle }: ModeControllerPr
             Local system metrics, app launcher, and whitelisted OS actions
           </span>
         </div>
-      </div>
-
-      <div className="flex items-center gap-space-md flex-shrink-0">
-        <ToggleSwitch isProMode={isProMode} onToggle={onToggle} />
       </div>
     </div>
   );

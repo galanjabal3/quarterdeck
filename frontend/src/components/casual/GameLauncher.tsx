@@ -93,15 +93,8 @@ export default function GameLauncher() {
   const [appsError, setAppsError] = useState<string | null>(null);
   const [query, setQuery] = useState<string>('');
   const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE);
-  const [notice, setNotice] = useState<string | null>(null);
   const [launchStates, setLaunchStates] = useState<Record<string, LaunchState>>({});
   const [failedIcons, setFailedIcons] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
-    if (!notice) return;
-    const timer = window.setTimeout(() => setNotice(null), 3000);
-    return () => window.clearTimeout(timer);
-  }, [notice]);
 
   useEffect(() => {
     let active = true;
@@ -188,7 +181,6 @@ export default function GameLauncher() {
         ...prev,
         [app.name]: { status: 'success', message, code: '' },
       }));
-      setNotice(`${app.name} launched — ${message}.`);
     } else {
       setLaunchStates((prev) => ({
         ...prev,
@@ -231,18 +223,21 @@ export default function GameLauncher() {
           <span className="text-xs font-semibold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-lg">
             {countLabel}
           </span>
-          <button
-            type="button"
-            onClick={() => void handleRefresh()}
-            disabled={appsLoading}
-            aria-label="Refresh app list"
-            className="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-slate-800 hover:border-slate-300 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <RefreshCw
-              className={`w-4 h-4 ${appsLoading ? 'animate-spin' : ''}`}
-              aria-hidden="true"
-            />
-          </button>
+          {/* Saat error, refresh ditangani tombol "Coba lagi" di panel error */}
+          {!appsError && (
+            <button
+              type="button"
+              onClick={() => void handleRefresh()}
+              disabled={appsLoading}
+              aria-label="Refresh app list"
+              className="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-slate-800 hover:border-slate-300 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${appsLoading ? 'animate-spin' : ''}`}
+                aria-hidden="true"
+              />
+            </button>
+          )}
         </div>
       </div>
 
@@ -431,12 +426,6 @@ export default function GameLauncher() {
             </button>
           )}
         </>
-      )}
-
-      {notice && (
-        <p className="text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2">
-          {notice}
-        </p>
       )}
     </div>
   );
