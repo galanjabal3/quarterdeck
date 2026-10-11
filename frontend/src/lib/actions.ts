@@ -1,3 +1,11 @@
+import {
+  API_BASE_URL,
+  NETWORK_ERROR_MESSAGES,
+  isErrorPayload,
+  isSuccessPayload,
+  type ApiSuccessPayload,
+} from './api';
+
 export type ActionName = 'launch-game' | 'cleanup';
 
 export interface ActionData {
@@ -22,24 +30,6 @@ export interface ActionFailure {
 
 export type ActionResult = ActionSuccess | ActionFailure;
 
-interface ApiSuccessPayload {
-  status: 'success';
-  data: ActionData;
-}
-
-interface ApiErrorPayload {
-  status: 'error';
-  error: {
-    code: string;
-    message: string;
-  };
-  /** Fast-op menyertakan stderr (bersih/truncate) di level envelope, bukan di dalam `error`. */
-  stderr?: unknown;
-}
-
-export const API_BASE_URL: string =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:8000';
-
 /** Token auth opsional dari env frontend; kosong = auth mati (tanpa header tambahan). */
 const AUTH_TOKEN = (import.meta.env.VITE_AUTH_TOKEN as string | undefined) ?? '';
 
@@ -59,27 +49,14 @@ export function withToken(url: string): string {
 
 const ACTION_ENDPOINT = '/api/actions/launch-game';
 
-const NETWORK_ERROR_MESSAGES: string[] = ['Failed to fetch', 'fetch failed', 'NetworkError'];
-
-function isSuccessPayload(payload: unknown): payload is ApiSuccessPayload {
-  if (typeof payload !== 'object' || payload === null) return false;
-  const candidate = payload as { status?: unknown; data?: unknown };
-  if (candidate.status !== 'success') return false;
-  if (typeof candidate.data !== 'object' || candidate.data === null) return false;
-  const data = candidate.data as { exit_code?: unknown };
-  return typeof data.exit_code === 'number';
-}
-
-function isErrorPayload(payload: unknown): payload is ApiErrorPayload {
-  if (typeof payload !== 'object' || payload === null) return false;
-  const candidate = payload as { status?: unknown; error?: { code?: unknown; message?: unknown } };
-  return (
-    candidate.status === 'error' &&
-    typeof candidate.error === 'object' &&
-    candidate.error !== null &&
-    typeof candidate.error.code === 'string' &&
-    typeof candidate.error.message === 'string'
-  );
+/**
+ * Guard khusus envelope aksi: sukses generik + `data.exit_code` numerik.
+ * isSuccessPayload generik terlalu longgar untuk kontrak aksi — komposisi ini
+ * mempertahankan semantik guard lama persis (data non-objek tetap ditolak).
+ */
+function isActionSuccessPayload(payload: unknown): payload is ApiSuccessPayload<ActionData> {
+  if (!isSuccessPayload<ActionData>(payload)) return false;
+  return typeof payload.data.exit_code === 'number';
 }
 
 function toFailureMessage(reason: unknown): string {
@@ -118,7 +95,7 @@ export async function postAction(action: ActionName, target: string): Promise<Ac
     payload = null;
   }
 
-  if (response.ok && isSuccessPayload(payload)) {
+  if (response.ok && isActionSuccessPayload(payload)) {
     return { ok: true, data: payload.data };
   }
 

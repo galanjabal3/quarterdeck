@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { LayoutGrid, Server, SquareTerminal, Zap } from 'lucide-react';
 import type { SystemMetricsState } from '../../hooks/useSystemMetrics';
-import { API_BASE_URL } from '../../lib/actions';
+import { API_BASE_URL } from '../../lib/api';
 import { clampPercent, formatPercent } from '../../lib/format';
 
 interface NavItem {

@@ -1,19 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { API_BASE_URL, NETWORK_ERROR_MESSAGES, isErrorPayload, isSuccessPayload } from '../lib/api';
 import { authHeaders } from '../lib/actions';
-
-export interface ApiSuccessResponse<T> {
-  status: 'success';
-  data: T;
-}
-
-export interface ApiErrorResponse {
-  status: 'error';
-  error: {
-    code: string;
-    message: string;
-  };
-}
 
 export interface StorageMetrics {
   total_gb: number;
@@ -49,9 +37,6 @@ export interface SystemMetricsState {
   refresh: () => void;
 }
 
-const API_BASE_URL: string =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:8000';
-
 const POLL_INTERVAL_MS = 3000;
 
 const EMPTY_METRICS: SystemMetrics = {
@@ -59,28 +44,6 @@ const EMPTY_METRICS: SystemMetrics = {
   ram: null,
   cpu: null,
 };
-
-const NETWORK_ERROR_MESSAGES: string[] = ['Failed to fetch', 'fetch failed', 'NetworkError'];
-
-function isSuccessPayload<T>(payload: unknown): payload is ApiSuccessResponse<T> {
-  if (typeof payload !== 'object' || payload === null) return false;
-  const candidate = payload as { status?: unknown; data?: unknown };
-  return (
-    candidate.status === 'success' && typeof candidate.data === 'object' && candidate.data !== null
-  );
-}
-
-function isErrorPayload(payload: unknown): payload is ApiErrorResponse {
-  if (typeof payload !== 'object' || payload === null) return false;
-  const candidate = payload as { status?: unknown; error?: { code?: unknown; message?: unknown } };
-  return (
-    candidate.status === 'error' &&
-    typeof candidate.error === 'object' &&
-    candidate.error !== null &&
-    typeof candidate.error.code === 'string' &&
-    typeof candidate.error.message === 'string'
-  );
-}
 
 async function fetchMetrics<T>(path: string, signal: AbortSignal): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {

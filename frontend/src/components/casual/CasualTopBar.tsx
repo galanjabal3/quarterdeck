@@ -1,6 +1,7 @@
 import { MemoryStick, Sun } from 'lucide-react';
 import type { SystemMetricsState } from '../../hooks/useSystemMetrics';
 import { formatPercent } from '../../lib/format';
+import ApiOfflineBadge from '../shared/ApiOfflineBadge';
 
 interface CasualTopBarProps {
   metrics: SystemMetricsState;
@@ -32,14 +33,7 @@ export default function CasualTopBar({ metrics }: CasualTopBarProps) {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-bold text-slate-900 tracking-tight">Casual Workspace</h1>
-            {error && (
-              <span
-                className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200"
-                title={error}
-              >
-                API OFFLINE
-              </span>
-            )}
+            <ApiOfflineBadge error={error} />
           </div>
           <p className="text-xs text-slate-500">
             Storage cleanup, live system metrics &amp; a local drop zone

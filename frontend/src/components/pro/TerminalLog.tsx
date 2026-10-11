@@ -9,12 +9,12 @@ import {
 import { Filter } from 'lucide-react';
 import type { SystemMetricsState } from '../../hooks/useSystemMetrics';
 import {
-  API_BASE_URL,
   HEALTH_ENDPOINT,
   fetchInstalledApps,
   fetchSystemProcesses,
   probeEndpoint,
 } from '../../lib/actions';
+import { API_BASE_URL } from '../../lib/api';
 import { formatPercent } from '../../lib/format';
 
 type Tone = 'sys' | 'http' | 'cmd' | 'resp' | 'err';

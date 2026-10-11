@@ -3,6 +3,7 @@ import { AlertCircle, CheckCircle2, HardDrive, RefreshCcw, Wand2 } from 'lucide-
 import type { SystemMetricsState } from '../../hooks/useSystemMetrics';
 import { formatGb, formatPercent } from '../../lib/format';
 import { postAction } from '../../lib/actions';
+import ApiOfflineBadge from '../shared/ApiOfflineBadge';
 
 interface StorageSegment {
   label: string;
@@ -145,14 +146,7 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
           <span className="text-sm font-semibold tracking-wide uppercase text-slate-500">
             Storage Health &amp; Optimizer
           </span>
-          {error && (
-            <span
-              className="ml-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200"
-              title={error}
-            >
-              API OFFLINE
-            </span>
-          )}
+          <ApiOfflineBadge error={error} className="ml-1" />
         </div>
 
         <div>

@@ -25,6 +25,7 @@ import {
   type ActionResult,
   type InstalledApp,
 } from '../../lib/actions';
+import ApiOfflineBadge from '../shared/ApiOfflineBadge';
 
 const PAGE_SIZE = 12;
 
@@ -205,14 +206,7 @@ export default function GameLauncher() {
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-bold text-slate-900">App Launcher</h3>
-              {appsError && !appsLoading && (
-                <span
-                  className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200"
-                  title={appsError}
-                >
-                  API OFFLINE
-                </span>
-              )}
+              {!appsLoading && <ApiOfflineBadge error={appsError} />}
             </div>
             <p className="text-xs text-slate-500">
               One-tap launch for every app installed on this machine

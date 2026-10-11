@@ -73,14 +73,8 @@
      PRO MODE — Pitch Carbon / Neon Phosphor
      ============================================================ */
   --color-pro-base: #0a0d0e;
-  --color-pro-surface: #121619;
-  --color-pro-panel: #1c2327;
-  --color-pro-border: #2b363c;
-  --color-pro-primary: #00ff66;
-  --color-pro-secondary: #ffb020;
   --color-pro-tertiary: #6366f1;
   --color-pro-text: #f4f6f8;
-  --color-pro-muted: #8b9da8;
 
   --color-background: #111415;
   --color-surface: #111415;
@@ -138,14 +132,9 @@
      CASUAL MODE — Daylight balanced
      ============================================================ */
   --color-casual-canvas: #f8fafc;
-  --color-casual-card: #ffffff;
-  --color-casual-primary: #10b981;
-  --color-casual-secondary: #f59e0b;
-  --color-casual-tertiary: #818cf8;
   --color-casual-accent: #fda4af;
   --color-casual-text: #0f172a;
   --color-casual-muted: #64748b;
-  --color-casual-border: #e2e8f0;
 }
 
 @layer base {

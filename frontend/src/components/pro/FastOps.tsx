@@ -7,6 +7,7 @@ import {
   type FastOpResult,
   type FastOpsData,
 } from '../../lib/actions';
+import ConfirmActionModal from './ConfirmActionModal';
 
 type RunState =
   | { phase: 'idle' }
@@ -90,6 +91,8 @@ export default function FastOps() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [runs, setRuns] = useState<Record<string, RunState>>({});
+  // Aksi berisiko dibuka lewat modal in-design, bukan window.confirm.
+  const [confirmMeta, setConfirmMeta] = useState<FastOpMeta | null>(null);
 
   const mountedRef = useRef<boolean>(true);
   const runControllersRef = useRef<Set<AbortController>>(new Set());
@@ -118,15 +121,9 @@ export default function FastOps() {
     };
   }, []);
 
-  const handleRun = (meta: FastOpMeta): void => {
+  /** Eksekusi tanpa konfirmasi — dipanggil langsung atau dari modal. */
+  const execute = (meta: FastOpMeta): void => {
     if (runs[meta.id]?.phase === 'running') return;
-
-    if (needsConfirmation(meta)) {
-      const confirmed = window.confirm(
-        `Jalankan aksi "${meta.title}"?\n\nPerintah: ${meta.command_display}\n\nAksi ini berdampak nyata ke sistem — jendela/aplikasi terkait bisa berkedip sejenak.`,
-      );
-      if (!confirmed) return;
-    }
 
     setRuns((prev) => ({ ...prev, [meta.id]: { phase: 'running' } }));
 
@@ -138,6 +135,14 @@ export default function FastOps() {
       if (!mountedRef.current || controller.signal.aborted) return;
       setRuns((prev) => ({ ...prev, [meta.id]: toRunState(result) }));
     });
+  };
+
+  const handleRun = (meta: FastOpMeta): void => {
+    if (needsConfirmation(meta)) {
+      setConfirmMeta(meta);
+      return;
+    }
+    execute(meta);
   };
 
   const actionList: FastOpMeta[] = ops ? Object.values(ops.actions) : [];
@@ -214,6 +219,17 @@ export default function FastOps() {
             );
           })}
         </div>
+      )}
+
+      {confirmMeta && (
+        <ConfirmActionModal
+          meta={confirmMeta}
+          onCancel={() => setConfirmMeta(null)}
+          onConfirm={() => {
+            setConfirmMeta(null);
+            execute(confirmMeta);
+          }}
+        />
       )}
     </div>
   );
