@@ -68,7 +68,7 @@ export default function ServerManager() {
   const hiddenCount = processes.length - visible.length;
 
   return (
-    <div className="bg-surface-container-low p-space-md rounded-md flex flex-col gap-space-md shadow-sm">
+    <div className="bg-surface-container-low p-space-md rounded-pro flex flex-col gap-space-md shadow-sm">
       <div className="flex items-center justify-between pb-space-xs bg-surface-container-low">
         <div className="flex items-center gap-space-xs">
           <Server className="w-[18px] h-[18px] text-primary-container" aria-hidden="true" />

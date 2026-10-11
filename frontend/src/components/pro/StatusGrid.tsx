@@ -183,7 +183,7 @@ export default function StatusGrid({ metrics }: StatusGridProps) {
       {cards.map((card) => (
         <div
           key={card.label}
-          className="bg-surface-container-low p-space-md rounded-md flex flex-col justify-between shadow-sm"
+          className="bg-surface-container-low p-space-md rounded-pro flex flex-col justify-between shadow-sm"
         >
           <div className="flex items-center justify-between text-outline">
             <span className="font-label-sm text-label-sm uppercase tracking-wider">

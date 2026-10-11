@@ -134,7 +134,7 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200/80 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
+    <div className="bg-white rounded-casual-card p-6 md:p-8 shadow-sm border border-slate-200/80 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
       <div className="absolute -top-12 -right-12 w-80 h-80 bg-gradient-to-br from-emerald-100/40 to-teal-50/20 rounded-full pointer-events-none blur-2xl" />
 
       <div className="flex flex-col gap-4 max-w-2xl z-10">
@@ -187,7 +187,7 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-emerald-50/30 p-6 rounded-2xl z-10 w-full lg:w-80 border border-slate-200 text-center gap-4 shrink-0 shadow-xs">
+      <div className="flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-emerald-50/30 p-6 rounded-lg z-10 w-full lg:w-80 border border-slate-200 text-center gap-4 shrink-0 shadow-xs">
         <div
           className={`w-20 h-20 rounded-2xl flex items-center justify-center shadow-inner transition-all duration-500 ${
             isCleaned
@@ -268,7 +268,7 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
           </p>
         )}
 
-        <span className="text-[11px] text-slate-400">Zero personal data touched</span>
+        <span className="text-[11px] text-slate-500">Zero personal data touched</span>
       </div>
     </div>
   );

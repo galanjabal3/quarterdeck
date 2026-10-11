@@ -84,7 +84,7 @@ export default function UniversalDrop() {
   const visibleFiles = pickedFiles.slice(0, MAX_VISIBLE_FILES);
 
   return (
-    <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm flex flex-col gap-4">
+    <div className="bg-white rounded-casual-card p-6 md:p-8 border border-slate-200/80 shadow-sm flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
@@ -153,13 +153,13 @@ export default function UniversalDrop() {
                   className="flex items-center justify-between gap-3 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-left"
                 >
                   <span className="text-xs text-slate-700 truncate">{file.name}</span>
-                  <span className="text-[11px] text-slate-400 shrink-0">
+                  <span className="text-[11px] text-slate-500 shrink-0">
                     {formatSize(file.size)}
                   </span>
                 </li>
               ))}
               {pickedFiles.length > MAX_VISIBLE_FILES && (
-                <li className="text-[11px] text-slate-400 px-1 text-left">
+                <li className="text-[11px] text-slate-500 px-1 text-left">
                   +{pickedFiles.length - MAX_VISIBLE_FILES} more
                 </li>
               )}

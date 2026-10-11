@@ -7,32 +7,12 @@
   --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
-  --font-display-lg: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-headline-lg: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-headline-lg-mobile: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
   --font-headline-md: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
   --font-headline-sm: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-body-lg: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
   --font-body-md: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
   --font-body-sm: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
   --font-code-md: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-  --font-label-md: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
   --font-label-sm: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-
-  --text-display-lg: 48px;
-  --text-display-lg--line-height: 56px;
-  --text-display-lg--letter-spacing: -0.03em;
-  --text-display-lg--font-weight: 700;
-
-  --text-headline-lg: 32px;
-  --text-headline-lg--line-height: 40px;
-  --text-headline-lg--letter-spacing: -0.02em;
-  --text-headline-lg--font-weight: 600;
-
-  --text-headline-lg-mobile: 26px;
-  --text-headline-lg-mobile--line-height: 34px;
-  --text-headline-lg-mobile--letter-spacing: -0.01em;
-  --text-headline-lg-mobile--font-weight: 600;
 
   --text-headline-md: 24px;
   --text-headline-md--line-height: 32px;
@@ -43,11 +23,6 @@
   --text-headline-sm--line-height: 24px;
   --text-headline-sm--letter-spacing: 0em;
   --text-headline-sm--font-weight: 600;
-
-  --text-body-lg: 16px;
-  --text-body-lg--line-height: 24px;
-  --text-body-lg--letter-spacing: 0em;
-  --text-body-lg--font-weight: 400;
 
   --text-body-md: 14px;
   --text-body-md--line-height: 20px;
@@ -64,11 +39,6 @@
   --text-code-md--letter-spacing: -0.02em;
   --text-code-md--font-weight: 500;
 
-  --text-label-md: 12px;
-  --text-label-md--line-height: 16px;
-  --text-label-md--letter-spacing: 0.04em;
-  --text-label-md--font-weight: 500;
-
   --text-label-sm: 10px;
   --text-label-sm--line-height: 14px;
   --text-label-sm--letter-spacing: 0.08em;
@@ -82,11 +52,7 @@
   --spacing-space-md: 1rem;
   --spacing-space-lg: 1.5rem;
   --spacing-space-xl: 2.5rem;
-  --spacing-gutter: 1rem;
   --spacing-gutter-lg: 1.5rem;
-  --spacing-margin: 1rem;
-  --spacing-margin-md: 1.5rem;
-  --spacing-margin-lg: 2.5rem;
 
   /* ============================================================
      SHAPE / RADIUS
@@ -95,7 +61,7 @@
   --radius: 0.125rem;
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
-  --radius-lg: 0.25rem;
+  --radius-lg: 0.5rem;
   --radius-xl: 0.5rem;
   --radius-2xl: 1rem;
   --radius-3xl: 1.5rem;

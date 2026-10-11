@@ -110,6 +110,7 @@ export default function TerminalLog({ metrics }: TerminalLogProps) {
 
   const nextIdRef = useRef<number>(2);
   const bootstrappedRef = useRef<boolean>(false);
+  const logContainerRef = useRef<HTMLDivElement>(null);
 
   const appendLine = useCallback((tone: Tone, text: string): void => {
     const id = nextIdRef.current;
@@ -240,6 +241,13 @@ export default function TerminalLog({ metrics }: TerminalLogProps) {
   };
 
   const visibleLines = lines.filter((line) => matchesFilter(line, activeFilter));
+
+  // Auto-scroll ke baris terbaru hanya saat jumlah baris berubah (bukan saat ganti filter).
+  useEffect(() => {
+    const container = logContainerRef.current;
+    if (container) container.scrollTo({ top: container.scrollHeight });
+  }, [visibleLines.length]);
+
   const connectionLabel =
     connection === 'live' ? '● LIVE' : connection === 'offline' ? '○ OFFLINE' : '○ CHECKING';
   const connectionClass =
@@ -248,7 +256,7 @@ export default function TerminalLog({ metrics }: TerminalLogProps) {
       : 'bg-surface-container text-outline';
 
   return (
-    <div className="bg-surface-container-lowest rounded-md p-space-md shadow-md flex flex-col h-full gap-space-sm">
+    <div className="bg-surface-container-lowest rounded-pro p-space-md shadow-md flex flex-col h-full gap-space-sm">
       <div className="flex items-center justify-between pb-space-xs bg-surface-container-lowest">
         <div className="flex items-center gap-space-sm">
           <div className="flex items-center gap-1.5">
@@ -298,7 +306,10 @@ export default function TerminalLog({ metrics }: TerminalLogProps) {
         </div>
       </div>
 
-      <div className="flex-1 bg-surface-container-lowest p-space-sm rounded font-code-md text-code-md overflow-y-auto max-h-[460px] min-h-[380px] flex flex-col gap-1 select-text">
+      <div
+        ref={logContainerRef}
+        className="flex-1 bg-surface-container-lowest p-space-sm rounded font-code-md text-code-md overflow-y-auto max-h-[460px] min-h-[380px] flex flex-col gap-1 select-text"
+      >
         {visibleLines.length === 0 && (
           <span className="text-outline text-label-sm font-label-sm">
             (tidak ada baris untuk filter {activeFilter})
