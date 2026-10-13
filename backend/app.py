@@ -31,6 +31,7 @@ from api.actions import (
 )
 from api.metrics import get_storage_metrics, get_ram_metrics, get_cpu_metrics
 from api.storage_scan import get_junk_scan
+from api.clean import execute_clean
 from api.actions import FastOpsActionsResource, FastOpResource
 from api.system_processes import get_system_processes, SystemProcessesResource
 
@@ -168,6 +169,36 @@ class MetricsJunkResource:
         loop = asyncio.get_event_loop()
         result = await loop.run_in_executor(None, get_junk_scan)
         res.status = falcon.HTTP_200
+        res.media = result
+
+    async def on_options(self, req, res):
+        res.status = falcon.HTTP_200
+
+
+class CleanResource:
+    """POST /api/actions/clean — pindahkan zona terpilih ke ~/.Trash (undo-able).
+
+    Tanpa `confirm: true` endpoint berperilaku sebagai dry-run (400 envelope),
+    sehingga permintaan yang tidak lengkap tidak pernah menggerakkan file.
+    """
+
+    async def on_post(self, req, res):
+        try:
+            body = await req.media
+        except Exception:
+            body = None
+        if not isinstance(body, dict):
+            body = {}
+
+        zone_ids = body.get("zone_ids", [])
+        confirm = body.get("confirm")
+
+        loop = asyncio.get_event_loop()
+        result, status_code = await loop.run_in_executor(
+            None,
+            lambda: execute_clean(zone_ids, confirm),
+        )
+        res.status = status_code
         res.media = result
 
     async def on_options(self, req, res):
@@ -449,6 +480,7 @@ app.add_route("/api/metrics/storage", MetricsStorageResource())
 app.add_route("/api/metrics/ram", MetricsRAMResource())
 app.add_route("/api/metrics/cpu", MetricsCPUResource())
 app.add_route("/api/metrics/junk", MetricsJunkResource())
+app.add_route("/api/actions/clean", CleanResource())
 app.add_route("/api/actions/launch-game", LaunchGameResource())
 app.add_route("/api/actions/apps", AppsResource())
 app.add_route("/api/actions/app-icon", AppIconResource())
