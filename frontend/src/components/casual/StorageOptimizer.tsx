@@ -1,7 +1,8 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { AlertCircle, CheckCircle2, HardDrive, RefreshCcw, Wand2 } from 'lucide-react';
 import type { SystemMetricsState } from '../../hooks/useSystemMetrics';
-import { formatGb, formatPercent } from '../../lib/format';
+import { fetchJunkScan, type JunkScanData } from '../../lib/api';
+import { formatGb, formatGbShort, formatPercent } from '../../lib/format';
 import { postAction } from '../../lib/actions';
 import ApiOfflineBadge from '../shared/ApiOfflineBadge';
 
@@ -18,23 +19,16 @@ interface StorageOptimizerProps {
 }
 
 /**
- * Backend hanya menyediakan total/used/free. Rasio ini dipakai untuk
- * memecah `used_gb` secara proporsional agar tetap konsisten dengan total.
+ * Bar disusun dari dua sumber angka nyata saja: used/free dari metrics.storage
+ * dan "Junk" dari scan GET /api/metrics/junk — tidak ada rasio karangan.
  */
-const USED_SPLIT = {
-  system: 0.7,
-  apps: 0.2,
-  junk: 0.1,
-} as const;
-
 const SEGMENT_STYLES = [
   { barClass: 'bg-slate-800', dotClass: 'bg-slate-800' },
-  { barClass: 'bg-blue-500', dotClass: 'bg-blue-500' },
   { barClass: 'bg-emerald-400', dotClass: 'bg-emerald-400' },
   { barClass: 'bg-slate-200', dotClass: 'bg-slate-200' },
 ] as const;
 
-const SEGMENT_NAMES = ['System', 'Apps', 'Junk', 'Free'] as const;
+const SEGMENT_NAMES = ['Used', 'Junk', 'Free'] as const;
 
 const PLACEHOLDER_SEGMENTS: StorageSegment[] = SEGMENT_NAMES.map((name, index) => ({
   label: name,
@@ -45,22 +39,21 @@ const PLACEHOLDER_SEGMENTS: StorageSegment[] = SEGMENT_NAMES.map((name, index) =
 }));
 
 function buildSegments(
-  systemGb: number | null,
-  appsGb: number | null,
+  usedNonJunkGb: number | null,
   junkGb: number | null,
   freeGb: number | null,
 ): StorageSegment[] {
-  if (systemGb == null || appsGb == null || junkGb == null || freeGb == null) {
+  if (usedNonJunkGb == null || junkGb == null || freeGb == null) {
     return PLACEHOLDER_SEGMENTS;
   }
 
-  const values = [systemGb, appsGb, junkGb, freeGb];
+  const values = [usedNonJunkGb, junkGb, freeGb];
   const sum = values.reduce((total, value) => total + value, 0);
   if (sum <= 0) return PLACEHOLDER_SEGMENTS;
 
   return values.map((value, index) => {
     const name = SEGMENT_NAMES[index];
-    const displayGb = index === 3 ? formatGb(freeGb, 1) : formatGb(value, 1);
+    const displayGb = formatGb(value, 1);
     return {
       label: `${name}: ${displayGb}`,
       legend: `${name} (${displayGb})`,
@@ -69,6 +62,26 @@ function buildSegments(
       dotClass: SEGMENT_STYLES[index].dotClass,
     };
   });
+}
+
+type ScanStatus = 'scanning' | 'ready' | 'error';
+
+/** Satuan jujur dari hasil scan: <1 GB ditampilkan dalam MB, selain itu 1 desimal. */
+function formatReclaimable(reclaimableGb: number): string {
+  if (reclaimableGb < 1) return `${Math.round(reclaimableGb * 1024)} MB`;
+  return `${formatGbShort(reclaimableGb)} GB`;
+}
+
+function cleanableTitle(scan: JunkScanData | null, scanStatus: ScanStatus): string {
+  if (scanStatus === 'error') return '— GB Cleanable';
+  if (!scan) return '… GB Cleanable';
+  return `${formatReclaimable(scan.reclaimable_gb)} Cleanable`;
+}
+
+function scanSubtitle(scan: JunkScanData | null, scanStatus: ScanStatus): string {
+  if (scanStatus === 'error') return 'disk scan unavailable — backend offline?';
+  if (!scan) return 'Scanning disk… (first scan can take ~20s)';
+  return 'Real disk scan · cleanup in simulation mode';
 }
 
 type CleanStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -87,14 +100,41 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
   const freeGb = storage?.free_gb ?? null;
   const percentUsed = storage?.percent_used ?? null;
 
-  const systemGb = usedGb == null ? null : usedGb * USED_SPLIT.system;
-  const appsGb = usedGb == null ? null : usedGb * USED_SPLIT.apps;
-  const junkGb = usedGb == null ? null : usedGb * USED_SPLIT.junk;
+  const [scan, setScan] = useState<JunkScanData | null>(null);
+  const [scanStatus, setScanStatus] = useState<ScanStatus>('scanning');
 
-  const segments = buildSegments(systemGb, appsGb, junkGb, freeGb);
+  // Scan nyata sekali saat kartu dimount; backend menyimpan TTL cache 60 detik.
+  useEffect(() => {
+    const controller = new AbortController();
+    let cancelled = false;
+
+    void fetchJunkScan(controller.signal).then((result) => {
+      if (cancelled) return;
+      if (result.ok) {
+        setScan(result.data);
+        setScanStatus('ready');
+      } else {
+        setScanStatus('error');
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, []);
+
+  // Clamp ke used agar irisan bar tetap berada di dalam volume yang sama.
+  const junkGb =
+    usedGb == null || scanStatus !== 'ready' || scan == null
+      ? null
+      : Math.min(Math.max(scan.reclaimable_gb, 0), usedGb);
+  const usedNonJunkGb = usedGb == null || junkGb == null ? null : usedGb - junkGb;
+
+  const segments = buildSegments(usedNonJunkGb, junkGb, freeGb);
 
   const [status, setStatus] = useState<CleanStatus>('idle');
-  const [filesRemoved, setFilesRemoved] = useState<number>(0);
+  const [filesRemoved, setFilesRemoved] = useState<number | null>(null);
   const [actionError, setActionError] = useState<ActionErrorState | null>(null);
 
   const isCleaning = status === 'loading';
@@ -110,7 +150,8 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
     const result = await postAction('cleanup', 'temp-files');
 
     if (result.ok) {
-      setFilesRemoved(result.data.files_removed ?? 0);
+      // Field opsional: null = backend tidak melaporkan angka → tampilkan "—", bukan 0.
+      setFilesRemoved(result.data.files_removed ?? null);
       setStatus('success');
     } else {
       setActionError({ message: result.message, code: result.code });
@@ -125,14 +166,24 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
         ? 'Storage metrics unavailable — metrics API offline.'
         : 'Storage metrics unavailable.';
     }
-    return (
-      <>
-        Your drive is running at {formatPercent(percentUsed)} capacity. Roughly{' '}
-        <strong className="text-emerald-700 font-semibold">{formatGb(junkGb, 1)}</strong> of
-        temporary cached installers, build logs, and stale cache can be safely removed.
-      </>
-    );
+    if (scanStatus === 'ready' && scan) {
+      return (
+        <>
+          Your drive is running at {formatPercent(percentUsed)} capacity.{' '}
+          <strong className="text-emerald-700 font-semibold">
+            {formatReclaimable(scan.reclaimable_gb)}
+          </strong>{' '}
+          of caches, logs, and trash is reclaimable per the live disk scan.
+        </>
+      );
+    }
+    return <>Your drive is running at {formatPercent(percentUsed)} capacity.</>;
   };
+
+  const locationBreakdown =
+    scan?.locations
+      .map((location) => `${location.label} ${formatGbShort(location.size_gb)} GB`)
+      .join(' · ') ?? '';
 
   return (
     <div className="bg-white rounded-casual-card p-6 md:p-8 shadow-sm border border-slate-200/80 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
@@ -203,27 +254,37 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
         <div>
           <span className="text-xl font-bold text-slate-900 block">
             {isCleaned
-              ? `${filesRemoved} File${filesRemoved === 1 ? '' : 's'} Removed`
+              ? `${filesRemoved ?? '—'} File${filesRemoved === 1 ? '' : 's'} Removed`
               : isError
                 ? 'Cleanup Failed'
-                : junkGb == null
-                  ? '— Cleanable'
-                  : `${formatGb(junkGb, 1)} Cleanable`}
+                : cleanableTitle(scan, scanStatus)}
           </span>
           <span className="text-xs text-slate-500">
             {isCleaned
-              ? `Drive purged. ${filesRemoved} temporary file${filesRemoved === 1 ? '' : 's'} deleted by the backend.`
+              ? `Simulation complete — ${filesRemoved ?? '—'} demo file${
+                  filesRemoved === 1 ? '' : 's'
+                } processed. No real files were touched.`
               : isError
                 ? 'Run blocked — see the error details below.'
-                : 'Safe 1-click system tuneup'}
+                : scanSubtitle(scan, scanStatus)}
           </span>
+          {scanStatus === 'ready' && scan && (
+            <div className="text-xs text-slate-500 mt-2 flex flex-col gap-0.5">
+              {locationBreakdown && <span>{locationBreakdown}</span>}
+              <span>{`${scan.file_count.toLocaleString('en-US')} files measured`}</span>
+            </div>
+          )}
         </div>
 
         <button
           type="button"
           onClick={() => void handleClean()}
           disabled={isCleaning}
-          title={isCleaning ? 'Sedang membersihkan…' : undefined}
+          title={
+            isCleaning
+              ? 'Sedang membersihkan…'
+              : 'Simulation only — real cleanup ships in the next update'
+          }
           className={`w-full py-3.5 px-4 rounded-xl font-semibold shadow-md transition-all flex items-center justify-center gap-2 text-sm active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100 ${
             isCleaned
               ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
@@ -248,7 +309,7 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
           ) : (
             <>
               <Wand2 className="w-[18px] h-[18px] text-emerald-400" aria-hidden="true" />
-              <span>1-Click Clean Drive</span>
+              <span>Simulate Clean (demo)</span>
             </>
           )}
         </button>

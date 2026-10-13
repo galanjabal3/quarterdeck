@@ -19,11 +19,7 @@ export default function App() {
       }`}
     >
       <Header isProMode={isProMode} onToggle={handleToggle} />
-      {isProMode ? (
-        <ProDashboard metrics={metrics} onToggle={handleToggle} />
-      ) : (
-        <CasualDashboard metrics={metrics} />
-      )}
+      {isProMode ? <ProDashboard metrics={metrics} /> : <CasualDashboard metrics={metrics} />}
     </div>
   );
 }

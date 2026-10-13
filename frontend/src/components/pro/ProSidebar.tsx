@@ -101,7 +101,15 @@ export default function ProSidebar({ metrics }: ProSidebarProps) {
           <span className="font-label-sm text-label-sm uppercase tracking-wider text-outline">
             Backend API
           </span>
-          {metrics.error ? (
+          {metrics.loading ? (
+            <span
+              className="flex items-center gap-1.5 font-label-sm text-label-sm text-outline"
+              title={`Menunggu probe pertama ke ${API_BASE_URL}…`}
+            >
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-outline" />
+              CHECKING
+            </span>
+          ) : metrics.error ? (
             <span
               className="flex items-center gap-1.5 font-label-sm text-label-sm text-error"
               title={metrics.error}

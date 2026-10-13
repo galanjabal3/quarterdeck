@@ -8,10 +8,9 @@ import TerminalLog from './TerminalLog';
 
 export interface ProDashboardProps {
   metrics: SystemMetricsState;
-  onToggle: () => void;
 }
 
-export default function ProDashboard({ metrics, onToggle }: ProDashboardProps) {
+export default function ProDashboard({ metrics }: ProDashboardProps) {
   return (
     <>
       <ProSidebar metrics={metrics} />
@@ -21,7 +20,7 @@ export default function ProDashboard({ metrics, onToggle }: ProDashboardProps) {
             id="overview"
             className="w-full transition-all duration-300 ease-out px-gutter-lg py-space-lg flex flex-col gap-space-lg text-on-surface scroll-mt-20"
           >
-            <ModeController isProMode onToggle={onToggle} />
+            <ModeController />
 
             <div className="w-full flex flex-col gap-space-lg transition-opacity duration-300">
               <StatusGrid metrics={metrics} />

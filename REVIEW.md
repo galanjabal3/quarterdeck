@@ -21,7 +21,7 @@ menscan aplikasi terinstal dan membukanya, dengan dua mode UI — **Casual** dan
 | Orkestrasi | `./run.sh`: satu perintah untuk FE+BE, log prefix `[BE]`/`[FE]`, cek prasyarat (`poetry`, `node`, `npm`, `curl`, `lsof`), deteksi port, graceful shutdown Ctrl+C | `./run.sh --help` |
 
 Status akhir: **Phase 1–5 sesuai `PLANNING.md` dinyatakan selesai** (seluruh milestone
-bertanda `[x]`), 67 test backend lolos, type-check/lint/format/build frontend bersih, audit
+bertanda `[x]`), 83 test backend lolos, type-check/lint/format/build frontend bersih, audit
 input 60 kasus tanpa satu pun HTTP 500. Yang belum diverifikasi (mis. tampilan UI, Linux/
 Windows) tercatat jujur di bagian 6.
 
@@ -121,7 +121,7 @@ PNG, Fast Ops per-OS (`platform_ops/`), `GET /api/system/processes`, dan `run.sh
    *Akar:* dokumen ditulis dari asumsi awal, tidak dicek ke lingkungan aktual.
    *Perbaikan:* dikoreksi — README kini menyebut Node 20+ (aktual 20.20.0) dan pytest.
    *Status:* selesai. **Catatan sisa:** `README.md` baris 23 dan 138 pernah menyebut
-   "18 unit test/18 test lolos" (aktual kini **67 test**) dan `PLANNING.md` baris 13 pernah
+   "18 unit test/18 test lolos" (aktual kini **83 test**) dan `PLANNING.md` baris 13 pernah
    "Node 24 LTS" (kini "Node 20 LTS"); keduanya pada sesi itu di luar ruang lingkup file
    yang boleh diubah, tetapi kini sudah ikut dikoreksi.
 
@@ -360,7 +360,7 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
    sudah dikoreksi, dan tabel API `README.md` kini mencantumkan ketiga endpoint Fast Ops /
    Process Manager beserta `run.sh` dan struktur folder terkini. Kini `README.md` juga
    sudah mencerminkan fitur auth token opsional (`QD_AUTH_TOKEN`/`VITE_AUTH_TOKEN`,
-   guardrail, limitasi, rate limit, allowlist CORS) beserta angka test terbaru (**67 test**).
+   guardrail, limitasi, rate limit, allowlist CORS) beserta angka test terbaru (**83 test**).
 10. **Elemen dekoratif Pro mode — sudah dihapus (pekerjaan lanjutan tuntas).** Temuan
     asli dari uji visual: kartu `THREAD POOL`, `REDIS LATENCY`, `DOCKER DAEMON`,
     `INGRESS/EGRESS` menampilkan angka **statis identik di setiap render**; *terminal
@@ -371,8 +371,9 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
     - **Kartu telemetri** → 6 kartu semuanya menampilkan data live dari
       `/api/metrics/*`, `/api/actions/apps`, dan `/api/system/processes` (CPU, memory,
       disk, jumlah app, jumlah proses, jumlah aksi Fast Ops).
-    - **Terminal** → kini CLI nyata (`help`, `ping`, `status`, `ps`, `apps`, `clear`)
-      yang dieksekusi lewat API; setiap baris log mencatat latensi terukur. Perintah di
+    - **Terminal** → kini CLI nyata (`help`, `ping`, `status`, `ps`, `apps`, `junk`,
+      `clear`) yang dieksekusi lewat API; setiap baris log mencatat latensi terukur.
+      Perintah di
       luar whitelist membalas pesan error yang jujur, bukan respons karangan.
     - **Nav sidebar** → tautan *anchor* ke section yang benar-benar ada
       (`#overview`, `#process-manager`, `#fast-ops`, `#terminal`).
@@ -390,6 +391,21 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
     **manual** tanpa env `API_HOST` tidak dicegah guardrail; verifikasi integrasi
     frontend ↔ backend-auth dilakukan via Playwright (**26 request API, 0 gagal,
     12/12 ikon bertoken**).
+12. **Cleaner berada di Fase 1 (scan) — aksi "Clean" masih simulasi, dan ini disebut
+    jujur di UI.** `GET /api/metrics/junk` mengukur **nyata** (di mesin ini ≈28.6 GB di
+    5 zona whitelist non-pribadi: `~/Library/Caches`, `~/Library/Logs`, `~/.npm`,
+    `~/.cache`, `~/.Trash`; walk `os.scandir` tanpa ikuti symlink, error per entri
+    dilewati, guard `is_within_zone` vs root, TTL cache 60 detik, zona tak-ada tidak
+    tampil). **Tetapi tombol "Simulate Clean (demo)" masih menjalankan pembersihan
+    demo** (5 file di `/tmp/qd-demo-cache`) — eksekusi terhadap zona asli, pratinjau
+    per-lokasi, dan pemindahan default ke `~/.Trash` (undo-able) **belum diimplementasikan**
+    (Batch 2, rencana terpisah). Konsekuensinya: kartu Casual menampilkan angka
+    "Cleanable" yang nyata sementara aksinya masih simulasi — dikomunikasikan eksplisit
+    lewat label tombol, sub-teks "cleanup in simulation mode", dan pesan hasil
+    "No real files were touched". Scan cold pertama membutuhkan ~21 detik (426 ribu
+    file); setelah itu cache 60 detik membuat respon instan. `reclaimable_gb` adalah
+    *apparent size* (`st_size`), sehingga bisa sedikit berbeda dari `du` (hitung blok
+    disk).
 
 ---
 
@@ -398,7 +414,7 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
 ```bash
 cd /Users/galanjabal/Documents/Portfolios/quarterdeck
 
-# backend — harap 67 passed
+# backend — harap 83 passed
 cd backend && poetry run pytest -q
 
 # frontend — harap exit 0, tanpa output lint, build sukses
@@ -442,5 +458,5 @@ Catatan saat review:
 - Server kemungkinan **sedang hidup** di port 8000 (PID 59044 saat penulisan dokumen ini).
   Bila port terpakai, `./run.sh` berhenti dengan pesan yang bisa ditindaklanjuti;
   `./run.sh --kill` memaksa mengambil alih.
-- Angka (67 test, 84 app, 83 ikon, 0 warning) diukur di mesin ini; angka ikon/proses bisa
+- Angka (83 test, 84 app, 83 ikon, 0 warning) diukur di mesin ini; angka ikon/proses bisa
   berbeda bila daftar aplikasi atau proses yang berjalan berubah.

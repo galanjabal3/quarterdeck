@@ -8,7 +8,14 @@ import {
   type InstalledAppsData,
   type ProcessesData,
 } from '../../lib/actions';
-import { clampPercent, formatCelsius, formatGhz, formatPercent } from '../../lib/format';
+import {
+  clampPercent,
+  formatCelsius,
+  formatGhz,
+  formatGbShort,
+  formatPercent,
+} from '../../lib/format';
+import { fetchJunkScan, type JunkScanData } from '../../lib/api';
 
 interface StatusCard {
   label: string;
@@ -19,6 +26,8 @@ interface StatusCard {
   fill?: number;
   barClass: string;
   meta?: string;
+  /** Baris tambahan di bawah `meta` (mis. angka reclaimable hasil scan junk). */
+  footnote?: string;
   perCore?: number[];
 }
 
@@ -82,10 +91,23 @@ function uniqueSourceCount(apps: InstalledAppsData): number {
   return new Set(apps.apps.map((app) => app.source)).size;
 }
 
+/**
+ * Baris "reclaimable" di kartu DISK. Loading → 'reclaimable · …',
+ * error → undefined (baris disembunyikan, tanpa angka karangan).
+ */
+function reclaimableFootnote(junk: RemoteData<JunkScanData>): string | undefined {
+  if (junk.loading) return 'reclaimable · …';
+  if (junk.error || !junk.data) return undefined;
+  const zones = junk.data.locations.length;
+  const zoneLabel = `${zones} ${zones === 1 ? 'zone' : 'zones'}`;
+  return `reclaimable · ${formatGbShort(junk.data.reclaimable_gb)} GB (${zoneLabel})`;
+}
+
 export default function StatusGrid({ metrics }: StatusGridProps) {
   const [apps, setApps] = useState<RemoteData<InstalledAppsData>>(INITIAL_REMOTE);
   const [processes, setProcesses] = useState<RemoteData<ProcessesData>>(INITIAL_REMOTE);
   const [fastOps, setFastOps] = useState<RemoteData<FastOpsData>>(INITIAL_REMOTE);
+  const [junk, setJunk] = useState<RemoteData<JunkScanData>>(INITIAL_REMOTE);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -102,6 +124,10 @@ export default function StatusGrid({ metrics }: StatusGridProps) {
     void fetchFastOps(controller.signal).then((result) => {
       if (cancelled) return;
       setFastOps(toRemote(result));
+    });
+    void fetchJunkScan(controller.signal).then((result) => {
+      if (cancelled) return;
+      setJunk(toRemote(result));
     });
 
     return () => {
@@ -146,6 +172,7 @@ export default function StatusGrid({ metrics }: StatusGridProps) {
       meta: storage
         ? `${storage.free_gb.toFixed(1)} GB free of ${storage.total_gb.toFixed(1)} GB`
         : '—',
+      footnote: reclaimableFootnote(junk),
     },
     {
       label: 'APP INVENTORY',
@@ -198,6 +225,11 @@ export default function StatusGrid({ metrics }: StatusGridProps) {
             {card.meta && (
               <span className="font-label-sm text-label-sm text-outline block mt-0.5 truncate">
                 {card.meta}
+              </span>
+            )}
+            {card.footnote && (
+              <span className="font-label-sm text-label-sm text-outline block mt-0.5 truncate">
+                {card.footnote}
               </span>
             )}
           </div>

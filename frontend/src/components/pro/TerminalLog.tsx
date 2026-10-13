@@ -14,8 +14,8 @@ import {
   fetchSystemProcesses,
   probeEndpoint,
 } from '../../lib/actions';
-import { API_BASE_URL } from '../../lib/api';
-import { formatPercent } from '../../lib/format';
+import { API_BASE_URL, fetchJunkScan } from '../../lib/api';
+import { formatGbShort, formatPercent } from '../../lib/format';
 
 type Tone = 'sys' | 'http' | 'cmd' | 'resp' | 'err';
 
@@ -34,7 +34,7 @@ type ConnectionState = 'checking' | 'live' | 'offline';
 
 const FILTERS = ['ALL', 'SYS', 'HTTP', 'CMD', 'ERR'] as const;
 
-const HELP_TEXT = 'perintah tersedia: help, ping, status, ps, apps, clear';
+const HELP_TEXT = 'perintah tersedia: help, ping, status, ps, apps, junk, clear';
 
 function matchesFilter(line: LogLine, filter: string): boolean {
   if (filter === 'ALL') return true;
@@ -225,6 +225,22 @@ export default function TerminalLog({ metrics }: TerminalLogProps) {
           }
           const sources = new Set(result.data.apps.map((app) => app.source)).size;
           appendLine('resp', `${result.data.count} aplikasi terinstal dari ${sources} sumber`);
+        });
+        return;
+      case 'junk':
+        void fetchJunkScan().then((result) => {
+          if (!result.ok) {
+            appendLine('err', `junk scan gagal — ${result.message}`);
+            return;
+          }
+          const scan = result.data;
+          appendLine(
+            'resp',
+            `${formatGbShort(scan.reclaimable_gb)} GB reclaimable — ${scan.file_count.toLocaleString('en-US')} files di ${scan.locations.length} zona (scan ${scan.duration_s.toFixed(1)}s)`,
+          );
+          for (const location of scan.locations) {
+            appendLine('resp', `  ${location.path}  ${formatGbShort(location.size_gb)} GB`);
+          }
         });
         return;
       default:

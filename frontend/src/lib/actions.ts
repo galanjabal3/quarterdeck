@@ -6,9 +6,9 @@ import {
   type ApiSuccessPayload,
 } from './api';
 
-export type ActionName = 'launch-game' | 'cleanup';
+type ActionName = 'launch-game' | 'cleanup';
 
-export interface ActionData {
+interface ActionData {
   action: string;
   target: string;
   message: string;
@@ -17,12 +17,12 @@ export interface ActionData {
   path?: string;
 }
 
-export interface ActionSuccess {
+interface ActionSuccess {
   ok: true;
   data: ActionData;
 }
 
-export interface ActionFailure {
+interface ActionFailure {
   ok: false;
   code: string;
   message: string;
@@ -42,7 +42,7 @@ export function authHeaders(): Record<string, string> {
  * Sisipkan token sebagai query `?token=` untuk URL yang tak bisa kirim header
  * (mis. <img src>). URL yang sudah punya query digabung dengan `&`.
  */
-export function withToken(url: string): string {
+function withToken(url: string): string {
   if (!AUTH_TOKEN) return url;
   return url + (url.includes('?') ? '&' : '?') + 'token=' + encodeURIComponent(AUTH_TOKEN);
 }
@@ -139,18 +139,18 @@ export interface InstalledAppsData {
   count: number;
 }
 
-export interface AppsSuccess {
+interface AppsSuccess {
   ok: true;
   data: InstalledAppsData;
 }
 
-export interface AppsFailure {
+interface AppsFailure {
   ok: false;
   code: string;
   message: string;
 }
 
-export type AppsResult = AppsSuccess | AppsFailure;
+type AppsResult = AppsSuccess | AppsFailure;
 
 interface ApiAppsPayload {
   status: 'success';
@@ -163,10 +163,6 @@ interface ApiAppsPayload {
 const APPS_ENDPOINT = '/api/actions/apps';
 
 let appsCache: InstalledAppsData | null = null;
-
-export function getCachedInstalledApps(): InstalledAppsData | null {
-  return appsCache;
-}
 
 function isInstalledApp(value: unknown): value is InstalledApp {
   if (typeof value !== 'object' || value === null) return false;
@@ -328,12 +324,12 @@ export interface FastOpsData {
   actions: Record<string, FastOpMeta>;
 }
 
-export interface FastOpsSuccess {
+interface FastOpsSuccess {
   ok: true;
   data: FastOpsData;
 }
 
-export type FastOpsResult = FastOpsSuccess | ContractFailure;
+type FastOpsResult = FastOpsSuccess | ContractFailure;
 
 interface FastOpsPayload {
   status: 'success';
@@ -405,19 +401,19 @@ export async function fetchFastOps(signal?: AbortSignal): Promise<FastOpsResult>
 
 // --- POST /api/actions/fast-op -------------------------------------------
 
-export interface FastOpData {
+interface FastOpData {
   action: string;
   exit_code: number;
   message: string;
 }
 
-export interface FastOpSuccess {
+interface FastOpSuccess {
   ok: true;
   data: FastOpData;
   stderr: string;
 }
 
-export interface FastOpFailure extends ContractFailure {
+interface FastOpFailure extends ContractFailure {
   stderr: string;
 }
 
@@ -506,12 +502,12 @@ export interface ProcessesData {
   count: number;
 }
 
-export interface ProcessesSuccess {
+interface ProcessesSuccess {
   ok: true;
   data: ProcessesData;
 }
 
-export type ProcessesResult = ProcessesSuccess | ContractFailure;
+type ProcessesResult = ProcessesSuccess | ContractFailure;
 
 interface ProcessesPayload {
   status: 'success';
@@ -581,7 +577,7 @@ export async function fetchSystemProcesses(signal?: AbortSignal): Promise<Proces
 /** Endpoint ringan dipakai sebagai health check (latensi rendah). */
 export const HEALTH_ENDPOINT = '/api/metrics/cpu';
 
-export interface ProbeResult {
+interface ProbeResult {
   ok: boolean;
   /** Status HTTP asli; null bila permintaan tidak sampai ke server. */
   httpStatus: number | null;

@@ -34,7 +34,6 @@ export interface SystemMetricsState {
   data: SystemMetrics;
   loading: boolean;
   error: string | null;
-  refresh: () => void;
 }
 
 const POLL_INTERVAL_MS = 3000;
@@ -119,10 +118,6 @@ export default function useSystemMetrics(): SystemMetricsState {
     });
   }, []);
 
-  const refresh = useCallback((): void => {
-    void load();
-  }, [load]);
-
   useEffect(() => {
     mountedRef.current = true;
     void load();
@@ -138,5 +133,5 @@ export default function useSystemMetrics(): SystemMetricsState {
     };
   }, [load]);
 
-  return { data, loading, error, refresh };
+  return { data, loading, error };
 }

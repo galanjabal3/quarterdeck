@@ -3,10 +3,9 @@ import { Sun, Terminal } from 'lucide-react';
 export interface ToggleSwitchProps {
   isProMode: boolean;
   onToggle: () => void;
-  className?: string;
 }
 
-export default function ToggleSwitch({ isProMode, onToggle, className = '' }: ToggleSwitchProps) {
+export default function ToggleSwitch({ isProMode, onToggle }: ToggleSwitchProps) {
   const containerClass = isProMode
     ? 'bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] rounded-full'
     : 'bg-slate-100 border border-slate-200 shadow-inner rounded-pill';
@@ -29,7 +28,7 @@ export default function ToggleSwitch({ isProMode, onToggle, className = '' }: To
       aria-label={isProMode ? 'Beralih ke Casual mode' : 'Beralih ke Pro HUD mode'}
       title={isProMode ? 'Kembali ke Casual mode' : 'Aktifkan Pro HUD mode'}
       onClick={onToggle}
-      className={`relative inline-flex items-center p-1 transition-all duration-200 ${containerClass} ${className}`}
+      className={`relative inline-flex items-center p-1 transition-all duration-200 ${containerClass}`}
     >
       <span className="relative grid grid-cols-2">
         <span
