@@ -14,7 +14,7 @@ import {
   fetchSystemProcesses,
   probeEndpoint,
 } from '../../lib/actions';
-import { API_BASE_URL, fetchJunkScan } from '../../lib/api';
+import { API_BASE_URL, executeClean, fetchJunkScan } from '../../lib/api';
 import { formatGbShort, formatPercent } from '../../lib/format';
 
 type Tone = 'sys' | 'http' | 'cmd' | 'resp' | 'err';
@@ -34,7 +34,7 @@ type ConnectionState = 'checking' | 'live' | 'offline';
 
 const FILTERS = ['ALL', 'SYS', 'HTTP', 'CMD', 'ERR'] as const;
 
-const HELP_TEXT = 'perintah tersedia: help, ping, status, ps, apps, junk, clear';
+const HELP_TEXT = 'perintah tersedia: help, ping, status, ps, apps, junk, clean, clear';
 
 function matchesFilter(line: LogLine, filter: string): boolean {
   if (filter === 'ALL') return true;
@@ -158,10 +158,72 @@ export default function TerminalLog({ metrics }: TerminalLogProps) {
     setActiveFilter(filter);
   };
 
+  /**
+   * Perintah `clean`:
+   * - tanpa argumen → pratinjau zona (GET scan saja, nol eksekusi),
+   * - `<id>` tanpa `--yes` → ditolak lokal, nol eksekusi,
+   * - `<id> --yes` → eksekusi nyata POST /api/actions/clean (id tak dikenal
+   *   termasuk `trash` biar backend yang menolak, pesannya dari envelope).
+   */
+  const runCleanCommand = (args: string[]): void => {
+    if (args.length === 0) {
+      void fetchJunkScan().then((result) => {
+        if (!result.ok) {
+          appendLine('err', `clean gagal — ${result.message}`);
+          return;
+        }
+        appendLine(
+          'resp',
+          `${result.data.locations.length} zona terdeteksi (pratinjau, belum dieksekusi):`,
+        );
+        for (const location of result.data.locations) {
+          appendLine(
+            'resp',
+            `  ${location.id}   ${formatGbShort(location.size_gb)} GB   (id: ${location.id})`,
+          );
+        }
+        appendLine('resp', 'jalankan: clean <id> --yes  (contoh: clean npm --yes)');
+      });
+      return;
+    }
+
+    const zoneId = args[0];
+
+    if (!args.includes('--yes')) {
+      appendLine(
+        'err',
+        `clean: konfirmasi diperlukan — tambahkan --yes (contoh: clean ${zoneId} --yes)`,
+      );
+      return;
+    }
+
+    appendLine('resp', `clean ${zoneId}: memindahkan entri ke Trash…`);
+    void executeClean([zoneId]).then((result) => {
+      if (!result.ok) {
+        appendLine('err', result.message);
+        return;
+      }
+      const data = result.data;
+      appendLine('resp', `${data.message ?? 'Entri dipindah'} — ${data.trash_path ?? '~/.Trash'}`);
+      for (const zone of data.zones ?? []) {
+        appendLine(
+          'resp',
+          `  ${zone.id} — ${zone.entries_moved ?? 0} dipindah, ${zone.errors ?? 0} error${
+            zone.note ? ` · ${zone.note}` : ''
+          }`,
+        );
+      }
+    });
+  };
+
   const runCommand = (value: string): void => {
     appendLine('cmd', `$ ${value}`);
 
-    switch (value.toLowerCase()) {
+    const tokens = value.trim().split(/\s+/);
+    const command = (tokens[0] ?? '').toLowerCase();
+    const args = tokens.slice(1).map((token) => token.toLowerCase());
+
+    switch (command) {
       case 'clear':
         setLines([]);
         return;
@@ -242,6 +304,9 @@ export default function TerminalLog({ metrics }: TerminalLogProps) {
             appendLine('resp', `  ${location.path}  ${formatGbShort(location.size_gb)} GB`);
           }
         });
+        return;
+      case 'clean':
+        runCleanCommand(args);
         return;
       default:
         appendLine('err', `perintah tidak dikenal: '${value}' — ketik 'help'`);
