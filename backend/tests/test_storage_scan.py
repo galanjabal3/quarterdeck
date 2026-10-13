@@ -5,6 +5,7 @@ Zona di-inject via parameter get_junk_scan(zones=...) ke direktori tmp pytest.
 """
 
 import os
+import threading
 import time
 
 import pytest
@@ -204,3 +205,73 @@ class TestMeasureDir:
         assert total == 300
         assert count == 2
         assert skipped == 0
+
+
+class TestSingleFlight:
+    """Regresi insiden: request paralel saat cache dingin memicu walk ganda
+    400k+ file → I/O thrash → durasi scan melebihi TTL → cold-scan abadi
+    dan endpoint menggantung >60 dtk. Single-flight mengharuskan satu scan
+    pada satu waktu; yang lain menunggu lalu memakai hasilnya."""
+
+    def test_parallel_cold_requests_run_exactly_one_scan(self, monkeypatch):
+        import api.storage_scan as storage_scan
+
+        state = {"active": 0, "peak": 0}
+        counter_lock = threading.Lock()
+
+        def slow_build(active_zones, guard_root, store):
+            with counter_lock:
+                state["active"] += 1
+                state["peak"] = max(state["peak"], state["active"])
+            time.sleep(0.3)
+            with counter_lock:
+                state["active"] -= 1
+            payload = {
+                "status": "success",
+                "data": {
+                    "reclaimable_gb": 0.0,
+                    "file_count": 0,
+                    "skipped": 0,
+                    "locations": [],
+                    "scanned_at": time.time(),
+                    "cached": False,
+                    "duration_s": 0.3,
+                },
+            }
+            if store:
+                storage_scan._cache["data"] = payload
+                storage_scan._cache["timestamp"] = time.monotonic()
+            return payload
+
+        monkeypatch.setattr(storage_scan, "_build_scan", slow_build)
+
+        results = []
+        threads = [
+            threading.Thread(target=lambda: results.append(storage_scan.get_junk_scan()))
+            for _ in range(4)
+        ]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join(timeout=10)
+
+        assert all(not t.is_alive() for t in threads), "worker menggantung — deadlock?"
+        assert state["peak"] == 1, f"{state['peak']} scan paralel — single-flight tidak aktif"
+        assert len(results) == 4
+        assert all(r["status"] == "success" for r in results)
+        # Minimal satu pemanggil menunggu scan pertama dan memakai cache.
+        assert sum(1 for r in results if r["data"]["cached"]) >= 1
+
+    def test_cache_timestamp_taken_after_scan_finishes(self, tmp_path):
+        """Timestamp cache = AKHIR scan (bukan awal), supaya TTL60 dtk penuh
+        berlaku setelah scan selesai dan scan lambat tak langsung expired."""
+        zone = _make_zone(tmp_path, "caches", {"a.bin": 10})
+        time.sleep(0.3)  # jarak sebelum scan — timestamp lama harus berikutnya
+        storage_scan = pytest.importorskip("api.storage_scan")
+        storage_scan._build_scan(
+            (("caches", "Caches", zone),), str(tmp_path), store=True
+        )
+        time.sleep(0.3)
+        age = time.monotonic() - storage_scan._cache["timestamp"]
+        # Jika timestamp diambil di AWAL scan, age >= 0.6; di AKHIR, age ≈ 0.3.
+        assert age < 0.5, f"timestamp terlalu tua ({age:.2f}s) — dihitung dari awal scan?"

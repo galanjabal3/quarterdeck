@@ -18,6 +18,7 @@ Prinsip safety:
 
 import logging
 import os
+import threading
 import time
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,12 @@ logger = logging.getLogger(__name__)
 # TTL cache scan (detik).
 _TTL_SECONDS = 60.0
 _cache: dict = {"data": None, "timestamp": 0.0}
+
+# Single-flight lock produksi: saat cache dingin, permintaan paralel (poll UI +
+# terminal + badge) WAJIB menunggu scan yang sedang berjalan, bukan meluncurkan
+# walk 400k+ file bersamaan. Tanpa ini, I/O contention membuat durasi scan melebihi
+# TTL dan server masuk siklus "cold scan abadi" (tiap request memulai scan baru).
+_scan_lock = threading.Lock()
 
 # Zona aman non-pribadi, sudah disjoint. Tuple (id, label, path_absolut).
 # Path dihitung sekali saat import; tests meng-inject zones sendiri lewat
@@ -42,6 +49,12 @@ SAFE_ZONES = (
     ),
     ("trash", "Trash", os.path.join(_HOME, ".Trash")),
 )
+
+
+def invalidate_junk_cache() -> None:
+    """Buang hasil scan tersimpan (dipanggil executor clean setelah zona berubah)."""
+    _cache["data"] = None
+    _cache["timestamp"] = 0.0
 
 
 def is_within_zone(path: str, root: str) -> bool:
@@ -103,29 +116,21 @@ def _display_path(path: str) -> str:
     return path
 
 
-def get_junk_scan(zones=None, home_root=None) -> dict:
-    """GET /api/metrics/junk — ukur reclaimable space di zona whitelist.
-
-    zones: injectable untuk tests (tuple (id, label, path)); default SAFE_ZONES.
-    home_root: root guard untuk tests; default $HOME. Zona wajib di dalam root ini.
-    Zona yang tidak ada di disk dilewati diam-diam (bukan baris "0 GB").
-    """
-    is_production = zones is None and home_root is None
+def _cached_scan() -> dict | None:
+    """Hasil scan produksi bila masih berlaku (TTL 60 dtk), selain itu None."""
     now = time.monotonic()
-    if (
-        is_production
-        and _cache["data"] is not None
-        and (now - _cache["timestamp"]) < _TTL_SECONDS
-    ):
-        cached = dict(_cache["data"])
-        data = dict(cached["data"])
-        data["cached"] = True
-        cached["data"] = data
-        return cached
+    if _cache["data"] is None or (now - _cache["timestamp"]) >= _TTL_SECONDS:
+        return None
+    cached = dict(_cache["data"])
+    data = dict(cached["data"])
+    data["cached"] = True
+    cached["data"] = data
+    return cached
 
+
+def _build_scan(active_zones, guard_root: str, store: bool) -> dict:
+    """Walk semua zona lalu kembalikan envelope hasil; `store` mengisi cache produksi."""
     started = time.monotonic()
-    active_zones = SAFE_ZONES if zones is None else zones
-    guard_root = _HOME if home_root is None else home_root
 
     locations = []
     total_bytes = 0
@@ -169,8 +174,38 @@ def get_junk_scan(zones=None, home_root=None) -> dict:
         },
     }
 
-    if is_production:
+    if store:
+        # Timestamp dari AKHIR scan supaya TTL60 dtk penuh berlaku setelah scan
+        # selesai — kalau dihitung dari awal, scan lambat langsung expired dan
+        # memicu scan berikutnya sebelum cache sempat dipakai (cold-scan abadi).
         _cache["data"] = result
-        _cache["timestamp"] = now
+        _cache["timestamp"] = time.monotonic()
 
     return result
+
+
+def get_junk_scan(zones=None, home_root=None) -> dict:
+    """GET /api/metrics/junk — ukur reclaimable space di zona whitelist.
+
+    zones: injectable untuk tests (tuple (id, label, path)); default SAFE_ZONES.
+    home_root: root guard untuk tests; default $HOME. Zona wajib di dalam root ini.
+    Zona yang tidak ada di disk dilewati diam-diam (bukan baris "0 GB").
+    """
+    is_production = zones is None and home_root is None
+
+    if not is_production:
+        return _build_scan(SAFE_ZONES if zones is None else zones,
+                           _HOME if home_root is None else home_root, store=False)
+
+    # Produksi: single-flight — cek cache cepat dulu, lalu serialisasi scan.
+    hit = _cached_scan()
+    if hit is not None:
+        return hit
+
+    with _scan_lock:
+        # Double-check: permintaan yang menunggu lock memakai hasil scan
+        # pertama, bukan mengulang walk-nya.
+        hit = _cached_scan()
+        if hit is not None:
+            return hit
+        return _build_scan(SAFE_ZONES, _HOME, store=True)
