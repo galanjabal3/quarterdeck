@@ -21,9 +21,10 @@ menscan aplikasi terinstal dan membukanya, dengan dua mode UI — **Casual** dan
 | Orkestrasi | `./run.sh`: satu perintah untuk FE+BE, log prefix `[BE]`/`[FE]`, cek prasyarat (`poetry`, `node`, `npm`, `curl`, `lsof`), deteksi port, graceful shutdown Ctrl+C | `./run.sh --help` |
 
 Status akhir: **Phase 1–5 sesuai `PLANNING.md` dinyatakan selesai** (seluruh milestone
-bertanda `[x]`), 83 test backend lolos, type-check/lint/format/build frontend bersih, audit
-input 60 kasus tanpa satu pun HTTP 500. Yang belum diverifikasi (mis. tampilan UI, Linux/
-Windows) tercatat jujur di bagian 6.
+bertanda `[x]`), 106 test backend lolos, type-check/lint/format/build frontend bersih, audit
+input 60 kasus tanpa satu pun HTTP 500. Cleaner sudah **end-to-end nyata** (Batch 1 scan +
+Batch 2 eksekusi Trash-default, lihat §6.12). Yang belum diverifikasi (mis. tampilan UI,
+Linux/Windows) tercatat jujur di bagian 6.
 
 Endpoint yang beroperasi:
 
@@ -33,6 +34,8 @@ Endpoint yang beroperasi:
 | GET | `/api/actions/apps` | scan aplikasi terinstal (84 app) |
 | GET | `/api/actions/app-icon?name=` | ikon PNG (konversi `.icns`→`.png` via `sips`, cache `/tmp`) |
 | POST | `/api/actions/launch-game` | aksi whitelist (mis. `cleanup` / `temp-files`) |
+| GET | `/api/metrics/junk` | scan junk read-only, 5 zona whitelist (Batch 1) |
+| POST | `/api/actions/clean` | pindahkan zona ke `~/.Trash/qd-clean-<ts>/` — undo-able; tanpa `confirm:true` = dry-run 400 (Batch 2) |
 | GET | `/api/actions/fast-ops` | daftar Fast Ops sesuai OS yang berjalan |
 | POST | `/api/actions/fast-op` | eksekusi aksi Fast Ops whitelist |
 | GET | `/api/system/processes` | data proses **real** via psutil |
@@ -65,7 +68,10 @@ Sumber: `PLANNING.md` bagian milestones — seluruh item bertanda `[x]`.
 - ESLint + Prettier terpasang, build produksi jalan; unit test pytest; README dibuat.
 
 Di luar daftar milestones, fitur berikut juga dibangun dan diuji: scan 84 aplikasi + ikon
-PNG, Fast Ops per-OS (`platform_ops/`), `GET /api/system/processes`, dan `run.sh`.
+PNG, Fast Ops per-OS (`platform_ops/`), `GET /api/system/processes`, `run.sh`, serta
+**cleaner end-to-end** (Batch 1 `GET /api/metrics/junk` scan read-only; Batch 2
+`POST /api/actions/clean` eksekusi Trash-default + modal pratinjau Casual + perintah
+terminal `clean`).
 
 ---
 
@@ -121,7 +127,7 @@ PNG, Fast Ops per-OS (`platform_ops/`), `GET /api/system/processes`, dan `run.sh
    *Akar:* dokumen ditulis dari asumsi awal, tidak dicek ke lingkungan aktual.
    *Perbaikan:* dikoreksi — README kini menyebut Node 20+ (aktual 20.20.0) dan pytest.
    *Status:* selesai. **Catatan sisa:** `README.md` baris 23 dan 138 pernah menyebut
-   "18 unit test/18 test lolos" (aktual kini **83 test**) dan `PLANNING.md` baris 13 pernah
+   "18 unit test/18 test lolos" (aktual kini **106 test**) dan `PLANNING.md` baris 13 pernah
    "Node 24 LTS" (kini "Node 20 LTS"); keduanya pada sesi itu di luar ruang lingkup file
    yang boleh diubah, tetapi kini sudah ikut dikoreksi.
 
@@ -187,6 +193,20 @@ PNG, Fast Ops per-OS (`platform_ops/`), `GET /api/system/processes`, dan `run.sh
     *Status:* selesai — 404 path tak dikenal dan 405 method salah kembali benar dengan
     envelope JSON (diverifikasi ulang via curl).
 
+14. **Endpoint junk bisa menggantung >60 detik (thrash scan paralel)** — *Gejala:*
+    saat diuji dengan 8 request paralel pada cache dingin, `GET /api/metrics/junk`
+    tidak merespons >60 detik (curl timeout) padahal cold scan tunggal hanya ~21 detik.
+    *Akar:* `get_junk_scan` tanpa mekanisme single-flight — permintaan bersamaan
+    (poll UI + terminal + badge) semuanya menjalankan walk 400+ ribu file di thread
+    executor yang sama; I/O contention membuat durasi scan melewati TTL 60 detik, dan
+    karena timestamp cache diisi dari **awal** scan, hasil yang baru selesai pun sudah
+    dianggap kedaluwarsa → setiap permintaan memulai scan baru (siklus *cold-scan
+    abadi*). *Perbaikan:* `threading.Lock` single-flight + double-check cache
+    (`storage_scan.py`), timestamp cache kini diisi di **akhir** scan; dua test baru
+    mengunci perilaku (maks. 1 scan paralel di antara 4 thread; timestamp segar).
+    *Status:* selesai — 8 request paralel saat kini selesai bersama dalam 17.8 detik
+    (satu scan, sisanya menunggu lalu membaca cache).
+
 ---
 
 ## 5. Hasil verifikasi (angka aktual)
@@ -197,12 +217,14 @@ laporan, kecuali yang ditandai lain.
 ### 5.1 Backend
 | Perintah | Hasil |
 |---|---|
-| `cd backend && poetry run pytest -q` | **67 passed** in 1.21s (0 gagal, 0 skip, 0 warning) |
+| `cd backend && poetry run pytest -q` | **106 passed** in 2.5s (0 gagal, 0 skip, 0 warning) |
 
-Rincian class: `TestMetrics`, `TestActions`, `TestAppIcon`, `TestFastOps`,
-`TestActionTypeValidation`, `TestSystemProcesses`, `TestEndpointIntegrity`, serta
-`TestAuthIntegration` dan `TestStartupGuardrail` di `tests/test_auth.py` (15 test
-integrasi auth token & guardrail startup; 39 lainnya di `tests/test_metrics.py`).
+Rincian per kelas/file: `tests/test_metrics.py` (39 — metrik, whitelist, validasi aksi,
+ikon, Fast Ops, proses, storage) · `tests/test_auth.py` (15 — auth token & guardrail) ·
+`tests/test_rate_limit.py` (7) · `tests/test_cors.py` (6) ·
+`tests/test_storage_scan.py` (18 — zona whitelist, TTL cache, symlink, skip-error,
+**single-flight & timestamp cache**) · `tests/test_clean.py` (21 — eksekusi Trash-default,
+guard, dry-run 400, id asing, undo).
 
 **Perbaikan storage (temuan dari uji visual).** Endpoint `/api/metrics/storage` semula
 memanggil `psutil.disk_usage("/")`; di macOS (APFS) path itu adalah volume sistem, jadi
@@ -360,7 +382,7 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
    sudah dikoreksi, dan tabel API `README.md` kini mencantumkan ketiga endpoint Fast Ops /
    Process Manager beserta `run.sh` dan struktur folder terkini. Kini `README.md` juga
    sudah mencerminkan fitur auth token opsional (`QD_AUTH_TOKEN`/`VITE_AUTH_TOKEN`,
-   guardrail, limitasi, rate limit, allowlist CORS) beserta angka test terbaru (**83 test**).
+   guardrail, limitasi, rate limit, allowlist CORS) beserta angka test terbaru (**106 test**).
 10. **Elemen dekoratif Pro mode — sudah dihapus (pekerjaan lanjutan tuntas).** Temuan
     asli dari uji visual: kartu `THREAD POOL`, `REDIS LATENCY`, `DOCKER DAEMON`,
     `INGRESS/EGRESS` menampilkan angka **statis identik di setiap render**; *terminal
@@ -391,21 +413,28 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
     **manual** tanpa env `API_HOST` tidak dicegah guardrail; verifikasi integrasi
     frontend ↔ backend-auth dilakukan via Playwright (**26 request API, 0 gagal,
     12/12 ikon bertoken**).
-12. **Cleaner berada di Fase 1 (scan) — aksi "Clean" masih simulasi, dan ini disebut
-    jujur di UI.** `GET /api/metrics/junk` mengukur **nyata** (di mesin ini ≈28.6 GB di
-    5 zona whitelist non-pribadi: `~/Library/Caches`, `~/Library/Logs`, `~/.npm`,
-    `~/.cache`, `~/.Trash`; walk `os.scandir` tanpa ikuti symlink, error per entri
-    dilewati, guard `is_within_zone` vs root, TTL cache 60 detik, zona tak-ada tidak
-    tampil). **Tetapi tombol "Simulate Clean (demo)" masih menjalankan pembersihan
-    demo** (5 file di `/tmp/qd-demo-cache`) — eksekusi terhadap zona asli, pratinjau
-    per-lokasi, dan pemindahan default ke `~/.Trash` (undo-able) **belum diimplementasikan**
-    (Batch 2, rencana terpisah). Konsekuensinya: kartu Casual menampilkan angka
-    "Cleanable" yang nyata sementara aksinya masih simulasi — dikomunikasikan eksplisit
-    lewat label tombol, sub-teks "cleanup in simulation mode", dan pesan hasil
-    "No real files were touched". Scan cold pertama membutuhkan ~21 detik (426 ribu
-    file); setelah itu cache 60 detik membuat respon instan. `reclaimable_gb` adalah
-    *apparent size* (`st_size`), sehingga bisa sedikit berbeda dari `du` (hitung blok
-    disk).
+12. **Cleaner sudah end-to-end nyata (Batch 1 + Batch 2).** `GET /api/metrics/junk`
+    mengukur **nyata** (di mesin ini ≈28.6 GB di 5 zona whitelist non-pribadi:
+    `~/Library/Caches`, `~/Library/Logs`, `~/.npm`, `~/.cache`, `~/.Trash`; walk
+    `os.scandir` tanpa ikuti symlink, error per entri dilewati, guard `is_within_zone`
+    vs root, TTL cache 60 detik, zona tak-ada tidak tampil, single-flight — lihat §4
+    butir 14). **Eksekusi kini nyata dan undo-able**: `POST /api/actions/clean`
+    memindahkan isi zona (top-level entries) ke `~/.Trash/qd-clean-<ts>/<zone_id>/` —
+    tanpa `rm` permanen, tanpa `sudo`, zona `trash` ditolak (mengosongkan Trash
+    permanen — di luar skema undo), tanpa `confirm: true` (boolean persis) endpoint
+    berbalik jadi dry-run 400 `CLEAN_CONFIRM_REQUIRED`, id asing/path traversal → 400
+    `ACTION_NOT_ALLOWED`, symlink top-level di-skip, dan cache scan di-invalidate
+    setelah eksekusi. UI Casual: tombol **"Clean Drive"** membuka modal pratinjau
+    (checkbox per zona, `trash` disabled, total terpilih) → **"Move to Trash"** →
+    hasil "N Entries Moved" + `trash_path` + hint undo; lalu scan di-re-fetch agar
+    angka ikut turun. Terminal Pro: `clean` = preview zona (nol eksekusi),
+    `clean <id>` tanpa `--yes` = ditolak lokal (nol eksekusi), `clean <id> --yes` =
+    eksekusi nyata. **Terbukti di mesin ini**: eksekusi `logs` memindahkan 19 entri
+    (38 file) ke Trash, `file_count` API jadi 0, dan undo mengembalikan 38 file utuh.
+    Sisa yang by-design & disebut jujur: ukuran = *apparent size* (`st_size`, bisa
+    beda dari `du`); scan cold pertama ~21 detik (400+ ribu file), setelah itu cache
+    60 detik membuat respon instan; eksekusi bisa ~20–30 detik (ratusan ribu file
+    dipindah) — UI menampilkan indikator selama proses.
 
 ---
 
@@ -414,7 +443,7 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
 ```bash
 cd /Users/galanjabal/Documents/Portfolios/quarterdeck
 
-# backend — harap 83 passed
+# backend — harap 106 passed
 cd backend && poetry run pytest -q
 
 # frontend — harap exit 0, tanpa output lint, build sukses
@@ -458,5 +487,5 @@ Catatan saat review:
 - Server kemungkinan **sedang hidup** di port 8000 (PID 59044 saat penulisan dokumen ini).
   Bila port terpakai, `./run.sh` berhenti dengan pesan yang bisa ditindaklanjuti;
   `./run.sh --kill` memaksa mengambil alih.
-- Angka (83 test, 84 app, 83 ikon, 0 warning) diukur di mesin ini; angka ikon/proses bisa
+- Angka (106 test, 84 app, 83 ikon, 0 warning) diukur di mesin ini; angka ikon/proses bisa
   berbeda bila daftar aplikasi atau proses yang berjalan berubah.
