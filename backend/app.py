@@ -30,6 +30,7 @@ from api.actions import (
     FastOpResource,
 )
 from api.metrics import get_storage_metrics, get_ram_metrics, get_cpu_metrics
+from api.storage_scan import get_junk_scan
 from api.actions import FastOpsActionsResource, FastOpResource
 from api.system_processes import get_system_processes, SystemProcessesResource
 
@@ -153,6 +154,19 @@ class MetricsCPUResource:
     async def on_get(self, req, res):
         loop = asyncio.get_event_loop()
         result = await loop.run_in_executor(None, get_cpu_metrics)
+        res.status = falcon.HTTP_200
+        res.media = result
+
+    async def on_options(self, req, res):
+        res.status = falcon.HTTP_200
+
+
+class MetricsJunkResource:
+    """GET /api/metrics/junk — ukur reclaimable space (read-only, zona whitelist)."""
+
+    async def on_get(self, req, res):
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(None, get_junk_scan)
         res.status = falcon.HTTP_200
         res.media = result
 
@@ -434,6 +448,7 @@ app.add_error_handler(Exception, error_handler_json)
 app.add_route("/api/metrics/storage", MetricsStorageResource())
 app.add_route("/api/metrics/ram", MetricsRAMResource())
 app.add_route("/api/metrics/cpu", MetricsCPUResource())
+app.add_route("/api/metrics/junk", MetricsJunkResource())
 app.add_route("/api/actions/launch-game", LaunchGameResource())
 app.add_route("/api/actions/apps", AppsResource())
 app.add_route("/api/actions/app-icon", AppIconResource())
