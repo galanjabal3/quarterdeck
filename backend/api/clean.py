@@ -2,16 +2,23 @@
 
 Batch 2 cleaner: EKSEKUSI NYATA, tapi default-nya tidak pernah permanen —
 setiap entri di-rename ke `~/.Trash/qd-clean-<timestamp>/<zone_id>/`, sehingga
-user bisa mengembalikannya lewat Finder → Trash. Tidak ada `rm`, tidak ada
-osascript (tanpa prompt Automation macOS).
+user bisa mengembalikannya lewat Finder → Trash. Tanpa `rm` di jalur normal
+(rename atomik, satu filesystem) dan tanpa osascript (tanpa prompt Automation
+macOS). CATATAN jujur: bila rename gagal lintas-volume (errno EXDEV — jarang di
+macOS karena Trash satu volume dengan home), fallback `shutil.move` menyalan
+entri lalu MENGHAPUS sumbernya; jalur inilah satu-satunya yang menyentuh
+penghapusan.
 
 Prinsip safety:
 - Hanya zona dari SAFE_ZONES (id dipetakan server-side; klien tidak pernah
   mengirim path). Zona `trash` DITOLAK sebagai target: mengosongkan Trash =
   permanen, di luar janji "undo-able" — kosongkan manual via Finder.
-- Guard is_within_zone dua lapis: zona vs home, tiap entri vs zona (TOCTOU
-  symlink swap ditolak; symlink top-level dilewati, tidak dipindah).
-- `confirm` harus boolean true — tanpa itu endpoint hanya membaca (dry-run).
+- Guard is_within_zone dua lapis: zona vs home (guard_root), tiap entri vs
+  zona; symlink top-level dilewati, tidak dipindah. Keterbatasan diketahui:
+  cek per-entri memakai realpath zona yang bisa di-swap jadi symlink di antara
+  kedua cek (TOCTOU lokal) — lihat REVIEW.md §6 known issues.
+- `confirm` harus boolean true; tanpa itu endpoint MENOLAK (400) tanpa
+  membaca/memindahkan apa pun.
 - Error per entri (OSError) dihitung dan lanjut; zona yang tidak ada di disk
   menghasilkan entries_moved=0 dengan note jujur, bukan 500.
 - Setelah eksekusi, cache scan junk di-invalidate supaya angka berikutnya
