@@ -427,14 +427,54 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
     setelah eksekusi. UI Casual: tombol **"Clean Drive"** membuka modal pratinjau
     (checkbox per zona, `trash` disabled, total terpilih) → **"Move to Trash"** →
     hasil "N Entries Moved" + `trash_path` + hint undo; lalu scan di-re-fetch agar
-    angka ikut turun. Terminal Pro: `clean` = preview zona (nol eksekusi),
+    angka ikut turun.     Terminal Pro: `clean` = preview zona (nol eksekusi),
     `clean <id>` tanpa `--yes` = ditolak lokal (nol eksekusi), `clean <id> --yes` =
-    eksekusi nyata. **Terbukti di mesin ini**: eksekusi `logs` memindahkan 19 entri
+    eksekusi nyata, dan argumen tidak dikenal (`clean caches npm --yes`,
+    `clean --yes`, flag `--*` asing) ditolak lokal dengan pesan usage — nol
+    request ke backend (lihat butir 13). **Terbukti di mesin ini**: eksekusi `logs` memindahkan 19 entri
     (38 file) ke Trash, `file_count` API jadi 0, dan undo mengembalikan 38 file utuh.
     Sisa yang by-design & disebut jujur: ukuran = *apparent size* (`st_size`, bisa
     beda dari `du`); scan cold pertama ~21 detik (400+ ribu file), setelah itu cache
     60 detik membuat respon instan; eksekusi bisa ~20–30 detik (ratusan ribu file
     dipindah) — UI menampilkan indikator selama proses.
+
+13. **Hasil review menyeluruh (2 reviewer independen, 0 CRITICAL) & status Quick-Win
+    Batch 3.** Review backend+frontend menemukan **4 HIGH, 15 MEDIUM, 20 LOW/NIT**
+    dengan verdict *layak rilis*. Quick-win berikut **sudah diperbaiki & diverifikasi
+    mandiri (Playwright + access-log backend, 4 gates hijau, 106 test tetap lulus)**:
+    - **FE-H1 — argumen terminal `clean`.** Dulu `clean caches npm --yes` hanya
+      memproses `caches` dan **membuang `npm` diam-diam**; kini seluruh argumen
+      diparsing: id kedua/flag asing/`--yes` tanpa id → pesan usage **lokal, nol
+      POST** (terbukti: kasus invalid tidak menghasilkan satu pun request ke
+      backend); `clean <id> --yes` tetap berjalan (regresi lulus).
+    - **FM1 — NaN guard kontrak** (`fetchJunkScan` menolak `reclaimable_gb`
+      non-finite → `INVALID_RESPONSE`; `buildSegments` kembali ke placeholder
+      alih-alih me-render `width: NaN%`).
+    - **FM2 — `beforeunload`** dipasang hanya selama eksekusi `cleaning` (modal
+      Casual), dilepas bersih setelah selesai — diverifikasi 8/8 probe.
+    - **Dokumen jujur** (`api/clean.py`): klaim "tidak ada `rm`" diakuri — jalur
+      normal = `os.rename` atomik, tetapi fallback lintas-volume `EXDEV` memakai
+      `shutil.move` yang menyalan lalu **menghapus sumber**; keterbatasan TOCTOU
+      lokal cek-per-entri ikut diakui di docstring (menggantikan klaim "ditolak").
+
+    **Known issues tersisa (backlog — sengaja tidak dikerjakan; semua ancaman
+    lokal/skenario mustahil dari pemakaian UI normal, dan eksekusi selalu
+    undo-able via Trash):**
+    - **BE-H1 (TOCTOU):** guard per-entri membandingkan `realpath` zona yang
+      bisa di-swap jadi symlink di antara dua cek — butuh akses tulis lokal di
+      `~/Library/` (artinya penyerang sudah se-level user itu); hasilnya pun
+      pindah ke Trash, bukan hilang.
+    - **BE-H2 (EXDEV):** `shutil.move` fallback = copy+hapus sumber (lihat
+      catatan docstring di atas); di macOS rumah & Trash satu volume sehingga
+      jalur ini jarang.
+    - **BE-H3 (lock eksekusi):** dua `POST /api/actions/clean` paralel (mustahil
+      dari satu antarmuka) bisa berbagi nama `qd-clean-<ts>` (resolusi 1 detik)
+      → folder Trash tergabung; perbaikan butuh lock + `tempfile.mkdtemp`.
+    - **FM3–FM5 & sisanya:** modal tanpa focus trap/`aria-live`, teks EN/ID
+      campur, scan basi tanpa tombol refresh, `size_moved_gb` dari cache bukan
+      aktual, shallow-copy cache, cek per-entri tak ter-wrap `try` per entri,
+      preview terminal duplikat label `(id:)`, serta ~20 LOW/NIT — semuanya
+      minor dan tidak memengaruhi keamanan data maupun kejujuran angka.
 
 ---
 
