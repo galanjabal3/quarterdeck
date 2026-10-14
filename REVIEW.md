@@ -293,7 +293,8 @@ nol `os.system`/`eval`, CORS dibatasi satu origin.
 
 ### 5.5 Verifikasi visual (Playwright)
 Dijalankan dengan Playwright (Python) + Chrome headless, viewport **1440×900**,
-menghasilkan **6 screenshot di [`screenshots/`](screenshots/)`** plus
+menghasilkan **6 screenshot awal di [`screenshots/`](screenshots/)`** (kini
+bertambah menjadi **10** dengan putaran Clean Drive — lihat di bawah) plus
 `_console-and-checks.txt` (rekaman console/page error & HTTP ≥ 400).
 
 | Uji | Hasil |
@@ -314,6 +315,17 @@ versi baru; DOM Playwright kedua mode tak lagi memuat elemen lama (`THREAD POOL`
 baris log terminal memuat latensi terukur sungguhan dari API (mis.
 `GET /api/metrics/cpu 200 OK (132.4ms)`).
 
+**Putaran Clean Drive (Batch 2 + quick-win Batch 3).** Empat screenshot
+tambahan (`07`–`10`) merekam hasil putaran cleaner: panel **Clean Drive di
+Casual** (kartu hasil "Entries Moved" + hint undo Finder → Trash + tombol
+*Clean Drive*), **terminal Pro** saat pratinjau `clean` (5 zona, nol eksekusi),
+**terminal Pro** saat eksekusi nyata `clean npm --yes` (5 entri pindah,
+`trash_path` tercetak), dan **penolakan argumen tak dikenal**
+(`clean caches npm --yes` → `ERR argumen tidak dikenal 'npm'` — permintaan
+lokal, nol POST ke backend; kejujuran sitasi dibuktikan ganda lewat akses-log
+uvicorn). Semua screenshot dinilai manual: hanya memuat metrik lokal, tanpa
+data pribadi.
+
 Batasan verifikasi visual ini: **headless, satu viewport desktop (1440×900)** —
 sesuai lingkup proyek yang memang **desktop-only** (keputusan pemilik: dukungan
 mobile sengaja di luar cakupan, sehingga bukan celah yang tertunda). Keyboard-only
@@ -329,7 +341,7 @@ Bagian ini sengaja dipertahankan lengkap; jangan dihapus saat review.
 
 1. **Verifikasi visual kini tersedia, tapi terbatas.** Sesi pengembangan awal tanpa tool
    browser; verifikasi visual baru dilakukan di akhir via **Playwright headless,
-   viewport 1440×900** (6 screenshot di `screenshots/`, lihat bagian 5.5). Lingkup
+   viewport 1440×900** (10 screenshot di `screenshots/`, lihat bagian 5.5). Lingkup
    proyek **desktop-only** (keputusan pemilik: dukungan mobile sengaja di luar
    cakupan — bukan keterbatasan yang tertunda).
 
