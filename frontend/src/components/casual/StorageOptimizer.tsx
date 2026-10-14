@@ -54,6 +54,11 @@ function buildSegments(
   }
 
   const values = [usedNonJunkGb, junkGb, freeGb];
+  // NaN lolos guard `== null` dan `<= 0` (semua perbandingan dengan NaN false)
+  // sehingga bar bisa meledak jadi `width: NaN%` — tolak ke placeholder.
+  if (!values.every((value) => Number.isFinite(value))) {
+    return PLACEHOLDER_SEGMENTS;
+  }
   const sum = values.reduce((total, value) => total + value, 0);
   if (sum <= 0) return PLACEHOLDER_SEGMENTS;
 
@@ -170,6 +175,18 @@ export default function StorageOptimizer({ metrics }: StorageOptimizerProps) {
   const [lastClean, setLastClean] = useState<CleanResult | null>(null);
 
   const isCleaned = lastClean !== null;
+
+  // Eksekusi clean bisa 20–30 detik; server tetap melanjutkan walau tab ditutup,
+  // jadi peringatkan user agar tidak mengira prosesnya batal.
+  useEffect(() => {
+    if (!cleaning) return;
+    const handleBeforeUnload = (event: BeforeUnloadEvent): void => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [cleaning]);
 
   /** Buka pratinjau (dry-run) — tidak ada eksekusi di sini, hanya menyiapkan daftar zona. */
   const openPreview = (): void => {

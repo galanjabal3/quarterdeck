@@ -159,11 +159,16 @@ export default function TerminalLog({ metrics }: TerminalLogProps) {
   };
 
   /**
-   * Perintah `clean`:
+   * Perintah `clean` — semua argumen invalid ditolak LOKAL (nol POST):
    * - tanpa argumen → pratinjau zona (GET scan saja, nol eksekusi),
-   * - `<id>` tanpa `--yes` → ditolak lokal, nol eksekusi,
-   * - `<id> --yes` → eksekusi nyata POST /api/actions/clean (id tak dikenal
-   *   termasuk `trash` biar backend yang menolak, pesannya dari envelope).
+   * - `--yes` tanpa id → err "butuh id zona",
+   * - `--yes` + lebih dari 1 id → err argumen tak dikenal (id kedua dst "berlebih"),
+   * - `--yes` + flag lain (mis. `--force`) → err argumen tak dikenal,
+   * - id tanpa `--yes` → ditolak lokal, nol eksekusi; id ber-prefix `--`
+   *   (mis. `clean --force`) dianggap argumen tak dikenal,
+   * - `<id> --yes` (tepat 1 id) → eksekusi nyata POST /api/actions/clean (id
+   *   tak dikenal termasuk `trash` biar backend yang menolak, pesannya dari
+   *   envelope).
    */
   const runCleanCommand = (args: string[]): void => {
     if (args.length === 0) {
@@ -187,33 +192,67 @@ export default function TerminalLog({ metrics }: TerminalLogProps) {
       return;
     }
 
-    const zoneId = args[0];
+    const hasYes = args.includes('--yes');
+    const ids = args.filter((arg) => !arg.startsWith('--'));
+    const unknownFlags = args.filter((arg) => arg.startsWith('--') && arg !== '--yes');
 
-    if (!args.includes('--yes')) {
-      appendLine(
-        'err',
-        `clean: konfirmasi diperlukan — tambahkan --yes (contoh: clean ${zoneId} --yes)`,
-      );
+    if (hasYes) {
+      // `clean --yes` (hanya flag, tanpa id) → tolak lokal.
+      if (ids.length === 0) {
+        appendLine(
+          'err',
+          'clean: butuh id zona — usage: clean <id> --yes (contoh: clean npm --yes)',
+        );
+        return;
+      }
+      // `clean caches npm --yes` → `npm` akan dibuang diam-diam; tolak lokal.
+      if (ids.length > 1) {
+        appendLine('err', `clean: argumen tidak dikenal '${ids[1]}' — usage: clean <id> --yes`);
+        return;
+      }
+      // Flag selain `--yes` tidak didukung → tolak lokal, jangan diabaikan diam-diam.
+      if (unknownFlags.length > 0) {
+        appendLine(
+          'err',
+          `clean: argumen tidak dikenal '${unknownFlags[0]}' — usage: clean <id> --yes`,
+        );
+        return;
+      }
+      const zoneId = ids[0];
+      appendLine('resp', `clean ${zoneId}: memindahkan entri ke Trash…`);
+      void executeClean([zoneId]).then((result) => {
+        if (!result.ok) {
+          appendLine('err', result.message);
+          return;
+        }
+        const data = result.data;
+        appendLine(
+          'resp',
+          `${data.message ?? 'Entri dipindah'} — ${data.trash_path ?? '~/.Trash'}`,
+        );
+        for (const zone of data.zones ?? []) {
+          appendLine(
+            'resp',
+            `  ${zone.id} — ${zone.entries_moved ?? 0} dipindah, ${zone.errors ?? 0} error${
+              zone.note ? ` · ${zone.note}` : ''
+            }`,
+          );
+        }
+      });
       return;
     }
 
-    appendLine('resp', `clean ${zoneId}: memindahkan entri ke Trash…`);
-    void executeClean([zoneId]).then((result) => {
-      if (!result.ok) {
-        appendLine('err', result.message);
-        return;
-      }
-      const data = result.data;
-      appendLine('resp', `${data.message ?? 'Entri dipindah'} — ${data.trash_path ?? '~/.Trash'}`);
-      for (const zone of data.zones ?? []) {
-        appendLine(
-          'resp',
-          `  ${zone.id} — ${zone.entries_moved ?? 0} dipindah, ${zone.errors ?? 0} error${
-            zone.note ? ` · ${zone.note}` : ''
-          }`,
-        );
-      }
-    });
+    const zoneId = args[0];
+    // Id diawali `--` (mis. `clean --force`) bukan id valid → argumen tak dikenal.
+    if (zoneId.startsWith('--')) {
+      appendLine('err', `clean: argumen tidak dikenal '${zoneId}' — usage: clean <id> --yes`);
+      return;
+    }
+    // Tanpa `--yes` → tetap ditolak lokal, nol eksekusi.
+    appendLine(
+      'err',
+      `clean: konfirmasi diperlukan — tambahkan --yes (contoh: clean ${zoneId} --yes)`,
+    );
   };
 
   const runCommand = (value: string): void => {

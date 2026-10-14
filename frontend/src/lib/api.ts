@@ -121,7 +121,17 @@ export async function fetchJunkScan(signal?: AbortSignal): Promise<JunkScanResul
     isSuccessPayload<JunkScanData>(payload) &&
     Array.isArray(payload.data.locations)
   ) {
-    return { ok: true, data: payload.data };
+    // Angka garang (NaN/Infinity/bukan-number) lolos `Array.isArray` dan merusak
+    // reduce/format di UI — tolak di kontrak sebelum sampai ke komponen.
+    const reclaimable = payload.data.reclaimable_gb;
+    if (typeof reclaimable === 'number' && Number.isFinite(reclaimable)) {
+      return { ok: true, data: payload.data };
+    }
+    return {
+      ok: false,
+      code: 'INVALID_RESPONSE',
+      message: `Hasil scan junk tidak sesuai kontrak (HTTP ${response.status})`,
+    };
   }
 
   if (payload !== null && isErrorPayload(payload)) {
